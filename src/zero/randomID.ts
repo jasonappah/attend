@@ -1,1 +1,2 @@
-export const randomID = () => Math.random().toString(36).slice(2)
+import { v7 } from "uuid";
+export const randomID = () => v7();
