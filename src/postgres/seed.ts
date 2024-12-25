@@ -1,3 +1,5 @@
+// TODO: reimplement this with drizzle (if you want to keep a seed script at all)
+
 import pg from 'pg'
 
 /**

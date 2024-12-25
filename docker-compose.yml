@@ -26,16 +26,16 @@ services:
       - pgdata:/var/lib/postgresql/data
       - ./src/postgres/:/docker-entrypoint-initdb.d
 
-  seeder:
-    image: oven/bun:latest
-    depends_on:
-      - postgres
-    volumes:
-      - ./src/postgres/:/app
-    working_dir: /app
-    environment:
-      - ZERO_UPSTREAM_DB=${ZERO_UPSTREAM_DB}
-    command: sh -c "bun install && bun run seed.ts"
+  # seeder:
+  #   image: oven/bun:latest
+  #   depends_on:
+  #     - postgres
+  #   volumes:
+  #     - ./src/postgres/:/app
+  #   working_dir: /app
+  #   environment:
+  #     - ZERO_UPSTREAM_DB=${ZERO_UPSTREAM_DB}
+  #   command: sh -c "bun install && bun run seed.ts"
 
 volumes:
   pgdata:
