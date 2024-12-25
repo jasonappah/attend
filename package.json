@@ -27,7 +27,7 @@
     "ios": "one run:ios"
   },
   "dependencies": {
-    "@rocicorp/zero": "../mono/packages/zero",
+    "@rocicorp/zero": "0.1.0",
     "@tamagui/config": "^1.120.2",
     "@tamagui/linear-gradient": "^1.120.2",
     "@tamagui/lucide-icons": "^1.120.2",
