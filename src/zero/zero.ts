@@ -1,6 +1,7 @@
 import { type Query, type QueryType, type Smash, Zero } from '@rocicorp/zero'
 import { useZero, useQuery as useZeroQuery } from '@rocicorp/zero/react'
 import { createEmitter } from '@vxrn/emitter'
+import { env } from '~/env'
 import { type Schema, schema } from '~/zero/schema'
 
 export let zero = createZero()
@@ -12,7 +13,7 @@ function createZero({ auth, userID = 'anon' }: { auth?: string; userID?: string 
   return new Zero({
     userID,
     auth,
-    server: import.meta.env.VITE_PUBLIC_ZERO_SERVER,
+    server: env.VITE_PUBLIC_ZERO_SERVER,
     schema,
     kvStore: 'mem',
   })

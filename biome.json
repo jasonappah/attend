@@ -58,6 +58,9 @@
         "noHeaderScope": "off",
         "useAltText": "off",
         "useButtonType": "off"
+      },
+      "nursery": {
+        "noProcessEnv": "error"
       }
     }
   },
