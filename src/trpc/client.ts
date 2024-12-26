@@ -37,19 +37,3 @@ export const makeQueryClient = () => {
     },
   });
 }
-
-
-export function TRPCProvider(
-  props: PropsWithChildren,
-) {
-  const {children} = props;
-  const queryClient = makeQueryClient();
-  const [trpcClient] = useState(createTRPCClient);
-  return (
-    <trpc.Provider client={trpcClient} queryClient={queryClient}>
-      <QueryClientProvider client={queryClient}>
-        {children}
-      </QueryClientProvider>
-    </trpc.Provider>
-  );
-}
