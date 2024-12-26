@@ -33,7 +33,16 @@ export const auth = betterAuth({
 
     bearer(),
   ],
-
+  databaseHooks: {
+    user: {
+      create: {
+        before: async (_) => false
+      },
+      update: {
+        before: async (_) => false
+      }
+    }
+  },
   socialProviders: {
     github: {
       clientId: env.GITHUB_CLIENT_ID,
