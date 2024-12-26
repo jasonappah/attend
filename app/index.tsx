@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Button, H1, H3, Input, isWeb, Paragraph, SizableText, XStack, YStack, Text } from 'tamagui'
 import { authClient, useAuth } from '~/better-auth/authClient'
 import { Avatar } from '~/interface/Avatar'
+import { Link } from '~/interface/Link'
 import { isTauri } from '~/tauri/constants'
 import { trpc } from '~/trpc/client'
 import { randomID } from '~/zero/randomID'
@@ -45,15 +46,11 @@ export default function HomePage() {
           )}
         </XStack>
       ) : (
-        <Button
-          onPress={() => {
-            authClient.signIn.social({
-              provider: 'github',
-            })
-          }}
-        >
-          Login with Github
-        </Button>
+        <Link href='/login'>
+          <Button>
+            Login
+          </Button>
+        </Link>
       )}
 
       <YStack w="100%" gap="$4" p="$4" bc="$color2" bw={1} br="$4">

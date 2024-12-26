@@ -3,7 +3,6 @@ import { bearer, jwt } from "better-auth/plugins";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "~/db";
 import { user, session, account, verification, jwks } from "~/db/schema";
-import { env } from "~/env";
 import { randomID } from "~/zero/randomID";
 
 export const auth = betterAuth({
@@ -42,12 +41,6 @@ export const auth = betterAuth({
         before: async (_) => false
       }
     }
-  },
-  socialProviders: {
-    github: {
-      clientId: env.GITHUB_CLIENT_ID,
-      clientSecret: env.GITHUB_CLIENT_SECRET,
-    },
   },
   advanced: {
     generateId() {
