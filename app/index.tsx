@@ -33,7 +33,7 @@ export default function HomePage() {
           <Button onPress={() => authClient.signOut()}>Logout</Button>
 
           {isWeb && !isTauri && jwtToken && (
-            <a href={`one-chat://finish-auth?token=${session?.token}`}>
+            <a href={`one-zero://finish-auth?token=${session?.token}`}>
               <Button>Login in Tauri</Button>
             </a>
           )}

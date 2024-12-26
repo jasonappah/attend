@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { tamaguiPlugin } from '@tamagui/vite-plugin'
 import { one } from 'one/vite'
 import type { UserConfig } from 'vite'

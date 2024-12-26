@@ -4,16 +4,15 @@ import { z } from "zod";
 export const env = createEnv({
   server: {
     ZERO_UPSTREAM_DB: z.string().url(),
-    ZERO_AUTH_JWKS_URL: z.string().url(),
     GITHUB_CLIENT_ID: z.string(),
     GITHUB_CLIENT_SECRET: z.string(),
-    ZERO_JWT_SECRET: z.string(),
-    ZERO_REPLICA_FILE: z.string(),
+    ZERO_AUTH_SECRET: z.string(),
     BETTER_AUTH_SECRET: z.string(),
     NODE_ENV: z.enum(["development", "production", "test"]),
   },
   clientPrefix: "VITE_",
   client: {
+    VITE_ONE_SERVER_URL: z.string().url(),
     VITE_PUBLIC_ZERO_SERVER: z.string().url(),
   },
 
