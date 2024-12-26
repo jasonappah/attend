@@ -11,7 +11,7 @@ import { DragDropFile } from '~/interface/upload/DragDropFile'
 import config from '~/tamagui/tamagui.config'
 import { useZeroEmit, zero } from '~/zero/zero'
 import { env } from '~/env'
-import { TRPCProvider } from '~/trpc/client'
+import { TRPCProvider } from '~/trpc/provider'
 
 export default function Layout() {
   return (
