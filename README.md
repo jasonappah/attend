@@ -1,8 +1,12 @@
-‼️ Note: Zero native not working yet
+# attend
 
-There's a recent bug with top-level await happening that we are looking into fixing.
+This project is a React Native app built with [One](https://one.dev) and [Zero](https://zero.dev).
 
-# Install
+*Original README below:*
+
+---
+
+## Install
 
 Install packages with yarn:
 
@@ -12,11 +16,11 @@ yarn
 
 For login, we have set up Github auth with [Better Auth](https://www.better-auth.com/) as an example.
 
-1. [Create a new Github App](https://docs.github.com/en/apps/creating-github-apps/registering-a-github-app/registering-a-github-app#registering-a-github-app)
+1. [Create a new Github App](https://docs.github.com/en/apps/creating-github-apps/registering-a-github-app/registering-a-github-app##registering-a-github-app)
 2. Copy `.env.example` to `.env`
 3. Fill in `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET`
 
-# Run
+## Run
 
 in three separate tabs:
 
@@ -38,7 +42,7 @@ to reset all your data:
 yarn docker:start:clean
 ```
 
-## Tauri
+### Tauri
 
 Getting Tauri to handle auth in a sane way takes a bit of work, but we've set up most of it here for you. If you're using OAuth, you don't want to force your users to login via the Tauri window, as they will lack all saved credentials and be forced to memorize their password / not use passkeys, etc.
 
