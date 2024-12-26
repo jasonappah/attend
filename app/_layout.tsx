@@ -11,6 +11,7 @@ import { DragDropFile } from '~/interface/upload/DragDropFile'
 import config from '~/tamagui/tamagui.config'
 import { useZeroEmit, zero } from '~/zero/zero'
 import { env } from '~/env'
+import { TRPCProvider } from '~/trpc/client'
 
 export default function Layout() {
   return (
@@ -32,12 +33,14 @@ export default function Layout() {
       <LoadProgressBar startDelay={1_000} />
 
       <AuthEffects />
-
+      
       <DragDropFile>
         <DataProvider>
           <SchemeProvider>
             <ThemeProvider>
-              <Slot />
+              <TRPCProvider>
+                <Slot />
+              </TRPCProvider>
             </ThemeProvider>
           </SchemeProvider>
         </DataProvider>

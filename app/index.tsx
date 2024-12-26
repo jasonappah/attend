@@ -1,8 +1,9 @@
 import { useState } from 'react'
-import { Button, H1, H3, Input, isWeb, Paragraph, SizableText, XStack, YStack } from 'tamagui'
+import { Button, H1, H3, Input, isWeb, Paragraph, SizableText, XStack, YStack, Text } from 'tamagui'
 import { authClient, useAuth } from '~/better-auth/authClient'
 import { Avatar } from '~/interface/Avatar'
 import { isTauri } from '~/tauri/constants'
+import { trpc } from '~/trpc/client'
 import { randomID } from '~/zero/randomID'
 import { mutate, useQuery } from '~/zero/zero'
 
@@ -11,6 +12,8 @@ export default function HomePage() {
   const { user, jwtToken, session } = useAuth()
   const [text, setText] = useState('')
   const existingUser = useQuery((q) => q.user)[0][0]
+  const greeting = trpc.greet.useQuery('World')
+  const health = trpc.health.useQuery()
 
   return (
     <YStack
@@ -24,6 +27,9 @@ export default function HomePage() {
       als="center"
     >
       <H1>Welcome</H1>
+      
+      <Text>{JSON.stringify(greeting.data)}</Text>
+      <Text>{JSON.stringify(health.data)}</Text>
 
       {user ? (
         <XStack ai="center" gap="$4">
