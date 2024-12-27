@@ -1,0 +1,18 @@
+# fly.toml app configuration file generated for attend-server on 2024-12-26T18:02:44-06:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'attend-server'
+primary_region = 'dfw'
+
+[build]
+
+[http_service]
+  internal_port = 3800
+  force_https = true
+  auto_stop_machines = 'stop'
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ['app']
+

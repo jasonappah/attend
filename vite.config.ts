@@ -10,11 +10,17 @@ export default {
       web: {
         defaultRenderMode: 'spa',
       },
+      react: {
+        scan: true,
+      },
       deps: {
         '@expo/vector-icons': {
           '**/*.js': ['jsx']
         }
-      }
+      },
+      server: {
+        platform: 'node'
+      },
     }),
 
     tamaguiPlugin({
