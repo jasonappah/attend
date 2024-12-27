@@ -1,16 +1,29 @@
-name: Fly Deploy
+name: Lint & Deploy
 on:
   push:
-    branches:
-      - main
+  pull_request:
+
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Biome
+        uses: biomejs/setup-biome@v2
+        with:
+          version: latest
+      - name: Run Biome
+        run: biome ci .
   deploy:
+    needs: lint
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     name: Deploy app
     runs-on: ubuntu-latest
     concurrency: deploy-group
     steps:
       - uses: actions/checkout@v4
       - uses: superfly/flyctl-actions/setup-flyctl@master
+        name: Setup flyctl
       - run: flyctl deploy --remote-only --config server.fly.toml
         name: Deploy Attend Server
         env:
