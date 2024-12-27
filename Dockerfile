@@ -2,7 +2,7 @@
 
 # Adjust NODE_VERSION as desired
 ARG NODE_VERSION=22.12.0
-FROM node:${NODE_VERSION}-slim as base
+FROM node:${NODE_VERSION}-alpine AS base
 
 LABEL fly_launch_runtime="Node.js"
 
@@ -11,23 +11,29 @@ WORKDIR /app
 
 # Set production environment
 ENV NODE_ENV="production"
-ARG YARN_VERSION=1.22.19
+ARG YARN_VERSION=1.22.21
 RUN npm install -g yarn@$YARN_VERSION --force
 
 
 # Throw-away build stage to reduce size of final image
-FROM base as build
-
-# Install packages needed to build node modules
-RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential node-gyp pkg-config python-is-python3
+FROM base AS build
 
 # Install node modules
 COPY package.json yarn.lock ./
 RUN yarn install --frozen-lockfile
 
+# I don't understand why this fixes stuff. But it does.
+# @tamagui/vite-plugin is already specified as a DIRECT DEV DEPENDENCY
+# but it's not being installed in the container when we run yarn???
+# So we add it here. smhhhh
+RUN yarn add -D @tamagui/vite-plugin
+
+
 # Copy application code
-COPY . .
+COPY app app
+COPY src src
+COPY public public
+COPY app.json drizzle.config.ts tsconfig.json vite.config.ts routes.d.ts ./
 
 RUN yarn build:web
 
