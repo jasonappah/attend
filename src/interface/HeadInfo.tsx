@@ -48,12 +48,8 @@ export function HeadInfo({
             return (
               <Fragment key={image.url}>
                 <meta property="og:image" content={image.url} />
-                {image.width && (
-                  <meta property="og:image:width" content={`${image.width}`} />
-                )}
-                {image.height && (
-                  <meta property="og:image:height" content={`${image.height}`} />
-                )}
+                {image.width && <meta property="og:image:width" content={`${image.width}`} />}
+                {image.height && <meta property="og:image:height" content={`${image.height}`} />}
               </Fragment>
             )
           })}

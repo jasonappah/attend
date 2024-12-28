@@ -1,5 +1,5 @@
 import { useDidFinishSSR } from '@tamagui/use-did-finish-ssr'
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 const media =
   typeof window !== 'undefined' && window.matchMedia

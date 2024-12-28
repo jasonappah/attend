@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Button, H1, H3, Input, isWeb, Paragraph, SizableText, XStack, YStack, Text } from 'tamagui'
+import { Button, H1, H3, Input, Paragraph, SizableText, Text, XStack, YStack, isWeb } from 'tamagui'
 import { authClient, useAuth } from '~/better-auth/authClient'
 import { Avatar } from '~/interface/Avatar'
 import { Link } from '~/interface/Link'
@@ -28,7 +28,7 @@ export default function HomePage() {
       als="center"
     >
       <H1>Welcome</H1>
-      
+
       <Text>{JSON.stringify(greeting.data)}</Text>
       <Text>{JSON.stringify(health.data)}</Text>
 
@@ -46,10 +46,8 @@ export default function HomePage() {
           )}
         </XStack>
       ) : (
-        <Link href='/login'>
-          <Button>
-            Login
-          </Button>
+        <Link href="/login">
+          <Button>Login</Button>
         </Link>
       )}
 

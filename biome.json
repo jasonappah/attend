@@ -1,11 +1,18 @@
 {
   "$schema": "https://biomejs.dev/schemas/1.5.1/schema.json",
   "organizeImports": {
-    "enabled": false
+    "enabled": true
+  },
+  "files": {
+    "ignore": ["**/*/generated-new.ts", "**/*/generated-v2.ts", ".tamagui", "routes.d.ts"]
+  },
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
   },
   "linter": {
     "enabled": true,
-    "ignore": ["**/*/generated-new.ts", "**/*/generated-v2.ts", ".tamagui"],
     "rules": {
       "correctness": {
         "useExhaustiveDependencies": "off",
@@ -69,8 +76,7 @@
     "formatWithErrors": false,
     "indentStyle": "space",
     "indentWidth": 2,
-    "lineWidth": 100,
-    "ignore": ["**/*/generated-new.ts", "**/*/generated-v2.ts", ".tamagui"]
+    "lineWidth": 100
   },
   "javascript": {
     "formatter": {

@@ -1,4 +1,4 @@
-import { createSchema, definePermissions, type Row } from '@rocicorp/zero'
+import { type Row, createSchema, definePermissions } from '@rocicorp/zero'
 
 const userSchema = {
   tableName: 'user',
