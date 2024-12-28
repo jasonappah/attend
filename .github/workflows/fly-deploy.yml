@@ -33,7 +33,7 @@ jobs:
           project-slug: "attend-c-b9h"
           export-type: "file"
           file-output-path: "/.env"
-      - run: flyctl deploy --remote-only --config server.fly.toml --build-secret BUILD_DOTENV=$(cat .env)
+      - run: flyctl deploy --remote-only --config server.fly.toml --build-secret BUILD_DOTENV_B64=$(base64 .env)
         name: Deploy Attend Server
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_SERVER_APP_TOKEN }}
