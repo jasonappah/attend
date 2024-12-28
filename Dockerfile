@@ -22,11 +22,11 @@ FROM base AS build
 COPY package.json yarn.lock ./
 RUN yarn install --frozen-lockfile
 
-# # I don't understand why this fixes stuff. But it does.
-# # @tamagui/vite-plugin is already specified as a DIRECT DEV DEPENDENCY
-# # but it's not being installed in the container when we run yarn???
-# # So we add it here. smhhhh
-# RUN yarn add -D @tamagui/vite-plugin
+# I don't understand why this fixes stuff. But it does.
+# @tamagui/vite-plugin is already specified as a DIRECT DEV DEPENDENCY
+# but it's not being installed in the container when we run yarn???
+# So we add it here. smhhhh
+RUN yarn add -D @tamagui/vite-plugin
 
 
 # Copy application code
