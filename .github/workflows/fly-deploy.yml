@@ -33,11 +33,6 @@ jobs:
           project-slug: "attend-c-b9h"
           export-type: "file"
           file-output-path: "/.env"
-      - name: Setup upterm session
-        uses: lhotari/action-upterm@v1
-        with:
-          ## limits ssh access and adds the ssh public key for the user which triggered the workflow
-          limit-access-to-actor: true
       - run: flyctl deploy --remote-only --config server.fly.toml --build-secret BUILD_DOTENV_B64=$(base64 -i .env -w 0)
         name: Deploy Attend Server
         env:
