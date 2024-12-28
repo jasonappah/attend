@@ -78,9 +78,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "trustedDependencies": [
-    "@rocicorp/zero-sqlite3",
-    "core-js",
-    "protobufjs"
-  ]
+  "trustedDependencies": ["@rocicorp/zero-sqlite3", "core-js", "protobufjs"]
 }
