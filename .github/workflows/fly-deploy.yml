@@ -32,7 +32,7 @@ jobs:
           env-slug: "prod"
           project-slug: "attend-c-b9h"
           export-type: "file"
-          file-output-path: ".env"
+          file-output-path: "./.env"
       - run: flyctl deploy --remote-only --config server.fly.toml --build-secret BUILD_DOTENV=$(cat .env)
         name: Deploy Attend Server
         env:
