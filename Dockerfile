@@ -35,7 +35,7 @@ COPY src src
 COPY public public
 COPY app.json drizzle.config.ts tsconfig.json vite.config.ts routes.d.ts ./
 
-RUN yarn build:web
+RUN --mount=type=secret,id=BUILD_DOTENV DOTENV_CONFIG_PATH=/run/secrets/BUILD_DOTENV yarn build:web
 
 
 # Final stage for app image

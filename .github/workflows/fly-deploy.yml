@@ -24,7 +24,16 @@ jobs:
       - uses: actions/checkout@v4
       - uses: superfly/flyctl-actions/setup-flyctl@master
         name: Setup flyctl
-      - run: flyctl deploy --remote-only --config server.fly.toml
+      - uses: Infisical/secrets-action@v1.0.7
+        name: Fetch build secrets
+        with:
+          client-id: ${{ secrets.INFISICAL_MACHINE_IDENTITY_CLIENT_ID }}
+          client-secret: ${{ secrets.INFISICAL_MACHINE_IDENTITY_CLIENT_SECRET }}
+          env-slug: "prod"
+          project-slug: "attend-c-b9h"
+          export-type: "file"
+          file-output-path: ".env"
+      - run: flyctl deploy --remote-only --config server.fly.toml --build-secret BUILD_DOTENV=$(cat .env)
         name: Deploy Attend Server
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_SERVER_APP_TOKEN }}
