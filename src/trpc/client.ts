@@ -16,7 +16,7 @@ export const createTRPCClient = () => {
   return trpc.createClient({
     links: [
       httpBatchLink({
-        url: `${env.VITE_ONE_SERVER_URL}/api/trpc`,
+        url: `${env.ONE_SERVER_URL}/api/trpc`,
         transformer: superjson,
       }),
     ],
