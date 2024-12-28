@@ -2,7 +2,7 @@ import { View } from '@tamagui/core'
 import { Moon, Sun, SunMoon } from '@tamagui/lucide-icons'
 import { useSchemeSetting } from '@vxrn/color-scheme'
 import { Appearance } from 'react-native'
-import { isWeb, Paragraph, YStack } from 'tamagui'
+import { Paragraph, YStack, isWeb } from 'tamagui'
 
 const schemeSettings = ['light', 'dark', 'system'] as const
 

@@ -1,13 +1,13 @@
+import type { MediaQueryKey } from '@tamagui/web'
 import { View, styled } from 'tamagui'
 import { useMedia } from 'tamagui'
-import type { MediaQueryKey } from '@tamagui/web'
 
 export const FormCard = styled(View, {
   tag: 'form',
   flexDirection: 'row',
   maxWidth: '100%',
   borderRadius: 30,
-  '$gtSm': {
+  $gtSm: {
     padding: '$6',
     shadowColor: '$shadowColor',
     shadowOffset: {
@@ -21,7 +21,7 @@ export const FormCard = styled(View, {
     borderWidth: 1,
     borderColor: '$borderColor',
   },
-  '$xs': {
+  $xs: {
     borderWidth: 0,
     borderRadius: 0,
     paddingHorizontal: '$1',
@@ -39,4 +39,3 @@ export const Hide = ({
   }
   return children
 }
-

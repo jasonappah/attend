@@ -1,14 +1,13 @@
-import { createEnv } from "@t3-oss/env-core";
-import { z } from "zod";
-
+import { createEnv } from '@t3-oss/env-core'
+import { z } from 'zod'
 
 export const env = createEnv({
   server: {
     ZERO_UPSTREAM_DB: z.string().url(),
-    NODE_ENV: z.enum(["development", "production", "test"]),
-    ZERO_AUTH_SECRET: z.string()
+    NODE_ENV: z.enum(['development', 'production', 'test']),
+    ZERO_AUTH_SECRET: z.string(),
   },
-  clientPrefix: "VITE_",
+  clientPrefix: 'VITE_',
   client: {
     VITE_ONE_SERVER_URL: z.string().url(),
     VITE_PUBLIC_ZERO_SERVER: z.string().url(),
@@ -31,4 +30,4 @@ export const env = createEnv({
    * explicitly specify this option as true.
    */
   emptyStringAsUndefined: true,
-});
+})

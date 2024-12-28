@@ -92,12 +92,12 @@ const InputGroupFrame = styled(XGroup, {
     },
   } as const,
   defaultVariants: {
-    unstyled: process.env.TAMAGUI_HEADLESS === '1',
+    unstyled: false,
   },
 })
 
 const FocusContext = createStyledContext({
-  setFocused: (val: boolean) => {},
+  setFocused: (_val: boolean) => {},
   focused: false,
 })
 
@@ -114,10 +114,7 @@ const InputGroupImpl = InputGroupFrame.styleable((props, forwardedRef) => {
   )
 })
 
-export const inputSizeVariant: SizeVariantSpreadFunction<any> = (
-  val = '$true',
-  extras
-) => {
+export const inputSizeVariant: SizeVariantSpreadFunction<any> = (val = '$true', extras) => {
   const radiusToken = extras.tokens.radius[val] ?? extras.tokens.radius['$true']
   const paddingHorizontal = getSpace(val, {
     shift: -1,
@@ -210,9 +207,7 @@ export const InputIconFrame = styled(View, {
 })
 
 const getIconSize = (size: FontSizeTokens, scale: number) => {
-  return (
-    (typeof size === 'number' ? size * 0.5 : getFontSize(size as FontSizeTokens)) * scale
-  )
+  return (typeof size === 'number' ? size * 0.5 : getFontSize(size as FontSizeTokens)) * scale
 }
 
 const InputIcon = InputIconFrame.styleable<{

@@ -5,13 +5,13 @@ import { ZeroProvider } from '@rocicorp/zero/react'
 import { SchemeProvider, useColorScheme } from '@vxrn/color-scheme'
 import { LoadProgressBar, Slot } from 'one'
 import { useState } from 'react'
-import { isWeb, TamaguiProvider } from 'tamagui'
+import { TamaguiProvider, isWeb } from 'tamagui'
 import { AuthEffects } from '~/better-auth/AuthEffects'
+import { env } from '~/env'
 import { DragDropFile } from '~/interface/upload/DragDropFile'
 import config from '~/tamagui/tamagui.config'
-import { useZeroEmit, zero } from '~/zero/zero'
-import { env } from '~/env'
 import { TRPCProvider } from '~/trpc/provider'
+import { useZeroEmit, zero } from '~/zero/zero'
 
 export default function Layout() {
   return (
@@ -33,7 +33,7 @@ export default function Layout() {
       <LoadProgressBar startDelay={1_000} />
 
       <AuthEffects />
-      
+
       <DragDropFile>
         <DataProvider>
           <SchemeProvider>

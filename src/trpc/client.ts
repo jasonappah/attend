@@ -1,14 +1,18 @@
-import { httpBatchLink } from '@trpc/client';
-import type { AppRouter } from './routers';
-import { createTRPCReact } from '@trpc/react-query';
-import superjson from 'superjson';
-import { env } from '~/env';
-import { QueryClient, defaultShouldDehydrateQuery, QueryClientProvider } from '@tanstack/react-query';
-import { useState, type PropsWithChildren } from 'react';
+import {
+  QueryClient,
+  QueryClientProvider,
+  defaultShouldDehydrateQuery,
+} from '@tanstack/react-query'
+import { httpBatchLink } from '@trpc/client'
+import { createTRPCReact } from '@trpc/react-query'
+import { type PropsWithChildren, useState } from 'react'
+import superjson from 'superjson'
+import { env } from '~/env'
+import type { AppRouter } from './routers'
 
-export const trpc = createTRPCReact<AppRouter>();
+export const trpc = createTRPCReact<AppRouter>()
 
-export const createTRPCClient = () => { 
+export const createTRPCClient = () => {
   return trpc.createClient({
     links: [
       httpBatchLink({
@@ -28,12 +32,11 @@ export const makeQueryClient = () => {
       dehydrate: {
         serializeData: superjson.serialize,
         shouldDehydrateQuery: (query) =>
-          defaultShouldDehydrateQuery(query) ||
-          query.state.status === 'pending',
+          defaultShouldDehydrateQuery(query) || query.state.status === 'pending',
       },
       hydrate: {
         deserializeData: superjson.deserialize,
       },
     },
-  });
+  })
 }

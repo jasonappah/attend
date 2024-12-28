@@ -1,4 +1,4 @@
-import 'dotenv/config';
+import 'dotenv/config'
 import { tamaguiPlugin } from '@tamagui/vite-plugin'
 import { one } from 'one/vite'
 import type { UserConfig } from 'vite'
@@ -15,11 +15,11 @@ export default {
       },
       deps: {
         '@expo/vector-icons': {
-          '**/*.js': ['jsx']
-        }
+          '**/*.js': ['jsx'],
+        },
       },
       server: {
-        platform: 'node'
+        platform: 'node',
       },
     }),
 

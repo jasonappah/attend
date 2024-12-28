@@ -58,7 +58,7 @@ p a {
 }
 
 /* fix safari adjusting some random font sizes bigger */
-@media screen and (max-device-width: 480px){
+@media screen and (max-device-width: 480px) {
   body {
     -webkit-text-size-adjust: 100%;
   }

@@ -1,4 +1,4 @@
-import { Circle, styled, type CircleProps, Image } from 'tamagui'
+import { Circle, type CircleProps, Image, styled } from 'tamagui'
 
 const SelectableCircle = styled(Circle, {
   variants: {
