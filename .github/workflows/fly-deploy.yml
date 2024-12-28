@@ -33,6 +33,11 @@ jobs:
           project-slug: "attend-c-b9h"
           export-type: "file"
           file-output-path: "/.env"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: yarn
+          cache-dependency-path: yarn.lock
       - run: flyctl deploy --remote-only --config server.fly.toml --build-secret BUILD_DOTENV_B64=$(base64 -i .env -w 0)
         name: Deploy Attend Server
         env:
