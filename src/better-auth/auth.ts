@@ -4,8 +4,10 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "~/db";
 import { user, session, account, verification, jwks } from "~/db/schema";
 import { randomID } from "~/zero/randomID";
+import { env } from "~/env";
 
 export const auth = betterAuth({
+  secret: env.ZERO_AUTH_SECRET,
   database: drizzleAdapter(db, {
     provider: "pg",
     schema: {

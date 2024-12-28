@@ -1,22 +1,12 @@
 import { createEnv } from "@t3-oss/env-core";
 import { z } from "zod";
 
-const getRuntimeEnv = () => {
-  // biome-ignore lint/nursery/noProcessEnv: loading from process.env to validate vars
-  let runtimeEnv = process.env
-  
-  if (runtimeEnv.VERCEL) {
-    runtimeEnv['VITE_ONE_SERVER_URL'] = `https://${runtimeEnv.VERCEL_URL}`
-  }
-  
-  return runtimeEnv
-}
 
 export const env = createEnv({
   server: {
     ZERO_UPSTREAM_DB: z.string().url(),
-    BETTER_AUTH_SECRET: z.string(),
     NODE_ENV: z.enum(["development", "production", "test"]),
+    ZERO_AUTH_SECRET: z.string()
   },
   clientPrefix: "VITE_",
   client: {
@@ -24,7 +14,8 @@ export const env = createEnv({
     VITE_PUBLIC_ZERO_SERVER: z.string().url(),
   },
 
-  runtimeEnv: getRuntimeEnv(),
+  // biome-ignore lint/nursery/noProcessEnv: loading from process.env to validate vars
+  runtimeEnv: process.env,
 
   /**
    * By default, this library will feed the environment variables directly to
