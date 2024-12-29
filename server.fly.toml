@@ -16,3 +16,10 @@ primary_region = 'dfw'
   min_machines_running = 0
   processes = ['app']
 
+[[services.http_checks]]
+  interval = 10000
+  timeout = 5000
+  grace_period = "10s"
+  method = "get"
+  path = "/"
+  protocol = "http"
