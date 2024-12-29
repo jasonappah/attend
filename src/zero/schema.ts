@@ -1,52 +1,134 @@
-import { type Row, createSchema, definePermissions } from '@rocicorp/zero'
+import {
+  type ExpressionBuilder,
+  NOBODY_CAN,
+  type TableSchema,
+  column,
+  createSchema,
+  createTableSchema,
+  definePermissions,
+} from '@rocicorp/zero'
+import type { Attendance } from '~/db/schema'
+const { enumeration } = column
 
-const userSchema = {
+// User Schema
+const userSchema = createTableSchema({
   tableName: 'user',
-  primaryKey: ['id'],
   columns: {
     id: 'string',
-    username: 'string',
-    email: 'string',
     name: 'string',
-    image: 'string',
-    state: 'json',
-    updatedAt: 'number',
+    email: 'string',
+    emailVerified: 'boolean',
+    image: { type: 'string', optional: true },
     createdAt: 'number',
+    updatedAt: 'number',
   },
-} as const
+  primaryKey: 'id',
+})
 
-const messageSchema = {
-  tableName: 'message',
-  primaryKey: ['id'],
+// Course Schema
+const courseSchema = createTableSchema({
+  tableName: 'course',
   columns: {
     id: 'string',
-    senderId: 'string',
-    content: 'string',
+    name: 'string',
     createdAt: 'number',
-    updatedAt: { type: 'number', optional: true },
+    updatedAt: 'number',
+    userId: 'string',
   },
+  primaryKey: 'id',
   relationships: {
-    sender: {
-      sourceField: 'senderId',
+    user: {
+      sourceField: 'userId',
+      destSchema: userSchema,
       destField: 'id',
-      destSchema: () => userSchema,
     },
   },
-} as const
+})
 
+// CourseSession Schema
+const courseSessionSchema = createTableSchema({
+  tableName: 'courseSession',
+  columns: {
+    id: 'string',
+    courseId: 'string',
+    createdAt: 'number',
+    updatedAt: 'number',
+    attendance: enumeration<Attendance>(),
+  },
+  primaryKey: 'id',
+  relationships: {
+    course: {
+      sourceField: 'courseId',
+      destSchema: courseSchema,
+      destField: 'id',
+    },
+  },
+})
+
+// Complete Schema
 export const schema = createSchema({
   version: 1,
   tables: {
     user: userSchema,
-    message: messageSchema,
+    course: courseSchema,
+    courseSession: courseSessionSchema,
   },
 })
 
-export type Schema = typeof schema
-export type Message = Row<typeof messageSchema>
-export type User = Row<typeof userSchema>
+// Define the structure of your JWT auth data
+type AuthData = {
+  sub: string // user id
+  email: string
+  roles?: string[]
+}
 
-// @ts-ignore
-export const permissions = definePermissions(schema, () => {
-  return {}
+type Schema = typeof schema
+type Tables = Schema['tables']
+
+export const permissions = definePermissions<AuthData, Schema>(schema, async () => {
+  const _isAuthenticated = (authData: AuthData, { cmpLit }: ExpressionBuilder<TableSchema>) =>
+    cmpLit(authData.sub, 'IS NOT', null)
+
+  const isSelf = (authData: AuthData, { cmp }: ExpressionBuilder<Tables['user']>) =>
+    cmp('id', '=', authData.sub)
+
+  const isOwnerOfCourse = (authData: AuthData, { cmp }: ExpressionBuilder<Tables['course']>) =>
+    cmp('userId', '=', authData.sub)
+
+  const isOwnerOfParentCourse = (
+    authData: AuthData,
+    { exists }: ExpressionBuilder<Tables['courseSession']>
+  ) => exists('course', ({ where }) => where('userId', '=', authData.sub))
+
+  return {
+    user: {
+      row: {
+        select: [isSelf],
+        insert: NOBODY_CAN,
+        update: NOBODY_CAN,
+        delete: NOBODY_CAN,
+      },
+    },
+    course: {
+      row: {
+        select: [isOwnerOfCourse],
+        insert: [isOwnerOfCourse],
+        update: {
+          preMutation: [isOwnerOfCourse],
+        },
+        delete: [isOwnerOfCourse],
+      },
+    },
+
+    courseSession: {
+      row: {
+        select: [isOwnerOfParentCourse],
+        insert: [isOwnerOfParentCourse],
+        update: {
+          preMutation: [isOwnerOfParentCourse],
+        },
+        delete: [isOwnerOfParentCourse],
+      },
+    },
+  }
 })
