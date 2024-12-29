@@ -46,7 +46,7 @@ jobs:
         name: Install Dependencies
       - run: yarn run zero:build-schema
         name: Build Zero Schema
-      - run: flyctl deploy --remote-only --config zero-cache.fly.toml
+      - run: flyctl deploy --remote-only --config zero-cache.fly.toml --file-local /zero-schema.json=./src/zero/zero-schema.json
         name: Deploy Attend Zero Cache
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_ZERO_CACHE_APP_TOKEN }}
