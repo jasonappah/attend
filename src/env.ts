@@ -15,8 +15,13 @@ export const env = createEnv({
     ONE_SERVER_URL: z.string().url(),
   },
 
-  // biome-ignore lint/nursery/noProcessEnv: loading from process.env to validate vars
-  runtimeEnv: process.env,
+  runtimeEnvStrict: {
+    ZERO_UPSTREAM_DB: process.env.ZERO_UPSTREAM_DB,
+    ZERO_AUTH_SECRET: process.env.ZERO_AUTH_SECRET,
+    VITE_PUBLIC_ZERO_SERVER: process.env.VITE_PUBLIC_ZERO_SERVER,
+    NODE_ENV: process.env.NODE_ENV,
+    ONE_SERVER_URL: process.env.ONE_SERVER_URL,
+  },
 
   /**
    * By default, this library will feed the environment variables directly to
