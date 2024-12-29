@@ -1,3 +1,4 @@
+import { relations } from 'drizzle-orm'
 import { boolean, pgEnum, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core'
 
 export const user = pgTable('user', {
@@ -9,6 +10,13 @@ export const user = pgTable('user', {
   createdAt: timestamp('createdAt').notNull(),
   updatedAt: timestamp('updatedAt').notNull(),
 })
+
+export const userRelations = relations(user, ({ many }) => ({
+  sessions: many(session),
+  accounts: many(account),
+  courses: many(course),
+  courseSessions: many(courseSession),
+}))
 
 export const session = pgTable('session', {
   id: uuid('id').primaryKey(),
@@ -22,6 +30,13 @@ export const session = pgTable('session', {
     .notNull()
     .references(() => user.id),
 })
+
+export const sessionRelations = relations(session, ({ one }) => ({
+  user: one(user, {
+    fields: [session.userId],
+    references: [user.id],
+  }),
+}))
 
 export const account = pgTable('account', {
   id: uuid('id').primaryKey(),
@@ -40,6 +55,13 @@ export const account = pgTable('account', {
   createdAt: timestamp('createdAt').notNull(),
   updatedAt: timestamp('updatedAt').notNull(),
 })
+
+export const accountRelations = relations(account, ({ one }) => ({
+  user: one(user, {
+    fields: [account.userId],
+    references: [user.id],
+  }),
+}))
 
 export const verification = pgTable('verification', {
   id: uuid('id').primaryKey(),
@@ -67,17 +89,31 @@ export const course = pgTable('course', {
     .references(() => user.id),
 })
 
+export const courseRelations = relations(course, ({ one, many }) => ({
+  user: one(user, {
+    fields: [course.userId],
+    references: [user.id],
+  }),
+  sessions: many(courseSession),
+}))
+
 export const attendanceEnum = pgEnum('attendance', ['present', 'absent'])
+
+export type Attendance = (typeof attendanceEnum)['enumValues'][number]
 
 export const courseSession = pgTable('courseSession', {
   id: uuid('id').primaryKey(),
   courseId: uuid('courseId')
     .notNull()
     .references(() => course.id),
-  userId: uuid('userId')
-    .notNull()
-    .references(() => user.id),
   createdAt: timestamp('createdAt').notNull(),
   updatedAt: timestamp('updatedAt').notNull(),
   attendance: attendanceEnum('attendance'),
 })
+
+export const courseSessionRelations = relations(courseSession, ({ one }) => ({
+  course: one(course, {
+    fields: [courseSession.courseId],
+    references: [course.id],
+  }),
+}))

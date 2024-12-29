@@ -27,7 +27,6 @@ export const auth = betterAuth({
       },
 
       jwks: {
-        // default
         keyPairConfig: { alg: 'EdDSA', crv: 'Ed25519' },
       },
     }),
