@@ -13,6 +13,7 @@
   },
   "linter": {
     "enabled": true,
+    "ignore": ["src/env.ts"],
     "rules": {
       "correctness": {
         "useExhaustiveDependencies": "off",
