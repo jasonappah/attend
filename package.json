@@ -47,7 +47,7 @@
     "@vxrn/better-auth": "^1.1.374",
     "@vxrn/color-scheme": "^1.1.374",
     "@vxrn/emitter": "^1.1.374",
-    "better-auth": "1.0.23-beta.3",
+    "better-auth": "1.1.6",
     "drizzle-orm": "^0.38.3",
     "expo": "^52.0.23",
     "one": "^1.1.374",
