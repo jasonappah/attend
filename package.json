@@ -23,6 +23,7 @@
     "seed": "tsx ./src/postgres/seed.ts",
     "serve": "one serve",
     "zero": "yarn zero:build-schema && zero-cache --schema-file ./src/zero/zero-schema.json --replica-file /tmp/onezero_replica.db",
+    "zero:dev": "yarn zero-cache-dev -p ./src/zero/schema.ts --replica-file /tmp/onezero_replica.db",
     "zero:build-schema": "cd ./src/zero && zero-build-schema -p './schema.ts'",
     "prebuild:native": "one prebuild",
     "android": "one run:android",
