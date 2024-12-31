@@ -11,9 +11,6 @@ const config = defineConfig(async (args) => {
         web: {
           defaultRenderMode: 'spa',
         },
-        react: {
-          scan: true,
-        },
         deps: {
           '@expo/vector-icons': {
             '**/*.js': ['jsx'],

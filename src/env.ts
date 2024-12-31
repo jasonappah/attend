@@ -5,6 +5,8 @@ export const env = createEnv({
   server: {
     ZERO_UPSTREAM_DB: z.string().url(),
     BETTER_AUTH_SECRET: z.string(),
+    GOOGLE_CLIENT_ID: z.string(),
+    GOOGLE_CLIENT_SECRET: z.string(),
   },
   clientPrefix: 'VITE_',
   client: {
@@ -21,6 +23,8 @@ export const env = createEnv({
     VITE_PUBLIC_ZERO_SERVER: process.env.VITE_PUBLIC_ZERO_SERVER,
     NODE_ENV: process.env.NODE_ENV,
     ONE_SERVER_URL: process.env.ONE_SERVER_URL,
+    GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
+    GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
   },
 
   /**

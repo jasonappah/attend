@@ -6,6 +6,8 @@ import { account, jwks, session, user, verification } from "~/db/schema";
 import { env } from "~/env";
 import { randomID } from "~/zero/randomID";
 
+const disableSignupInProduction = async () => env.NODE_ENV === 'development'
+
 export const auth = betterAuth({
   secret: env.BETTER_AUTH_SECRET,
   database: drizzleAdapter(db, {
@@ -36,16 +38,19 @@ export const auth = betterAuth({
   databaseHooks: {
     user: {
       create: {
-        before: async (_) => false,
-      },
-      update: {
-        before: async (_) => false,
-      },
+        before: disableSignupInProduction,
+      }
     },
   },
   advanced: {
     generateId() {
       return randomID();
+    },
+  },
+  socialProviders: {
+    google: {
+      clientId: env.GOOGLE_CLIENT_ID,
+      clientSecret: env.GOOGLE_CLIENT_SECRET,
     },
   },
 });
