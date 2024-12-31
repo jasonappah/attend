@@ -4,7 +4,7 @@ import { z } from 'zod'
 export const env = createEnv({
   server: {
     ZERO_UPSTREAM_DB: z.string().url(),
-    ZERO_AUTH_SECRET: z.string(),
+    BETTER_AUTH_SECRET: z.string(),
   },
   clientPrefix: 'VITE_',
   client: {
@@ -17,7 +17,7 @@ export const env = createEnv({
 
   runtimeEnvStrict: {
     ZERO_UPSTREAM_DB: process.env.ZERO_UPSTREAM_DB,
-    ZERO_AUTH_SECRET: process.env.ZERO_AUTH_SECRET,
+    BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET,
     VITE_PUBLIC_ZERO_SERVER: process.env.VITE_PUBLIC_ZERO_SERVER,
     NODE_ENV: process.env.NODE_ENV,
     ONE_SERVER_URL: process.env.ONE_SERVER_URL,
