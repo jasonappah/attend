@@ -98,14 +98,16 @@ export const permissions = definePermissions<AuthData, Schema>(schema, async () 
   const isOwnerOfParentCourse = (
     authData: AuthData,
     { exists }: ExpressionBuilder<Tables['courseSession']>
-  ) => exists('course', ({ where }) => where('userId', '=', authData.sub))
+  ) => exists('course', b => b.where('userId', '=', authData.sub))
 
   return {
     user: {
       row: {
         select: [isSelf],
         insert: NOBODY_CAN,
-        update: NOBODY_CAN,
+        update: {
+          preMutation: NOBODY_CAN,
+        },
         delete: NOBODY_CAN,
       },
     },
