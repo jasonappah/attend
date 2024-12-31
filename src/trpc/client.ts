@@ -16,7 +16,7 @@ export const createTRPCClient = () => {
   return trpc.createClient({
     links: [
       httpBatchLink({
-        url: `${env.ONE_SERVER_URL}/api/trpc`,
+        url: `http://localhost:8081/api/trpc`,
         transformer: superjson,
       }),
     ],

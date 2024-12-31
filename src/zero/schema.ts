@@ -10,7 +10,6 @@ import {
 import type { Attendance } from '~/db/schema'
 const { enumeration } = column
 
-// User Schema
 const userSchema = createTableSchema({
   tableName: 'user',
   columns: {
@@ -25,7 +24,25 @@ const userSchema = createTableSchema({
   primaryKey: 'id',
 })
 
-// Course Schema
+const calendarSchema = createTableSchema({
+  tableName: 'calendar',
+  columns: {
+    id: 'string',
+    upstreamUrl: 'string',
+    createdAt: 'number',
+    updatedAt: 'number',
+    userId: 'string',
+  },
+  primaryKey: 'id',
+  relationships: {
+    user: {
+      sourceField: 'userId',
+      destSchema: userSchema,
+      destField: 'id',
+    },
+  },
+})
+
 const courseSchema = createTableSchema({
   tableName: 'course',
   columns: {
@@ -45,7 +62,6 @@ const courseSchema = createTableSchema({
   },
 })
 
-// CourseSession Schema
 const courseSessionSchema = createTableSchema({
   tableName: 'courseSession',
   columns: {
@@ -65,13 +81,13 @@ const courseSessionSchema = createTableSchema({
   },
 })
 
-// Complete Schema
 export const schema = createSchema({
   version: 1,
   tables: {
     user: userSchema,
     course: courseSchema,
     courseSession: courseSessionSchema,
+    calendar: calendarSchema,
   },
 })
 
@@ -92,13 +108,15 @@ export const permissions = definePermissions<AuthData, Schema>(schema, async () 
   const isSelf = (authData: AuthData, { cmp }: ExpressionBuilder<Tables['user']>) =>
     cmp('id', '=', authData.sub)
 
-  const isOwnerOfCourse = (authData: AuthData, { cmp }: ExpressionBuilder<Tables['course']>) =>
-    cmp('userId', '=', authData.sub)
+  const isOwner = (
+    authData: AuthData,
+    { cmp }: ExpressionBuilder<Tables['course'] | Tables['calendar']>
+  ) => cmp('userId', '=', authData.sub)
 
   const isOwnerOfParentCourse = (
     authData: AuthData,
     { exists }: ExpressionBuilder<Tables['courseSession']>
-  ) => exists('course', b => b.where('userId', '=', authData.sub))
+  ) => exists('course', (b) => b.where('userId', '=', authData.sub))
 
   return {
     user: {
@@ -113,12 +131,12 @@ export const permissions = definePermissions<AuthData, Schema>(schema, async () 
     },
     course: {
       row: {
-        select: [isOwnerOfCourse],
-        insert: [isOwnerOfCourse],
+        select: [isOwner],
+        insert: [isOwner],
         update: {
-          preMutation: [isOwnerOfCourse],
+          preMutation: [isOwner],
         },
-        delete: [isOwnerOfCourse],
+        delete: [isOwner],
       },
     },
 
@@ -130,6 +148,16 @@ export const permissions = definePermissions<AuthData, Schema>(schema, async () 
           preMutation: [isOwnerOfParentCourse],
         },
         delete: [isOwnerOfParentCourse],
+      },
+    },
+    calendar: {
+      row: {
+        select: [isOwner],
+        insert: [isOwner],
+        update: {
+          preMutation: [isOwner],
+        },
+        delete: [isOwner],
       },
     },
   }

@@ -4,7 +4,7 @@ import { defineConfig } from 'vite'
 import { loadEnv } from 'vxrn'
 
 const config = defineConfig(async (args) => {
-  await loadEnv(args.command == 'build' ? 'production' : 'development')
+  await loadEnv(args.command === 'build' ? 'production' : 'development')
   return {
     plugins: [
       one({

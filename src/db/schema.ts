@@ -1,5 +1,19 @@
 import { relations } from 'drizzle-orm'
-import { boolean, pgEnum, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core'
+import {
+  boolean,
+  pgEnum,
+  pgTable,
+  text,
+  timestamp,
+  unique,
+  uniqueIndex,
+  uuid,
+} from 'drizzle-orm/pg-core'
+
+const timestamps = {
+  createdAt: timestamp().defaultNow().notNull(),
+  updatedAt: timestamp(),
+}
 
 export const user = pgTable('user', {
   id: uuid('id').primaryKey(),
@@ -7,8 +21,7 @@ export const user = pgTable('user', {
   email: text('email').notNull().unique(),
   emailVerified: boolean('emailVerified').notNull(),
   image: text('image'),
-  createdAt: timestamp('createdAt').notNull(),
-  updatedAt: timestamp('updatedAt').notNull(),
+  ...timestamps,
 })
 
 export const userRelations = relations(user, ({ many }) => ({
@@ -22,8 +35,7 @@ export const session = pgTable('session', {
   id: uuid('id').primaryKey(),
   expiresAt: timestamp('expiresAt').notNull(),
   token: text('token').notNull().unique(),
-  createdAt: timestamp('createdAt').notNull(),
-  updatedAt: timestamp('updatedAt').notNull(),
+  ...timestamps,
   ipAddress: text('ipAddress'),
   userAgent: text('userAgent'),
   userId: uuid('userId')
@@ -52,8 +64,7 @@ export const account = pgTable('account', {
   refreshTokenExpiresAt: timestamp('refreshTokenExpiresAt'),
   scope: text('scope'),
   password: text('password'),
-  createdAt: timestamp('createdAt').notNull(),
-  updatedAt: timestamp('updatedAt').notNull(),
+  ...timestamps,
 })
 
 export const accountRelations = relations(account, ({ one }) => ({
@@ -82,38 +93,63 @@ export const jwks = pgTable('jwks', {
 export const course = pgTable('course', {
   id: uuid('id').primaryKey(),
   name: text('name').notNull(),
-  createdAt: timestamp('createdAt').notNull(),
-  updatedAt: timestamp('updatedAt').notNull(),
+  ...timestamps,
   userId: uuid('userId')
     .notNull()
     .references(() => user.id),
+  calendarId: uuid('calendarId')
+    .references(() => calendar.id)
+    .notNull(),
+  calendarEventId: text('calendarEventId').unique().notNull(),
 })
 
-export const courseRelations = relations(course, ({ one, many }) => ({
+export const courseRelations = relations(course, ({ one }) => ({
   user: one(user, {
     fields: [course.userId],
     references: [user.id],
   }),
-  sessions: many(courseSession),
 }))
 
 export const attendanceEnum = pgEnum('attendance', ['present', 'absent'])
 
 export type Attendance = (typeof attendanceEnum)['enumValues'][number]
 
-export const courseSession = pgTable('courseSession', {
-  id: uuid('id').primaryKey(),
-  courseId: uuid('courseId')
-    .notNull()
-    .references(() => course.id),
-  createdAt: timestamp('createdAt').notNull(),
-  updatedAt: timestamp('updatedAt').notNull(),
-  attendance: attendanceEnum('attendance'),
-})
+export const courseSession = pgTable(
+  'courseSession',
+  {
+    id: uuid('id').primaryKey(),
+    courseId: uuid('courseId')
+      .notNull()
+      .references(() => course.id),
+    ...timestamps,
+    attendance: attendanceEnum('attendance'),
+    startTime: timestamp('startTime').notNull(),
+    endTime: timestamp('endTime').notNull(),
+  },
+  (t) => ({
+    noDuplicateSessions: unique().on(t.courseId, t.endTime, t.startTime),
+  })
+)
 
 export const courseSessionRelations = relations(courseSession, ({ one }) => ({
   course: one(course, {
     fields: [courseSession.courseId],
     references: [course.id],
+  }),
+}))
+
+export const calendar = pgTable('calendar', {
+  id: uuid('id').primaryKey(),
+  upstreamUrl: text('upstreamUrl').notNull().unique(),
+  userId: uuid('userId')
+    .notNull()
+    .references(() => user.id),
+  ...timestamps,
+})
+
+export const calendarRelations = relations(calendar, ({ one }) => ({
+  user: one(user, {
+    fields: [calendar.userId],
+    references: [user.id],
   }),
 }))
