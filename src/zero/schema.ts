@@ -10,6 +10,14 @@ import {
 import type { Attendance } from '~/db/schema'
 const { enumeration } = column
 
+const timestamps: TableSchema['columns'] = {
+  createdAt: 'number',
+  updatedAt: {
+    type: 'number',
+    optional: true,
+  },
+}
+
 const userSchema = createTableSchema({
   tableName: 'user',
   columns: {
@@ -18,20 +26,23 @@ const userSchema = createTableSchema({
     email: 'string',
     emailVerified: 'boolean',
     image: { type: 'string', optional: true },
-    createdAt: 'number',
-    updatedAt: 'number',
+    ...timestamps,
   },
   primaryKey: 'id',
 })
 
-const calendarSchema = createTableSchema({
-  tableName: 'calendar',
+const courseSchema = createTableSchema({
+  tableName: 'course',
   columns: {
     id: 'string',
-    upstreamUrl: 'string',
-    createdAt: 'number',
-    updatedAt: 'number',
+    calendarEventName: 'string',
+    roomNumber: 'string',
+    courseName: 'string',
     userId: 'string',
+    calendarId: 'string',
+    calendarEventId: 'string',
+    calendarEventLastModified: 'number',
+    ...timestamps,
   },
   primaryKey: 'id',
   relationships: {
@@ -40,23 +51,9 @@ const calendarSchema = createTableSchema({
       destSchema: userSchema,
       destField: 'id',
     },
-  },
-})
-
-const courseSchema = createTableSchema({
-  tableName: 'course',
-  columns: {
-    id: 'string',
-    name: 'string',
-    createdAt: 'number',
-    updatedAt: 'number',
-    userId: 'string',
-  },
-  primaryKey: 'id',
-  relationships: {
-    user: {
-      sourceField: 'userId',
-      destSchema: userSchema,
+    calendar: {
+      sourceField: 'calendarId',
+      destSchema: () => calendarSchema,
       destField: 'id',
     },
   },
@@ -67,15 +64,34 @@ const courseSessionSchema = createTableSchema({
   columns: {
     id: 'string',
     courseId: 'string',
-    createdAt: 'number',
-    updatedAt: 'number',
     attendance: enumeration<Attendance>(),
+    startTime: 'number',
+    endTime: 'number',
+    ...timestamps,
   },
   primaryKey: 'id',
   relationships: {
     course: {
       sourceField: 'courseId',
       destSchema: courseSchema,
+      destField: 'id',
+    },
+  },
+})
+
+const calendarSchema = createTableSchema({
+  tableName: 'calendar',
+  columns: {
+    id: 'string',
+    upstreamUrl: 'string',
+    userId: 'string',
+    ...timestamps,
+  },
+  primaryKey: 'id',
+  relationships: {
+    user: {
+      sourceField: 'userId',
+      destSchema: userSchema,
       destField: 'id',
     },
   },
@@ -98,7 +114,7 @@ type AuthData = {
   roles?: string[]
 }
 
-type Schema = typeof schema
+export type Schema = typeof schema
 type Tables = Schema['tables']
 
 export const permissions = definePermissions<AuthData, Schema>(schema, async () => {

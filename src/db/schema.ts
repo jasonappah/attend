@@ -1,14 +1,5 @@
 import { relations } from 'drizzle-orm'
-import {
-  boolean,
-  pgEnum,
-  pgTable,
-  text,
-  timestamp,
-  unique,
-  uniqueIndex,
-  uuid,
-} from 'drizzle-orm/pg-core'
+import { boolean, pgEnum, pgTable, text, timestamp, unique, uuid } from 'drizzle-orm/pg-core'
 
 const timestamps = {
   createdAt: timestamp().defaultNow().notNull(),
@@ -35,12 +26,12 @@ export const session = pgTable('session', {
   id: uuid('id').primaryKey(),
   expiresAt: timestamp('expiresAt').notNull(),
   token: text('token').notNull().unique(),
-  ...timestamps,
   ipAddress: text('ipAddress'),
   userAgent: text('userAgent'),
   userId: uuid('userId')
     .notNull()
     .references(() => user.id),
+  ...timestamps,
 })
 
 export const sessionRelations = relations(session, ({ one }) => ({
@@ -92,8 +83,9 @@ export const jwks = pgTable('jwks', {
 
 export const course = pgTable('course', {
   id: uuid('id').primaryKey(),
-  name: text('name').notNull(),
-  ...timestamps,
+  calendarEventName: text('calendarEventName').notNull(),
+  courseName: text('courseName').notNull(),
+  roomNumber: text('roomNumber').notNull(),
   userId: uuid('userId')
     .notNull()
     .references(() => user.id),
@@ -101,6 +93,8 @@ export const course = pgTable('course', {
     .references(() => calendar.id)
     .notNull(),
   calendarEventId: text('calendarEventId').unique().notNull(),
+  calendarEventLastModified: timestamp('calendarEventLastModified').notNull(),
+  ...timestamps,
 })
 
 export const courseRelations = relations(course, ({ one }) => ({
