@@ -37,6 +37,17 @@ function getCourseDetailsFromIcsEvent(evt: VEvent) {
   }
 }
 
+// https://api.concept3d.com/categories/<concept3dCategoryId>?map=<mapId>&children&key=<from browser>
+// endpoint returns data for a given concept3dCategoryId (seems to be a building ID?)
+// mapId for UTD: 1772
+// notable keys: name, lat, lng, children
+// children: adds an array of "children locations" to the response. 
+// notable keys in each "child location": 
+// - paths: list of points [lat: number, lng: number] that construct a polygon defining a room's outline
+// - mrkId: an integer identifying a room
+// - name: name of the room (ex: ECSW 1.315)
+// - lat and lng: the latitude and longitude of the room, presumably at a central point in the room? idk
+
 type CourseDetails = NonNullable<ReturnType<typeof getCourseDetailsFromIcsEvent>>
 
 const syncCoursesFromCalendar = async (
