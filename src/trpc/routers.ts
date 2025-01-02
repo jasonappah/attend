@@ -1,6 +1,6 @@
 import type { inferRouterInputs, inferRouterOutputs } from '@trpc/server'
 import { add } from 'date-fns'
-import { and, eq, inArray, sql } from 'drizzle-orm'
+import { and, eq, inArray, notInArray, sql } from 'drizzle-orm'
 import ical, { type VEvent } from 'node-ical'
 import type { Db } from '~/db'
 import { calendar, course, courseSession } from '~/db/schema'
@@ -152,7 +152,7 @@ const syncCoursesFromCalendar = async (
       await trx.delete(courseSession).where(
         and(
           eq(courseSession.courseId, course.insertedId),
-          inArray(
+          notInArray(
             courseSession.id,
             currentCourseSessionIds.map((row) => row.id)
           )

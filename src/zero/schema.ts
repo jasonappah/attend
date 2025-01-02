@@ -1,6 +1,7 @@
 import {
   type ExpressionBuilder,
   NOBODY_CAN,
+  type Row,
   type TableSchema,
   column,
   createSchema,
@@ -178,3 +179,8 @@ export const permissions = definePermissions<AuthData, Schema>(schema, async () 
     },
   }
 })
+
+
+export type User = Row<typeof schema.tables.user>;
+export type Course = Row<typeof schema.tables.course>;
+export type CourseSession = Row<typeof schema.tables.courseSession>;

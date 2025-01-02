@@ -36,6 +36,7 @@
     "@tamagui/themes": "^1.121.5",
     "@tamagui/toast": "^1.121.5",
     "@tanstack/react-query": "^5.62.11",
+    "@tanstack/react-table": "^8.20.6",
     "@tauri-apps/api": "^2.1.1",
     "@tauri-apps/plugin-deep-link": "^2.2.0",
     "@tauri-apps/plugin-fs": "^2.2.0",
