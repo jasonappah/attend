@@ -1,3 +1,4 @@
+import { ToggleThemeButton } from "~/interface/theme/ThemeToggleButton";
 import {
   createColumnHelper,
   flexRender,
@@ -34,6 +35,7 @@ const columns = [
     cell: (info) => info.getValue(),
   }),
   columnHelper.accessor("startTime", {
+    // TODO: figure out why times are offset. i love timezones 😭
     header: "Start",
     cell: (info) => new Date(info.getValue()).toLocaleTimeString(),
   }),
@@ -107,6 +109,7 @@ export default function TodayPage() {
             <Button>Login in Tauri</Button>
           </a>
         )}
+        <ToggleThemeButton />
       </XStack>
 
       <Button onPress={() => addCoursesFromIcs.mutate()}>

@@ -27,6 +27,10 @@ const config = defineConfig(async (args) => {
           .then((env) => env.NODE_ENV === 'production'),
         components: ['tamagui'],
         config: './src/tamagui/tamagui.config.ts',
+        themeBuilder: {
+          input: './src/tamagui/theme-builder.ts',
+          output: './src/tamagui/themes.ts',
+        },
         outputCSS: './src/tamagui/tamagui.css',
       }),
     ],

@@ -12,6 +12,7 @@ import { DragDropFile } from '~/interface/upload/DragDropFile'
 import config from '~/tamagui/tamagui.config'
 import { TRPCProvider } from '~/trpc/provider'
 import { useZeroEmit, zero } from '~/zero/zero'
+import { ToggleThemeButton } from '~/interface/theme/ThemeToggleButton'
 
 export default function Layout() {
   return (
