@@ -5,14 +5,13 @@ import { ZeroProvider } from '@rocicorp/zero/react'
 import { SchemeProvider, useColorScheme } from '@vxrn/color-scheme'
 import { LoadProgressBar, Slot } from 'one'
 import { useState } from 'react'
-import { TamaguiProvider, isWeb } from 'tamagui'
+import { TamaguiProvider, View, isWeb } from 'tamagui'
 import { AuthEffects } from '~/better-auth/AuthEffects'
 import { env } from '~/env'
 import { DragDropFile } from '~/interface/upload/DragDropFile'
 import config from '~/tamagui/tamagui.config'
 import { TRPCProvider } from '~/trpc/provider'
 import { useZeroEmit, zero } from '~/zero/zero'
-import { ToggleThemeButton } from '~/interface/theme/ThemeToggleButton'
 
 export default function Layout() {
   return (
@@ -40,7 +39,9 @@ export default function Layout() {
           <SchemeProvider>
             <ThemeProvider>
               <TRPCProvider>
-                <Slot />
+                <View backgroundColor="$color1" minHeight="100%">
+                  <Slot />
+                </View>
               </TRPCProvider>
             </ThemeProvider>
           </SchemeProvider>
