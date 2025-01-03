@@ -17,7 +17,7 @@ import {
   isWeb,
 } from "tamagui";
 import { authClient, useAuth } from "~/better-auth/authClient";
-import { Avatar } from "~/interface/Avatar";
+import { Gravatar } from "~/interface/Gravatar";
 import { Table } from "~/interface/Table";
 import { isTauri } from "~/tauri/constants";
 import { trpc } from "~/trpc/client";
@@ -99,7 +99,7 @@ export default function TodayPage() {
       als="center"
     >
       <XStack ai="center" gap="$4">
-        <Avatar image={user?.image || ""} />
+        <Gravatar email={user?.email || ""} />
         <SizableText>{user?.name}</SizableText>
 
         <Button onPress={() => authClient.signOut()}>Logout</Button>
