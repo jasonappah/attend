@@ -19,6 +19,10 @@ const config = defineConfig(async (args) => {
         server: {
           platform: 'node',
         },
+        react: {
+          scan: true,
+          compiler: true
+        }
       }),
       tamaguiPlugin({
         // vxrn loadEnv needs to run before env validation happens

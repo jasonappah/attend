@@ -1,5 +1,5 @@
 import { type Query, type QueryType, type Smash, Zero } from '@rocicorp/zero'
-import { useZero, useQuery as useZeroQuery } from '@rocicorp/zero/react'
+import { useZero, useQuery, createUseZero } from '@rocicorp/zero/react'
 import { createEmitter } from '@vxrn/emitter'
 import { env } from '~/env'
 import { type Schema, schema } from '~/zero/schema'
@@ -34,10 +34,10 @@ export type QueryResult<TReturn extends QueryType> = [
   },
 ]
 
-export function useQuery<
+export function useZeroQuery<
   QueryBuilder extends (z: Zero<Schema>['query']) => Query<any, any>,
   Q extends ReturnType<QueryBuilder>,
 >(createQuery: QueryBuilder): Q extends Query<any, infer Return> ? QueryResult<Return> : never {
   const z = useZero<Schema>()
-  return useZeroQuery(createQuery(z.query)) as any
+  return useQuery(createQuery(z.query)) as any
 }

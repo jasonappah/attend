@@ -1,28 +1,19 @@
-import { ToggleThemeButton } from "~/interface/theme/ThemeToggleButton";
 import {
   createColumnHelper,
   flexRender,
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { useMemo, useRef } from "react";
+import { Fragment, useMemo, useRef } from "react";
 import {
-  Button,
   H2,
   Text,
   Paragraph,
-  SizableText,
-  XStack,
-  YStack,
-  isWeb,
 } from "tamagui";
-import { authClient, useAuth } from "~/better-auth/authClient";
-import { Gravatar } from "~/interface/Gravatar";
 import { Table } from "~/interface/Table";
-import { isTauri } from "~/tauri/constants";
-import { trpc } from "~/trpc/client";
+
 import type { Course, CourseSession } from "~/zero/schema";
-import { useQuery } from "~/zero/zero";
+import { useZeroQuery } from "~/zero/zero";
 
 const columnHelper = createColumnHelper<CourseSession & { course: Course }>();
 const columns = [
@@ -50,7 +41,6 @@ const columns = [
 ];
 
 export default function TodayPage() {
-  const { user, jwtToken, session } = useAuth();
   const now = new Date(2024, 10, 19);
   const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const endOfDay = new Date(
@@ -58,7 +48,7 @@ export default function TodayPage() {
     now.getMonth(),
     now.getDate() + 1,
   );
-  const [rawSessionsToday] = useQuery((q) =>
+  const [rawSessionsToday] = useZeroQuery((q) =>
     q.courseSession
       .where("startTime", ">=", startOfDay.getTime())
       .where("endTime", "<", endOfDay.getTime())
@@ -72,7 +62,6 @@ export default function TodayPage() {
     }));
   }, [rawSessionsToday]);
 
-  const addCoursesFromIcs = trpc.courses.addCoursesFromIcs.useMutation();
   const table = useReactTable({
     data: sessionsToday,
     columns,
@@ -88,34 +77,7 @@ export default function TodayPage() {
   const rowCounter = useRef(-1);
   rowCounter.current = -1;
   return (
-    <YStack
-      $platform-ios={{ pt: "$10" }}
-      f={1}
-      p="$4"
-      gap="$4"
-      ai="flex-start"
-      maw={600}
-      w="100%"
-      als="center"
-    >
-      <XStack ai="center" gap="$4">
-        <Gravatar email={user?.email || ""} />
-        <SizableText>{user?.name}</SizableText>
-
-        <Button onPress={() => authClient.signOut()}>Logout</Button>
-
-        {isWeb && !isTauri && jwtToken && (
-          <a href={`one-zero://finish-auth?token=${session?.token}`}>
-            <Button>Login in Tauri</Button>
-          </a>
-        )}
-        <ToggleThemeButton />
-      </XStack>
-
-      <Button onPress={() => addCoursesFromIcs.mutate()}>
-        Resync Courses from Calendar
-      </Button>
-
+    <Fragment>
       <H2>Today</H2>
       {sessionsToday.length === 0 ? (
         <Paragraph>No classes today. Make smart choices 😉</Paragraph>
@@ -207,6 +169,6 @@ export default function TodayPage() {
           </Table.Body>
         </Table>
       )}
-    </YStack>
+    </Fragment>
   );
 }

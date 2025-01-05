@@ -65,7 +65,10 @@ const courseSessionSchema = createTableSchema({
   columns: {
     id: 'string',
     courseId: 'string',
-    attendance: enumeration<Attendance>(),
+    attendance: {
+      ...enumeration<Attendance>(),
+      optional: true,
+    },
     startTime: 'number',
     endTime: 'number',
     ...timestamps,
