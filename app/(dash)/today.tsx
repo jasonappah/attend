@@ -12,18 +12,21 @@ import {
 } from "tamagui";
 import { Table } from "~/interface/Table";
 
-import type { Course, CourseSession } from "~/zero/schema";
+import type { Course, CourseSession, Room } from "~/zero/schema";
 import { useZeroQuery } from "~/zero/zero";
 
-const columnHelper = createColumnHelper<CourseSession & { course: Course }>();
+const columnHelper = createColumnHelper<CourseSession & { course: Course & { room: Room[] }}>();
 const columns = [
   columnHelper.accessor("course.courseName", {
     header: "Course",
     cell: (info) => info.getValue(),
   }),
-  columnHelper.accessor("course.roomNumber", {
+  columnHelper.accessor("course.room", {
     header: "Room",
-    cell: (info) => info.getValue(),
+    cell: (info) => {
+      const [room] = info.getValue()
+      return `${room.buildingCode} ${room.roomNumber}`
+    },
   }),
   columnHelper.accessor("startTime", {
     // TODO: figure out why times are offset. i love timezones 😭
@@ -52,7 +55,7 @@ export default function TodayPage() {
     q.courseSession
       .where("startTime", ">=", startOfDay.getTime())
       .where("endTime", "<", endOfDay.getTime())
-      .related("course"),
+      .related("course", q => q.related("room")),
   );
 
   const sessionsToday = useMemo(() => {
@@ -63,6 +66,7 @@ export default function TodayPage() {
   }, [rawSessionsToday]);
 
   const table = useReactTable({
+    // @ts-expect-error
     data: sessionsToday,
     columns,
     getCoreRowModel: getCoreRowModel(),

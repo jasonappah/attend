@@ -10,6 +10,7 @@ export default function DashLayout() {
   const { user, jwtToken, session, loggedIn } = useAuth();
   const pathname = usePathname();
   const addCoursesFromIcs = trpc.courses.addCoursesFromIcs.useMutation();
+  const syncRoomsFromConcept3dMap = trpc.courses.syncRoomsFromConcept3dMap.useMutation();
 
   // if (!loggedIn) {
   //   // TODO: would be wise to validate this is on the current domain
@@ -46,6 +47,9 @@ export default function DashLayout() {
       <XStack gap="$4">
         <Button onPress={() => addCoursesFromIcs.mutate()}>
           Resync Courses from Calendar
+        </Button>
+        <Button onPress={() => syncRoomsFromConcept3dMap.mutate()}>
+          Resync Rooms from Concept3D Map
         </Button>
         <Link href="/today">
           <Button>Today</Button>
