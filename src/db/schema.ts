@@ -5,7 +5,7 @@ import { z } from 'zod'
 const timestamps = {
   createdAt: timestamp().defaultNow().notNull(),
   updatedAt: timestamp()
-    .default(sql`null`).$onUpdate(() => sql`now()`),
+    .$onUpdate(() => new Date()),
 } as const
 
 export const user = pgTable('user', {
@@ -15,7 +15,6 @@ export const user = pgTable('user', {
   emailVerified: boolean('emailVerified').notNull(),
   image: text('image'),
   ...timestamps,
-  updatedAt: timestamp(),
 })
 
 export const userRelations = relations(user, ({ many }) => ({

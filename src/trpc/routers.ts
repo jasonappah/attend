@@ -6,8 +6,6 @@ import { syncCoursesFromCalendar } from "./ical";
 
 const utilsRouter = router({
   addCoursesFromIcs: authedProcedure.mutation(async ({ ctx }) => {
-    // TODO: also consider doing this client side / as a background task
-
     const calendarsFromDb = await ctx.db
       .select()
       .from(calendar)

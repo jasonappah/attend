@@ -63,14 +63,15 @@ export const syncRoomsFromConcept3dMap = async (
   const dedupedCategoryIds = Array.from(new Set(categoryIds));
 
   const categories = await getBatchCategories(dedupedCategoryIds, mapId);
-
-  const buildingRegex = /^[\w\d\s]* \(([\w\d]*)\)$/;
+  
+  const buildingRegex = /^.*\(([\w\d]*)\)$/;
   const disallowedBuildingAbbrvs = ["AED", "AST", "ATM", "OSV"];
   const buildingCategories = categories
-    .map((c) => ({ category: c, match: c.name.match(buildingRegex) }))
+    .map((c) => ({ category: c, match: c.name.trim().match(buildingRegex) }))
     .filter(
       ({ match }) => match && !disallowedBuildingAbbrvs.includes(match[1]),
     );
+
 
   for (const { category } of buildingCategories) {
     const rooms = category.children.locations

@@ -1,12 +1,12 @@
 import { add } from "date-fns";
 import { sql, and, eq, notInArray } from "drizzle-orm";
-import type ical, { VEvent } from "node-ical";
+import ical from "node-ical";
 import type { Logger } from "pino";
 import type { Db } from "~/db";
 import { room, course, courseSession } from "~/db/schema";
 import { randomID } from "~/zero/randomID";
 
-function getCourseDetailsFromIcsEvent(evt: VEvent) {
+function getCourseDetailsFromIcsEvent(evt: ical.VEvent) {
   const matches = evt.summary.match(/^(\w{2,4} \d{4} \d{3}) - (.*)$/);
   if (!matches) return null;
   return {
@@ -35,12 +35,12 @@ export const syncCoursesFromCalendar = async (
   const dateInRange = (date: Date) =>
     date > classStartDate && date < classEndDate;
 
-  type Out = [string, VEvent & { details: CourseDetails }][];
+  type Out = [string, ical.VEvent & { details: CourseDetails }][];
   const icsEventsForFall2024Courses = Object.fromEntries(
     (
       Object.entries(ics).filter(([, item]) => item.type === "VEVENT") as [
         string,
-        VEvent,
+        ical.VEvent,
       ][]
     )
       .filter(([, evt]) => dateInRange(evt.start))

@@ -22,8 +22,8 @@ export default function AttendanceHistoryPage() {
               const rand = Math.random();
               await trx.courseSession.update({
                 id: session.id,
-                attendance: rand > 1 / 2 ? "present" : "absent",
-                // attendance: rand > 2 / 3 ? "present" : rand > 1 / 3 ? "absent" : undefined,
+                // attendance: rand > 1 / 2 ? "present" : "absent",
+                attendance: rand > 2 / 3 ? "present" : rand > 1 / 3 ? "absent" : null,
               });
             }
           });
