@@ -21,7 +21,7 @@ const config = defineConfig(async (args) => {
         },
         react: {
           scan: true,
-          compiler: true
+          compiler: false
         }
       }),
       tamaguiPlugin({
