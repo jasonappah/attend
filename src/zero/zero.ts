@@ -1,5 +1,5 @@
 import { type Query, type QueryType, type Smash, Zero } from '@rocicorp/zero'
-import { useZero, useQuery, createUseZero } from '@rocicorp/zero/react'
+import { createUseZero, useQuery, useZero } from '@rocicorp/zero/react'
 import { createEmitter } from '@vxrn/emitter'
 import { env } from '~/env'
 import { type Schema, schema } from '~/zero/schema'

@@ -1,16 +1,14 @@
-import { useZero } from "@rocicorp/zero/react";
-import { Fragment } from "react/jsx-runtime";
-import { H2, Button } from "tamagui";
-import { AttendanceHistory } from "~/interface/attendance-history/attendance-history";
-import type { Schema } from "~/zero/schema";
-import { useZeroQuery } from "~/zero/zero";
+import { useZero } from '@rocicorp/zero/react'
+import { Fragment } from 'react/jsx-runtime'
+import { Button, H2 } from 'tamagui'
+import { AttendanceHistory } from '~/interface/attendance-history/attendance-history'
+import type { Schema } from '~/zero/schema'
+import { useZeroQuery } from '~/zero/zero'
 
 export default function AttendanceHistoryPage() {
-  const zero = useZero<Schema>();
-  const [courses] = useZeroQuery((q) => q.course.orderBy("courseName", "asc"));
-  const [sessions] = useZeroQuery((q) =>
-    q.courseSession.orderBy("startTime", "asc"),
-  );
+  const zero = useZero<Schema>()
+  const [courses] = useZeroQuery((q) => q.course.orderBy('courseName', 'asc'))
+  const [sessions] = useZeroQuery((q) => q.courseSession.orderBy('startTime', 'asc'))
 
   return (
     <Fragment>
@@ -19,19 +17,19 @@ export default function AttendanceHistoryPage() {
         onPress={async () => {
           await zero.mutateBatch(async (trx) => {
             for (const session of sessions) {
-              const rand = Math.random();
+              const rand = Math.random()
               await trx.courseSession.update({
                 id: session.id,
                 // attendance: rand > 1 / 2 ? "present" : "absent",
-                attendance: rand > 2 / 3 ? "present" : rand > 1 / 3 ? "absent" : null,
-              });
+                attendance: rand > 2 / 3 ? 'present' : rand > 1 / 3 ? 'absent' : null,
+              })
             }
-          });
+          })
         }}
       >
         Randomize Attendance
       </Button>
       <AttendanceHistory courses={courses} sessions={sessions} />
     </Fragment>
-  );
+  )
 }

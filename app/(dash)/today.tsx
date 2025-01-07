@@ -3,83 +3,74 @@ import {
   flexRender,
   getCoreRowModel,
   useReactTable,
-} from "@tanstack/react-table";
-import { Fragment, useMemo, useRef } from "react";
-import {
-  H2,
-  Text,
-  Paragraph,
-} from "tamagui";
-import { Table } from "~/interface/Table";
+} from '@tanstack/react-table'
+import { Fragment, useMemo, useRef } from 'react'
+import { H2, Paragraph, Text } from 'tamagui'
+import { Table } from '~/interface/Table'
 
-import type { Course, CourseSession, Room } from "~/zero/schema";
-import { useZeroQuery } from "~/zero/zero";
+import type { Course, CourseSession, Room } from '~/zero/schema'
+import { useZeroQuery } from '~/zero/zero'
 
-const columnHelper = createColumnHelper<CourseSession & { course: Course & { room: Room[] }}>();
+const columnHelper = createColumnHelper<CourseSession & { course: Course & { room: Room[] } }>()
 const columns = [
-  columnHelper.accessor("course.courseName", {
-    header: "Course",
+  columnHelper.accessor('course.courseName', {
+    header: 'Course',
     cell: (info) => info.getValue(),
   }),
-  columnHelper.accessor("course.room", {
-    header: "Room",
+  columnHelper.accessor('course.room', {
+    header: 'Room',
     cell: (info) => {
       const [room] = info.getValue()
       return `${room.buildingCode} ${room.roomNumber}`
     },
   }),
-  columnHelper.accessor("startTime", {
+  columnHelper.accessor('startTime', {
     // TODO: figure out why times are offset. i love timezones 😭
-    header: "Start",
+    header: 'Start',
     cell: (info) => new Date(info.getValue()).toLocaleTimeString(),
   }),
-  columnHelper.accessor("endTime", {
-    header: "End",
+  columnHelper.accessor('endTime', {
+    header: 'End',
     cell: (info) => new Date(info.getValue()).toLocaleTimeString(),
   }),
-  columnHelper.accessor("attendance", {
-    header: "Attendance",
+  columnHelper.accessor('attendance', {
+    header: 'Attendance',
     cell: (info) => info.getValue(),
   }),
-];
+]
 
 export default function TodayPage() {
-  const now = new Date(2024, 10, 19);
-  const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const endOfDay = new Date(
-    now.getFullYear(),
-    now.getMonth(),
-    now.getDate() + 1,
-  );
+  const now = new Date(2024, 10, 19)
+  const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+  const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1)
   const [rawSessionsToday] = useZeroQuery((q) =>
     q.courseSession
-      .where("startTime", ">=", startOfDay.getTime())
-      .where("endTime", "<", endOfDay.getTime())
-      .related("course", q => q.related("room")),
-  );
+      .where('startTime', '>=', startOfDay.getTime())
+      .where('endTime', '<', endOfDay.getTime())
+      .related('course', (q) => q.related('room'))
+  )
 
   const sessionsToday = useMemo(() => {
     return rawSessionsToday.map((session) => ({
       ...session,
       course: session.course[0],
-    }));
-  }, [rawSessionsToday]);
+    }))
+  }, [rawSessionsToday])
 
   const table = useReactTable({
     // @ts-expect-error
     data: sessionsToday,
     columns,
     getCoreRowModel: getCoreRowModel(),
-  });
+  })
 
-  const headerGroups = table.getHeaderGroups();
-  const tableRows = table.getRowModel().rows;
-  const footerGroups = table.getFooterGroups();
+  const headerGroups = table.getHeaderGroups()
+  const tableRows = table.getRowModel().rows
+  const footerGroups = table.getFooterGroups()
 
-  const allRowsLength =
-    tableRows.length + headerGroups.length + footerGroups.length;
-  const rowCounter = useRef(-1);
-  rowCounter.current = -1;
+  const allRowsLength = tableRows.length + headerGroups.length + footerGroups.length
+  const rowCounter = useRef(-1)
+  rowCounter.current = -1
   return (
     <Fragment>
       <H2>Today</H2>
@@ -87,8 +78,8 @@ export default function TodayPage() {
         <Paragraph>No classes today. Make smart choices 😉</Paragraph>
       ) : (
         <Table
-          alignCells={{ x: "center", y: "center" }}
-          alignHeaderCells={{ y: "center", x: "center" }}
+          alignCells={{ x: 'center', y: 'center' }}
+          alignHeaderCells={{ y: 'center', x: 'center' }}
           cellWidth="$18"
           cellHeight="$7"
           borderWidth={0}
@@ -99,15 +90,15 @@ export default function TodayPage() {
         >
           <Table.Head>
             {headerGroups.map((headerGroup) => {
-              rowCounter.current++;
+              rowCounter.current++
               return (
                 <Table.Row
                   rowLocation={
                     rowCounter.current === 0
-                      ? "first"
+                      ? 'first'
                       : rowCounter.current === allRowsLength - 1
-                        ? "last"
-                        : "middle"
+                        ? 'last'
+                        : 'middle'
                   }
                   key={headerGroup.id}
                   justifyContent="flex-start"
@@ -123,31 +114,28 @@ export default function TodayPage() {
                       <Text>
                         {header.isPlaceholder
                           ? null
-                          : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext(),
-                            )}
+                          : flexRender(header.column.columnDef.header, header.getContext())}
                       </Text>
                     </Table.HeaderCell>
                   ))}
                 </Table.Row>
-              );
+              )
             })}
           </Table.Head>
           <Table.Body>
             {tableRows.map((row) => {
-              rowCounter.current++;
+              rowCounter.current++
               return (
                 <Table.Row
                   hoverStyle={{
-                    backgroundColor: "$color2",
+                    backgroundColor: '$color2',
                   }}
                   rowLocation={
                     rowCounter.current === 0
-                      ? "first"
+                      ? 'first'
                       : rowCounter.current === allRowsLength - 1
-                        ? "last"
-                        : "middle"
+                        ? 'last'
+                        : 'middle'
                   }
                   key={row.id}
                 >
@@ -160,19 +148,16 @@ export default function TodayPage() {
                       flexShrink={3}
                     >
                       <Text theme="alt1">
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext(),
-                        )}
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </Text>
                     </Table.Cell>
                   ))}
                 </Table.Row>
-              );
+              )
             })}
           </Table.Body>
         </Table>
       )}
     </Fragment>
-  );
+  )
 }

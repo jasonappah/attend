@@ -1,17 +1,16 @@
-import { isTauri } from "~/tauri/constants";
-import { Slot, Tabs, usePathname, useRouter, Redirect } from "one";
-import { YStack, SizableText, XStack, Button, isWeb } from "tamagui";
-import { authClient, useAuth } from "~/better-auth/authClient";
-import { Gravatar } from "~/interface/Gravatar";
-import { trpc } from "~/trpc/client";
-import { ToggleThemeButton } from "~/interface/theme/ThemeToggleButton";
-import { Link } from "~/interface/Link";
+import { Redirect, Slot, Tabs, usePathname, useRouter } from 'one'
+import { Button, SizableText, XStack, YStack, isWeb } from 'tamagui'
+import { authClient, useAuth } from '~/better-auth/authClient'
+import { Gravatar } from '~/interface/Gravatar'
+import { Link } from '~/interface/Link'
+import { ToggleThemeButton } from '~/interface/theme/ThemeToggleButton'
+import { isTauri } from '~/tauri/constants'
+import { trpc } from '~/trpc/client'
 export default function DashLayout() {
-  const { user, jwtToken, session, loggedIn } = useAuth();
-  const pathname = usePathname();
-  const addCoursesFromIcs = trpc.utils.addCoursesFromIcs.useMutation();
-  const syncRoomsFromConcept3dMap =
-    trpc.utils.syncRoomsFromConcept3dMap.useMutation();
+  const { user, jwtToken, session, loggedIn } = useAuth()
+  const pathname = usePathname()
+  const addCoursesFromIcs = trpc.utils.addCoursesFromIcs.useMutation()
+  const syncRoomsFromConcept3dMap = trpc.utils.syncRoomsFromConcept3dMap.useMutation()
 
   // if (!loggedIn) {
   //   // TODO: would be wise to validate this is on the current domain
@@ -22,7 +21,7 @@ export default function DashLayout() {
   // TODO: use a drawer
   return (
     <YStack
-      $platform-ios={{ pt: "$10" }}
+      $platform-ios={{ pt: '$10' }}
       f={1}
       p="$4"
       gap="$4"
@@ -32,7 +31,7 @@ export default function DashLayout() {
       als="center"
     >
       <XStack ai="center" gap="$4">
-        <Gravatar email={user?.email || ""} />
+        <Gravatar email={user?.email || ''} />
         <SizableText>{user?.name}</SizableText>
 
         <Button onPress={() => authClient.signOut()}>Logout</Button>
@@ -46,9 +45,7 @@ export default function DashLayout() {
       </XStack>
 
       <XStack gap="$4">
-        <Button onPress={() => addCoursesFromIcs.mutate()}>
-          Resync Courses from Calendar
-        </Button>
+        <Button onPress={() => addCoursesFromIcs.mutate()}>Resync Courses from Calendar</Button>
         <Button onPress={() => syncRoomsFromConcept3dMap.mutate()}>
           Resync Rooms from Concept3D Map
         </Button>
@@ -61,5 +58,5 @@ export default function DashLayout() {
       </XStack>
       <Slot />
     </YStack>
-  );
+  )
 }

@@ -1,12 +1,7 @@
 // https://tamagui.dev/bento/elements/tables
 
 import type { SizeTokens } from 'tamagui'
-import {
-  ThemeableStack,
-  createStyledContext,
-  styled,
-  withStaticProperties,
-} from 'tamagui'
+import { ThemeableStack, createStyledContext, styled, withStaticProperties } from 'tamagui'
 
 type AlignCells = {
   y: 'center' | 'start' | 'end'
@@ -199,4 +194,3 @@ export const Table = withStaticProperties(TableComp, {
   HeaderCell,
   Foot: TableFoot,
 })
-

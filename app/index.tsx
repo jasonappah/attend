@@ -1,22 +1,22 @@
-import { Redirect, useParams } from "one";
-import { Button, Paragraph, YStack, H1 } from "tamagui";
-import { authClient, useAuth } from "~/better-auth/authClient";
-import { Link } from "~/interface/Link";
+import { Redirect, useParams } from 'one'
+import { Button, H1, Paragraph, YStack } from 'tamagui'
+import { authClient, useAuth } from '~/better-auth/authClient'
+import { Link } from '~/interface/Link'
 
 export default function HomePage() {
-  const { loggedIn } = useAuth();
+  const { loggedIn } = useAuth()
   const params = useParams<{
-    redirect?: string;
-    error?: string;
-  }>();
-  
+    redirect?: string
+    error?: string
+  }>()
+
   if (params.redirect && loggedIn) {
-    return <Redirect href={params.redirect} />;
+    return <Redirect href={params.redirect} />
   }
 
   return (
     <YStack
-      $platform-ios={{ pt: "$10" }}
+      $platform-ios={{ pt: '$10' }}
       f={1}
       p="$4"
       gap="$4"
@@ -40,13 +40,13 @@ export default function HomePage() {
         <Button
           onPress={async () => {
             await authClient.signIn.social({
-              provider: "google",
-            });
+              provider: 'google',
+            })
           }}
         >
           Login with Google
         </Button>
       )}
     </YStack>
-  );
+  )
 }

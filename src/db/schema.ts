@@ -1,11 +1,22 @@
 import { relations, sql } from 'drizzle-orm'
-import { boolean, integer, jsonb, numeric, pgEnum, pgTable, real, text, timestamp, unique, uuid } from 'drizzle-orm/pg-core'
+import {
+  boolean,
+  integer,
+  jsonb,
+  numeric,
+  pgEnum,
+  pgTable,
+  real,
+  text,
+  timestamp,
+  unique,
+  uuid,
+} from 'drizzle-orm/pg-core'
 import { z } from 'zod'
 
 const timestamps = {
   createdAt: timestamp().defaultNow().notNull(),
-  updatedAt: timestamp()
-    .$onUpdate(() => new Date()),
+  updatedAt: timestamp().$onUpdate(() => new Date()),
 } as const
 
 export const user = pgTable('user', {
@@ -86,7 +97,9 @@ export const course = pgTable('course', {
   id: uuid('id').primaryKey(),
   calendarEventName: text('calendarEventName').notNull(),
   courseName: text('courseName').notNull(),
-  roomId: uuid('roomId').notNull().references(() => room.id),
+  roomId: uuid('roomId')
+    .notNull()
+    .references(() => room.id),
   userId: uuid('userId')
     .notNull()
     .references(() => user.id),
@@ -153,40 +166,44 @@ export const calendarRelations = relations(calendar, ({ one }) => ({
   }),
 }))
 
-
 const GPSCoordinateSchema = z.tuple([z.number(), z.number()])
 
 export const Concept3DShapeSchema = z.discriminatedUnion('type', [
-  z.object({
-    type: z.literal('polygon'),
-    paths: z.array(GPSCoordinateSchema),
-  }).strip(),
-  z.object({
-    type: z.literal('rectangle'),
-    bounds: z.array(GPSCoordinateSchema),
-  }).strip(),
+  z
+    .object({
+      type: z.literal('polygon'),
+      paths: z.array(GPSCoordinateSchema),
+    })
+    .strip(),
+  z
+    .object({
+      type: z.literal('rectangle'),
+      bounds: z.array(GPSCoordinateSchema),
+    })
+    .strip(),
 ])
 
 export type Concept3DShape = z.infer<typeof Concept3DShapeSchema>
 
+export const room = pgTable(
+  'room',
+  {
+    id: uuid('id').primaryKey(),
+    buildingCode: text('buildingCode').notNull(),
+    roomNumber: text('roomNumber').notNull(),
+    latitude: real('latitude').notNull(),
+    longitude: real('longitude').notNull(),
+    level: integer('level').notNull(),
 
-
-export const room = pgTable('room', {
-  id: uuid('id').primaryKey(),
-  buildingCode: text('buildingCode').notNull(),
-  roomNumber: text('roomNumber').notNull(),
-  latitude: real('latitude').notNull(),
-  longitude: real('longitude').notNull(),
-  level: integer('level').notNull(),
-  
-  concept3dMapId: integer('concept3dMapId').notNull(),
-  concept3dShape: jsonb().$type<Concept3DShape>(),
-  concept3dCategoryName: text('concept3dCategoryName').notNull(),
-  concept3dLocationId: integer('concept3dLocationId').notNull(),
-  concept3dCategoryId: integer('concept3dCategoryId').notNull(),
-  concept3dMarkId: integer('concept3dRoomId').notNull(),
-  ...timestamps,
-}, (t) => ({
-  noDuplicateRooms: unique().on(t.buildingCode, t.roomNumber),
-}))
-
+    concept3dMapId: integer('concept3dMapId').notNull(),
+    concept3dShape: jsonb().$type<Concept3DShape>(),
+    concept3dCategoryName: text('concept3dCategoryName').notNull(),
+    concept3dLocationId: integer('concept3dLocationId').notNull(),
+    concept3dCategoryId: integer('concept3dCategoryId').notNull(),
+    concept3dMarkId: integer('concept3dRoomId').notNull(),
+    ...timestamps,
+  },
+  (t) => ({
+    noDuplicateRooms: unique().on(t.buildingCode, t.roomNumber),
+  })
+)

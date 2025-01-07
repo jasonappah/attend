@@ -5,15 +5,15 @@ import {
   type TableSchema,
   createSchema,
   definePermissions,
-} from "@rocicorp/zero";
+} from '@rocicorp/zero'
 
-import * as drizzleSchema from "~/db/schema";
-import { createZeroSchema } from "drizzle-zero";
+import { createZeroSchema } from 'drizzle-zero'
+import * as drizzleSchema from '~/db/schema'
 
 const timestamps = {
   createdAt: true,
   updatedAt: true,
-};
+}
 export const schema = createSchema(
   createZeroSchema(drizzleSchema, {
     version: 1,
@@ -67,39 +67,35 @@ export const schema = createSchema(
         ...timestamps,
       },
     },
-  }),
-);
+  })
+)
 
 // Define the structure of your JWT auth data
 type AuthData = {
-  sub: string; // user id
-  email: string;
-  roles?: string[];
-};
+  sub: string // user id
+  email: string
+  roles?: string[]
+}
 
-export type Schema = typeof schema;
-type Tables = Schema["tables"];
+export type Schema = typeof schema
+type Tables = Schema['tables']
 
 export const permissions = definePermissions<AuthData, Schema>(schema, () => {
-  const _isAuthenticated = (
-    authData: AuthData,
-    { cmpLit }: ExpressionBuilder<TableSchema>,
-  ) => cmpLit(authData.sub, "IS NOT", null);
+  const _isAuthenticated = (authData: AuthData, { cmpLit }: ExpressionBuilder<TableSchema>) =>
+    cmpLit(authData.sub, 'IS NOT', null)
 
-  const isSelf = (
-    authData: AuthData,
-    { cmp }: ExpressionBuilder<Tables["user"]>,
-  ) => cmp("id", "=", authData.sub);
+  const isSelf = (authData: AuthData, { cmp }: ExpressionBuilder<Tables['user']>) =>
+    cmp('id', '=', authData.sub)
 
   const isOwner = (
     authData: AuthData,
-    { cmp }: ExpressionBuilder<Tables["course"] | Tables["calendar"]>,
-  ) => cmp("userId", "=", authData.sub);
+    { cmp }: ExpressionBuilder<Tables['course'] | Tables['calendar']>
+  ) => cmp('userId', '=', authData.sub)
 
   const isOwnerOfParentCourse = (
     authData: AuthData,
-    { exists }: ExpressionBuilder<Tables["courseSession"]>,
-  ) => exists("course", (b) => b.where("userId", "=", authData.sub));
+    { exists }: ExpressionBuilder<Tables['courseSession']>
+  ) => exists('course', (b) => b.where('userId', '=', authData.sub))
 
   return {
     user: {
@@ -143,10 +139,10 @@ export const permissions = definePermissions<AuthData, Schema>(schema, () => {
         delete: [isOwner],
       },
     },
-  };
-});
+  }
+})
 
-export type User = Row<typeof schema.tables.user>;
-export type Course = Row<typeof schema.tables.course>;
-export type CourseSession = Row<typeof schema.tables.courseSession>;
-export type Room = Row<typeof schema.tables.room>;
+export type User = Row<typeof schema.tables.user>
+export type Course = Row<typeof schema.tables.course>
+export type CourseSession = Row<typeof schema.tables.courseSession>
+export type Room = Row<typeof schema.tables.room>
