@@ -9,8 +9,9 @@ import { Link } from "~/interface/Link";
 export default function DashLayout() {
   const { user, jwtToken, session, loggedIn } = useAuth();
   const pathname = usePathname();
-  const addCoursesFromIcs = trpc.courses.addCoursesFromIcs.useMutation();
-  const syncRoomsFromConcept3dMap = trpc.courses.syncRoomsFromConcept3dMap.useMutation();
+  const addCoursesFromIcs = trpc.utils.addCoursesFromIcs.useMutation();
+  const syncRoomsFromConcept3dMap =
+    trpc.utils.syncRoomsFromConcept3dMap.useMutation();
 
   // if (!loggedIn) {
   //   // TODO: would be wise to validate this is on the current domain

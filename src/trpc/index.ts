@@ -17,11 +17,12 @@ const t = initTRPC.context<Context>().create({
  */
 export const router = t.router;
 export const publicProcedure = t.procedure.use(({ ctx, next, path }) => {
-  const _ctx = {
-    ...ctx,
-    logger: logger.child({ path, userId: ctx.session?.user.id }),
-  };
-  return next({ ctx: _ctx });
+  return next({
+    ctx: {
+      ...ctx,
+      logger: logger.child({ path, userId: ctx.session?.user.id }),
+    },
+  });
 });
 export const authedProcedure = publicProcedure.use(({ ctx, next }) => {
   if (!ctx.session || !ctx.session.user) {
