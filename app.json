@@ -2,15 +2,21 @@
   "expo": {
     "name": "attend",
     "slug": "attend",
+    "scheme": "attend",
     "version": "1.1.345-1734464750388",
     "plugins": ["vxrn/expo-plugin"],
     "sdkVersion": "52.0.0",
+    "newArchEnabled": true,
     "platforms": ["ios", "android", "web"],
     "ios": {
-      "bundleIdentifier": "com.myapp.one-zero"
+      "bundleIdentifier": "me.jasonaa.one-zero"
     },
     "android": {
-      "package": "com.myapp.onezero"
-    }
+      "package": "me.jasonaa.attend"
+    },
+    "splash": {
+      "image": "./assets/splash.png"
+    },
+    "icon": "./assets/icon.png"
   }
 }
