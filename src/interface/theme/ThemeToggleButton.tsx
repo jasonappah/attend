@@ -46,7 +46,7 @@ export function ToggleThemeButton() {
   )
 }
 
-export function useToggleTheme() {
+export function useToggleTheme() { 
   const [{ setting, scheme }, setSchemeSetting] = useSchemeSetting()
   const Icon = setting === 'system' ? SunMoon : setting === 'dark' ? Moon : Sun
 

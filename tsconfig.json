@@ -4,7 +4,9 @@
     "rootDir": ".",
     "outDir": "dist",
     "paths": {
-      "~/*": ["./src/*"]
+      "~/*": [
+        "./src/*"
+      ]
     },
     "forceConsistentCasingInFileNames": true,
     "verbatimModuleSyntax": true,
@@ -13,16 +15,38 @@
     "moduleResolution": "Bundler",
     "strict": true,
     "jsx": "react-jsx",
+    "allowImportingTsExtensions": true,
     "noImplicitReturns": false,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "preserveConstEnums": true,
     "skipLibCheck": true,
-    "types": ["node", "react", "vite/client"],
-    "lib": ["dom", "esnext"]
+    "types": [
+      "node",
+      "react",
+      "vite/client"
+    ],
+    "lib": [
+      "dom",
+      "esnext"
+    ]
   },
-  "exclude": ["node_modules", "**/test", "**/dist", "**/types", "**/__tests__"],
+  "exclude": [
+    "node_modules",
+    "**/test",
+    "**/dist",
+    "**/types",
+    "**/__tests__"
+  ],
   "typeAcquisition": {
     "enable": true
-  }
+  },
+  "extends": "expo/tsconfig.base",
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    ".expo/types/**/*.ts",
+    "expo-env.d.ts",
+    "metro.config.ts"
+  ]
 }

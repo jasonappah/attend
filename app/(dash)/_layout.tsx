@@ -1,27 +1,35 @@
-import { Redirect, Slot, Tabs, usePathname, useRouter } from 'one'
-import { Button, SizableText, XStack, YStack, isWeb } from 'tamagui'
-import { authClient, useAuth } from '~/better-auth/authClient'
-import { Gravatar } from '~/interface/Gravatar'
-import { Link } from '~/interface/Link'
-import { ToggleThemeButton } from '~/interface/theme/ThemeToggleButton'
-import { isTauri } from '~/tauri/constants'
-import { trpc } from '~/trpc/client'
-export default function DashLayout() {
-  const { user, jwtToken, session, loggedIn } = useAuth()
-  const pathname = usePathname()
-  const addCoursesFromIcs = trpc.utils.addCoursesFromIcs.useMutation()
-  const syncRoomsFromConcept3dMap = trpc.utils.syncRoomsFromConcept3dMap.useMutation()
+import { Button, SizableText, XStack, YStack, isTauri } from "tamagui";
+import { authClient } from "~/better-auth/authClient";
+import { Gravatar } from "~/interface/Gravatar";
+import { Link } from "~/interface/Link";
+import { ToggleThemeButton } from "~/interface/theme/ThemeToggleButton";
+import { trpc } from "~/trpc/client";
+import { Slot, Redirect, usePathname } from "expo-router";
 
-  // if (!loggedIn) {
-  //   // TODO: would be wise to validate this is on the current domain
-  //   const redirectTo = encodeURIComponent(pathname);
-  //   return <Redirect href={`/?redirect=${redirectTo}`} />;
-  // }
+export default function DashLayout() {
+  const { data, isPending, error } = authClient.useSession();
+  const pathname = usePathname();
+  const addCoursesFromIcs = trpc.utils.addCoursesFromIcs.useMutation();
+  const syncRoomsFromConcept3dMap =
+    trpc.utils.syncRoomsFromConcept3dMap.useMutation();
+
+  if (isPending) {
+    // TODO: render loading
+    return null;
+  }
+
+  // TODO: render error
+
+  if (!data) {
+    const redirectTo = encodeURIComponent(pathname);
+    return <Redirect href={`/?redirect=${redirectTo}`} />;
+  }
+  const { user } = data;
 
   // TODO: use a drawer
   return (
     <YStack
-      $platform-ios={{ pt: '$10' }}
+      $platform-ios={{ pt: "$10" }}
       f={1}
       p="$4"
       gap="$4"
@@ -31,7 +39,7 @@ export default function DashLayout() {
       als="center"
     >
       <XStack ai="center" gap="$4">
-        <Gravatar email={user?.email || ''} />
+        <Gravatar email={user?.email || ""} />
         <SizableText>{user?.name}</SizableText>
 
         <Button onPress={() => authClient.signOut()}>Logout</Button>
@@ -45,7 +53,9 @@ export default function DashLayout() {
       </XStack>
 
       <XStack gap="$4">
-        <Button onPress={() => addCoursesFromIcs.mutate()}>Resync Courses from Calendar</Button>
+        <Button onPress={() => addCoursesFromIcs.mutate()}>
+          Resync Courses from Calendar
+        </Button>
         <Button onPress={() => syncRoomsFromConcept3dMap.mutate()}>
           Resync Rooms from Concept3D Map
         </Button>
@@ -58,5 +68,5 @@ export default function DashLayout() {
       </XStack>
       <Slot />
     </YStack>
-  )
+  );
 }

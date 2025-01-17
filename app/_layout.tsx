@@ -1,72 +1,98 @@
-import '~/tamagui/tamagui.css'
-import './_layout.css'
+import "~/tamagui/tamagui.css";
+import "./_layout.css";
 
-import { ZeroProvider } from '@rocicorp/zero/react'
-import { SchemeProvider, useColorScheme } from '@vxrn/color-scheme'
-import { LoadProgressBar, Slot } from 'one'
-import { useState } from 'react'
-import { TamaguiProvider, View, isWeb } from 'tamagui'
-import { AuthEffects } from '~/better-auth/AuthEffects'
-import { env } from '~/env'
-import { DragDropFile } from '~/interface/upload/DragDropFile'
-import config from '~/tamagui/tamagui.config'
-import { TRPCProvider } from '~/trpc/provider'
-import { useZeroEmit, zero } from '~/zero/zero'
+import { ZeroProvider } from "@rocicorp/zero/react";
+import { StatusBar, useColorScheme } from "react-native";
+import { useEffect, useState } from "react";
+import { TamaguiProvider, View } from "tamagui";
+import { AuthEffects } from "~/better-auth/AuthEffects";
+import { DragDropFile } from "~/interface/upload/DragDropFile";
+import config from "~/tamagui/tamagui.config";
+import { TRPCProvider } from "~/trpc/provider";
+import { useZeroEmit, zero } from "~/zero/zero";
+import { ToastProvider, ToastViewport } from "@tamagui/toast";
+import { useFonts } from "expo-font";
+import { SplashScreen, Slot } from "expo-router";
+import {
+  DarkTheme,
+  DefaultTheme,
+  ThemeProvider,
+} from "@react-navigation/native";
+import { CurrentToast } from "~/interface/CurrentToast";
+
+export {
+  ErrorBoundary,
+  Slot,
+} from "expo-router";
+
+// Prevent the splash screen from auto-hiding before asset loading is complete.
+SplashScreen.preventAutoHideAsync();
 
 export default function Layout() {
+  const [interLoaded, interError] = useFonts({
+    Inter: require("@tamagui/font-inter/otf/Inter-Medium.otf"),
+    InterBold: require("@tamagui/font-inter/otf/Inter-Bold.otf"),
+  });
+
+  useEffect(() => {
+    if (interLoaded || interError) {
+      // Hide the splash screen after the fonts have loaded (or an error was returned) and the UI is ready.
+      SplashScreen.hideAsync();
+    }
+  }, [interLoaded, interError]);
+
+  if (!interLoaded && !interError) {
+    return null;
+  }
+
+  const scheme = useColorScheme();
+
   return (
     <>
-      {isWeb && (
-        <>
-          <meta charSet="utf-8" />
-          <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
-          <meta property="og:image" content={`${env.ONE_SERVER_URL}/og.jpg`} />
-          <meta property="og:image:width" content="1200" />
-          <meta property="og:image:height" content="630" />
-          <meta property="twitter:card" content="summary_large_image" />
-          <meta property="twitter:image" content={`${env.ONE_SERVER_URL}/og.jpg`} />
-          <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-          <link rel="icon" href="/favicon.svg" />
-        </>
-      )}
-
-      <LoadProgressBar startDelay={1_000} />
-
       <AuthEffects />
 
       <DragDropFile>
         <DataProvider>
-          <SchemeProvider>
-            <ThemeProvider>
+          <TamaguiProvider
+            disableInjectCSS
+            config={config}
+            defaultTheme={scheme === "dark" ? "dark" : "light"}
+          >
+            <ToastProvider
+              swipeDirection="horizontal"
+              duration={6000}
+              native={["mobile"]}
+            >
               <TRPCProvider>
-                <View backgroundColor="$color1" minHeight="100%">
-                  <Slot />
-                </View>
+                <ThemeProvider
+                  value={scheme === "dark" ? DarkTheme : DefaultTheme}
+                >
+                  <StatusBar
+                    barStyle={
+                      scheme === "dark" ? "light-content" : "dark-content"
+                    }
+                  />
+                  <View backgroundColor="$color1" minHeight="100%">
+                    <Slot />
+                  </View>
+                </ThemeProvider>
               </TRPCProvider>
-            </ThemeProvider>
-          </SchemeProvider>
+              <CurrentToast />
+              <ToastViewport top="$8" left={0} right={0} />
+            </ToastProvider>
+          </TamaguiProvider>
         </DataProvider>
       </DragDropFile>
     </>
-  )
+  );
 }
 
 const DataProvider = ({ children }: { children: React.ReactNode }) => {
-  const [instance, setInstance] = useState(zero)
+  const [instance, setInstance] = useState(zero);
 
   useZeroEmit((next) => {
-    setInstance(next)
-  })
+    setInstance(next);
+  });
 
-  return <ZeroProvider zero={instance}>{children}</ZeroProvider>
-}
-
-const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
-  const [scheme] = useColorScheme()
-
-  return (
-    <TamaguiProvider disableInjectCSS config={config} defaultTheme={scheme}>
-      {children}
-    </TamaguiProvider>
-  )
-}
+  return <ZeroProvider zero={instance}>{children}</ZeroProvider>;
+};

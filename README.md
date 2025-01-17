@@ -1,6 +1,13 @@
 # attend
 
-This project is a React Native app built with [One](https://one.dev) and [Zero](https://zero.dev).
+This project is a React Native app built with [Expo](https://expo.dev) and [Zero](https://zero.dev).
+
+REFACTOR TODOs:
+- [] figure out how to handle envs
+- [] remove vite config
+- [] successful android build
+- [] ~~deploy somewhere? (db on supabase, zero-cache on render/northflank/oracle, frontend on vercel)~~
+  - nvm i forgor this means i have to get migrations set up lol
 
 *Original README below:*
 
@@ -14,11 +21,6 @@ Install packages with yarn:
 yarn
 ```
 
-For login, we have set up Github auth with [Better Auth](https://www.better-auth.com/) as an example.
-
-1. [Create a new Github App](https://docs.github.com/en/apps/creating-github-apps/registering-a-github-app/registering-a-github-app##registering-a-github-app)
-2. Copy `.env.example` to `.env`
-3. Fill in `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET`
 
 ## Run
 

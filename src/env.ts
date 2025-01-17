@@ -8,9 +8,9 @@ export const env = createEnv({
     GOOGLE_CLIENT_ID: z.string(),
     GOOGLE_CLIENT_SECRET: z.string(),
   },
-  clientPrefix: 'VITE_',
+  clientPrefix: 'EXPO_PUBLIC_',
   client: {
-    VITE_PUBLIC_ZERO_SERVER: z.string().url(),
+    EXPO_PUBLIC_ZERO_SERVER: z.string().url(),
   },
   shared: {
     NODE_ENV: z.enum(['development', 'production', 'test']),
@@ -20,7 +20,7 @@ export const env = createEnv({
   runtimeEnvStrict: {
     ZERO_UPSTREAM_DB: process.env.ZERO_UPSTREAM_DB,
     BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET,
-    VITE_PUBLIC_ZERO_SERVER: process.env.VITE_PUBLIC_ZERO_SERVER,
+    EXPO_PUBLIC_ZERO_SERVER: process.env.EXPO_PUBLIC_ZERO_SERVER,
     NODE_ENV: process.env.NODE_ENV,
     ONE_SERVER_URL: process.env.ONE_SERVER_URL,
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,

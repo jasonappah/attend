@@ -5,6 +5,7 @@ import { db } from '~/db'
 import { account, jwks, session, user, verification } from '~/db/schema'
 import { env } from '~/env'
 import { randomID } from '~/zero/randomID'
+import { expo } from "@better-auth/expo";
 
 const disableSignupInProduction = async () => env.NODE_ENV === 'development'
 
@@ -35,6 +36,7 @@ export const auth = betterAuth({
     }),
 
     bearer(),
+    expo()
   ],
   databaseHooks: {
     user: {
