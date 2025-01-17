@@ -22,10 +22,7 @@
       "output": "static",
       "favicon": "./assets/icon.png"
     },
-    "plugins": [
-      "expo-router",
-      "expo-font"
-    ],
+    "plugins": ["expo-router", "expo-font"],
     "experiments": {
       "typedRoutes": true
     }
