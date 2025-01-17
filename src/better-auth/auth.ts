@@ -1,3 +1,4 @@
+import { expo } from '@better-auth/expo'
 import { betterAuth } from 'better-auth'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
 import { bearer, jwt } from 'better-auth/plugins'
@@ -5,7 +6,6 @@ import { db } from '~/db'
 import { account, jwks, session, user, verification } from '~/db/schema'
 import { env } from '~/env'
 import { randomID } from '~/zero/randomID'
-import { expo } from "@better-auth/expo";
 
 const disableSignupInProduction = async () => env.NODE_ENV === 'development'
 
@@ -36,7 +36,7 @@ export const auth = betterAuth({
     }),
 
     bearer(),
-    expo()
+    expo(),
   ],
   databaseHooks: {
     user: {

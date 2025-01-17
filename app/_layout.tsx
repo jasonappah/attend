@@ -1,51 +1,47 @@
-import "~/tamagui/tamagui.css";
-import "./_layout.css";
+import '~/tamagui/tamagui.css'
+import './_layout.css'
 
-import { ZeroProvider } from "@rocicorp/zero/react";
-import { StatusBar, useColorScheme } from "react-native";
-import { useEffect, useState } from "react";
-import { TamaguiProvider, View } from "tamagui";
-import { AuthEffects } from "~/better-auth/AuthEffects";
-import { DragDropFile } from "~/interface/upload/DragDropFile";
-import config from "~/tamagui/tamagui.config";
-import { TRPCProvider } from "~/trpc/provider";
-import { useZeroEmit, zero } from "~/zero/zero";
-import { ToastProvider, ToastViewport } from "@tamagui/toast";
-import { useFonts } from "expo-font";
-import { SplashScreen, Slot } from "expo-router";
-import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from "@react-navigation/native";
-import { CurrentToast } from "~/interface/CurrentToast";
+import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native'
+import { ZeroProvider } from '@rocicorp/zero/react'
+import { ToastProvider, ToastViewport } from '@tamagui/toast'
+import { useFonts } from 'expo-font'
+import { Slot, SplashScreen } from 'expo-router'
+import { useEffect, useState } from 'react'
+import { StatusBar, useColorScheme } from 'react-native'
+import { TamaguiProvider, View } from 'tamagui'
+import { AuthEffects } from '~/better-auth/AuthEffects'
+import { CurrentToast } from '~/interface/CurrentToast'
+import { DragDropFile } from '~/interface/upload/DragDropFile'
+import config from '~/tamagui/tamagui.config'
+import { TRPCProvider } from '~/trpc/provider'
+import { useZeroEmit, zero } from '~/zero/zero'
 
 export {
   ErrorBoundary,
   Slot,
-} from "expo-router";
+} from 'expo-router'
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
+SplashScreen.preventAutoHideAsync()
 
 export default function Layout() {
   const [interLoaded, interError] = useFonts({
-    Inter: require("@tamagui/font-inter/otf/Inter-Medium.otf"),
-    InterBold: require("@tamagui/font-inter/otf/Inter-Bold.otf"),
-  });
+    Inter: require('@tamagui/font-inter/otf/Inter-Medium.otf'),
+    InterBold: require('@tamagui/font-inter/otf/Inter-Bold.otf'),
+  })
 
   useEffect(() => {
     if (interLoaded || interError) {
       // Hide the splash screen after the fonts have loaded (or an error was returned) and the UI is ready.
-      SplashScreen.hideAsync();
+      SplashScreen.hideAsync()
     }
-  }, [interLoaded, interError]);
+  }, [interLoaded, interError])
 
   if (!interLoaded && !interError) {
-    return null;
+    return null
   }
 
-  const scheme = useColorScheme();
+  const scheme = useColorScheme()
 
   return (
     <>
@@ -56,22 +52,12 @@ export default function Layout() {
           <TamaguiProvider
             disableInjectCSS
             config={config}
-            defaultTheme={scheme === "dark" ? "dark" : "light"}
+            defaultTheme={scheme === 'dark' ? 'dark' : 'light'}
           >
-            <ToastProvider
-              swipeDirection="horizontal"
-              duration={6000}
-              native={["mobile"]}
-            >
+            <ToastProvider swipeDirection="horizontal" duration={6000} native={['mobile']}>
               <TRPCProvider>
-                <ThemeProvider
-                  value={scheme === "dark" ? DarkTheme : DefaultTheme}
-                >
-                  <StatusBar
-                    barStyle={
-                      scheme === "dark" ? "light-content" : "dark-content"
-                    }
-                  />
+                <ThemeProvider value={scheme === 'dark' ? DarkTheme : DefaultTheme}>
+                  <StatusBar barStyle={scheme === 'dark' ? 'light-content' : 'dark-content'} />
                   <View backgroundColor="$color1" minHeight="100%">
                     <Slot />
                   </View>
@@ -84,15 +70,15 @@ export default function Layout() {
         </DataProvider>
       </DragDropFile>
     </>
-  );
+  )
 }
 
 const DataProvider = ({ children }: { children: React.ReactNode }) => {
-  const [instance, setInstance] = useState(zero);
+  const [instance, setInstance] = useState(zero)
 
   useZeroEmit((next) => {
-    setInstance(next);
-  });
+    setInstance(next)
+  })
 
-  return <ZeroProvider zero={instance}>{children}</ZeroProvider>;
-};
+  return <ZeroProvider zero={instance}>{children}</ZeroProvider>
+}

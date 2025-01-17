@@ -181,8 +181,8 @@ const TableComp = styled(ThemeableStack, {
         return {}
       },
     },
-    alignHeaderCells: (val) => ({}),
-    alignCells: (val) => ({}),
+    alignHeaderCells: (_val) => ({}),
+    alignCells: (_val) => ({}),
   },
 })
 

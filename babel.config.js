@@ -14,6 +14,7 @@ module.exports = (api) => {
           },
           outputCSS: './src/tamagui/tamagui.css',
           logTimings: true,
+          // biome-ignore lint/nursery/noProcessEnv: unsure if i can import typed env here
           disableExtraction: process.env.NODE_ENV === 'development',
         },
       ],

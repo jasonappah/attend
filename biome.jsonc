@@ -1,20 +1,15 @@
 {
   "$schema": "https://biomejs.dev/schemas/1.5.1/schema.json",
   "organizeImports": {
-    "enabled": true,
+    "enabled": true
   },
   "files": {
-    "ignore": [
-      "**/*/generated-new.ts",
-      "**/*/generated-v2.ts",
-      ".tamagui",
-      "routes.d.ts",
-    ],
+    "ignore": ["**/*/generated-new.ts", "**/*/generated-v2.ts", ".tamagui", "routes.d.ts"]
   },
   "vcs": {
     "enabled": true,
     "clientKind": "git",
-    "useIgnoreFile": true,
+    "useIgnoreFile": true
   },
   "linter": {
     "enabled": true,
@@ -25,7 +20,7 @@
         "noInnerDeclarations": "off",
         "noUnnecessaryContinue": "off",
         "noConstructorReturn": "off",
-        "noUnusedVariables": "error",
+        "noUnusedVariables": "error"
       },
       "suspicious": {
         "noImplicitAnyLet": "off",
@@ -36,7 +31,7 @@
         "noDoubleEquals": "off",
         "noConsoleLog": "error",
         "noAssignInExpressions": "off",
-        "noRedeclare": "off",
+        "noRedeclare": "off"
       },
       "style": {
         "noParameterAssign": "off",
@@ -47,15 +42,15 @@
         "useConst": "off",
         "useEnumInitializers": "off",
         "useTemplate": "off",
-        "useSelfClosingElements": "off",
+        "useSelfClosingElements": "off"
       },
       "security": {
         "noDangerouslySetInnerHtml": "off",
-        "noDangerouslySetInnerHtmlWithChildren": "off",
+        "noDangerouslySetInnerHtmlWithChildren": "off"
       },
       "performance": {
         "noDelete": "off",
-        "noAccumulatingSpread": "off",
+        "noAccumulatingSpread": "off"
       },
       "complexity": {
         "noUselessFragments": "off",
@@ -63,19 +58,19 @@
         "noBannedTypes": "off",
         "useLiteralKeys": "off",
         "useSimplifiedLogicExpression": "off",
-        "useOptionalChain": "off",
+        "useOptionalChain": "off"
       },
       "a11y": {
         "noSvgWithoutTitle": "off",
         "useMediaCaption": "off",
         "noHeaderScope": "off",
         "useAltText": "off",
-        "useButtonType": "off",
+        "useButtonType": "off"
       },
       "nursery": {
-        "noProcessEnv": "error",
-      },
-    },
+        "noProcessEnv": "error"
+      }
+    }
   },
   "formatter": {
     "enabled": true,
@@ -83,14 +78,14 @@
     "indentStyle": "space",
     "indentWidth": 2,
     "lineWidth": 100,
-    "ignore": ["**/*/generated-new.ts", "**/*/generated-v2.ts"],
+    "ignore": ["**/*/generated-new.ts", "**/*/generated-v2.ts"]
   },
   "javascript": {
     "formatter": {
       "trailingCommas": "es5",
       "jsxQuoteStyle": "double",
       "semicolons": "asNeeded",
-      "quoteStyle": "single",
-    },
-  },
+      "quoteStyle": "single"
+    }
+  }
 }

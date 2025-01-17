@@ -1,7 +1,6 @@
-import { env } from "~/env";
-import { ScrollViewStyleReset } from "expo-router/html";
-import { Toaster } from "burnt/web";
-
+import { Toaster } from 'burnt/web'
+import { ScrollViewStyleReset } from 'expo-router/html'
+import { env } from '~/env'
 
 // This file is web-only and used to configure the root HTML for every
 // web page during static rendering.
@@ -38,19 +37,15 @@ export default function Root({ children }: { children: React.ReactNode }) {
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
         <meta property="twitter:card" content="summary_large_image" />
-        <meta
-          property="twitter:image"
-          content={`${env.ONE_SERVER_URL}/og.jpg`}
-        />
+        <meta property="twitter:image" content={`${env.ONE_SERVER_URL}/og.jpg`} />
         <link rel="icon" href="/favicon.svg" />
       </head>
       <body>
         {children}
-        <Toaster position='bottom-right' />
-
+        <Toaster position="bottom-right" />
       </body>
     </html>
-  );
+  )
 }
 
 const responsiveBackground = `
@@ -61,4 +56,4 @@ body {
   body {
     background-color: #000;
   }
-}`;
+}`
