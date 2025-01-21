@@ -41,6 +41,7 @@ export default function HomePage() {
           onPress={async () => {
             await authClient.signIn.social({
               provider: 'google',
+              callbackURL: params.redirect,
             })
           }}
         >

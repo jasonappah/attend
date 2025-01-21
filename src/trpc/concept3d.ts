@@ -3,6 +3,9 @@ import type { Db } from '~/db'
 import { type Concept3DShape, Concept3DShapeSchema, room } from '~/db/schema'
 import { randomID } from '~/zero/randomID'
 
+// biome-ignore lint/nursery/noProcessEnv: this concept3d functions only need to be executed once, so don't really expect the CONCEPT3D_API_KEY env var to always be present, which is why i'm omitting it from typed envs
+const CONCEPT3D_API_KEY = process.env.CONCEPT3D_API_KEY
+
 const getBatchCategories = async (
   categoryIds: number[],
   mapId: number
@@ -10,7 +13,7 @@ const getBatchCategories = async (
   const categories = await fetch(
     `https://api.concept3d.com/categories/${categoryIds.join(
       ','
-    )}?map=${mapId}&batch&children&key=${process.env.CONCEPT3D_API_KEY}`
+    )}?map=${mapId}&batch&children&key=${CONCEPT3D_API_KEY}`
   ).then((res) => res.json() as Promise<Concept3DCategoryWithChildren[]>)
   return categories
 }
@@ -53,7 +56,7 @@ export const UTD_CONCEPT3D_MAP_ID = 1772
 export const syncRoomsFromConcept3dMap = async (mapId: number, db: Db, logger: Logger) => {
   const categoryIds = Object.values(
     await fetch(
-      `https://api.concept3d.com/categories?childIds&map=${mapId}&children&noPrivates&key=${process.env.CONCEPT3D_API_KEY}`
+      `https://api.concept3d.com/categories?childIds&map=${mapId}&children&noPrivates&key=${CONCEPT3D_API_KEY}`
     ).then((res) => res.json() as Promise<Record<string, number[]>>)
   ).flat()
   const dedupedCategoryIds = Array.from(new Set(categoryIds))
