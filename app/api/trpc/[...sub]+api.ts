@@ -1,5 +1,5 @@
 import { fetchRequestHandler } from '@trpc/server/adapters/fetch'
-import type { Endpoint } from 'one'
+import type { Endpoint } from 'expo-router'
 import { createContext } from '~/trpc/context'
 import { appRouter } from '~/trpc/routers'
 

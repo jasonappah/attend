@@ -1,22 +1,32 @@
-import { Redirect, Slot, Tabs, usePathname, useRouter } from 'one'
-import { Button, SizableText, XStack, YStack, isWeb } from 'tamagui'
-import { authClient, useAuth } from '~/better-auth/authClient'
+import { Redirect, Slot, usePathname } from 'expo-router'
+import { Button, SizableText, XStack, YStack, isTauri } from 'tamagui'
+import { authClient } from '~/better-auth/authClient'
 import { Gravatar } from '~/interface/Gravatar'
 import { Link } from '~/interface/Link'
 import { ToggleThemeButton } from '~/interface/theme/ThemeToggleButton'
-import { isTauri } from '~/tauri/constants'
 import { trpc } from '~/trpc/client'
+
 export default function DashLayout() {
-  const { user, jwtToken, session, loggedIn } = useAuth()
+  const { data, isPending, error } = authClient.useSession()
   const pathname = usePathname()
   const addCoursesFromIcs = trpc.utils.addCoursesFromIcs.useMutation()
   const syncRoomsFromConcept3dMap = trpc.utils.syncRoomsFromConcept3dMap.useMutation()
 
-  // if (!loggedIn) {
-  //   // TODO: would be wise to validate this is on the current domain
-  //   const redirectTo = encodeURIComponent(pathname);
-  //   return <Redirect href={`/?redirect=${redirectTo}`} />;
-  // }
+  if (isPending) {
+    // TODO: render loading
+    return null
+  }
+
+  if (error) {
+    // TODO: render error
+    return null
+  }
+
+  if (!data) {
+    const redirectTo = encodeURIComponent(pathname)
+    return <Redirect href={`/?redirect=${redirectTo}`} />
+  }
+  const { user } = data
 
   // TODO: use a drawer
   return (

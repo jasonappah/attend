@@ -77,7 +77,8 @@
     "formatWithErrors": false,
     "indentStyle": "space",
     "indentWidth": 2,
-    "lineWidth": 100
+    "lineWidth": 100,
+    "ignore": ["**/*/generated-new.ts", "**/*/generated-v2.ts"]
   },
   "javascript": {
     "formatter": {

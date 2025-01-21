@@ -1,11 +1,18 @@
-import { Redirect, useParams } from 'one'
+import { Redirect, useLocalSearchParams } from 'expo-router'
+import { useEffect, useState } from 'react'
 import { Button, H1, Paragraph, YStack } from 'tamagui'
-import { authClient, useAuth } from '~/better-auth/authClient'
+import { authClient } from '~/better-auth/authClient'
 import { Link } from '~/interface/Link'
 
 export default function HomePage() {
-  const { loggedIn } = useAuth()
-  const params = useParams<{
+  const s = authClient.useSession()
+  const [loggedIn, setLoggedIn] = useState(!!s.data?.user)
+
+  useEffect(() => {
+    setLoggedIn(!!s.data?.user)
+  }, [s.data])
+
+  const params = useLocalSearchParams<{
     redirect?: string
     error?: string
   }>()
@@ -41,6 +48,7 @@ export default function HomePage() {
           onPress={async () => {
             await authClient.signIn.social({
               provider: 'google',
+              callbackURL: params.redirect,
             })
           }}
         >

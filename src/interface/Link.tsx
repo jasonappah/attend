@@ -1,12 +1,14 @@
-import { type Href, type LinkProps as OneLinkProps, useLinkTo } from 'one'
+import type { LinkProps as ExpoLinkProps } from 'expo-router'
+import { useHrefAttrs } from 'expo-router/build/link/useLinkHooks'
 import { Text } from 'tamagui'
 
-export type LinkProps = OneLinkProps<Href>
+export type LinkProps = ExpoLinkProps
 
 export const Link = ({ href, replace, asChild, ...props }: LinkProps) => {
-  const linkProps = useLinkTo({ href: href as string, replace })
+  const linkProps = useHrefAttrs({ href: href as string, replace })
 
   return (
+    // @ts-expect-error
     <Text
       tag="a"
       // always except-style

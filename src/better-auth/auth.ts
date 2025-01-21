@@ -1,3 +1,4 @@
+import { expo } from '@better-auth/expo'
 import { betterAuth } from 'better-auth'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
 import { bearer, jwt } from 'better-auth/plugins'
@@ -35,6 +36,7 @@ export const auth = betterAuth({
     }),
 
     bearer(),
+    expo(),
   ],
   databaseHooks: {
     user: {
