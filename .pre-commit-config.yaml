@@ -1,0 +1,9 @@
+repos:
+  - repo: local
+    hooks:
+      - id: local-biome-check
+        name: biome check
+        entry: yarn run lint:fix
+        language: system
+        types: [text]
+        files: "\\.(jsx?|tsx?|c(js|ts)|m(js|ts)|d\\.(ts|cts|mts)|jsonc?|css|svelte|vue|astro|graphql|gql)$"
