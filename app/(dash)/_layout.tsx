@@ -7,7 +7,7 @@ import { ToggleThemeButton } from '~/interface/theme/ThemeToggleButton'
 import { isTauri } from '~/tauri/constants'
 import { trpc } from '~/trpc/client'
 export default function DashLayout() {
-  const { user, jwtToken, session, loggedIn } = useAuth()
+  const { user } = useAuth()
   const _pathname = usePathname()
   const addCoursesFromIcs = trpc.utils.addCoursesFromIcs.useMutation()
   const syncRoomsFromConcept3dMap = trpc.utils.syncRoomsFromConcept3dMap.useMutation()
