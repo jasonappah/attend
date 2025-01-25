@@ -1,4 +1,4 @@
-name: Lint & Deploy
+name: Lint
 on:
   push:
   pull_request:
@@ -14,22 +14,3 @@ jobs:
           version: latest
       - name: Run Biome
         run: biome ci . --reporter github
-  build-web:
-    needs: lint
-    name: Deploy app
-    runs-on: ubuntu-latest
-    concurrency: deploy-group
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: yarn
-          cache-dependency-path: yarn.lock
-      - run: yarn --frozen-lockfile 
-        name: Install Dependencies
-      - run: yarn run zero:build-schema
-        name: Build Zero Schema
-      - run: yarn run build:web
-        name: Build Web
-        
