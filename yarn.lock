@@ -6722,10 +6722,10 @@ drizzle-orm@^0.38.4:
   resolved "https://registry.yarnpkg.com/drizzle-orm/-/drizzle-orm-0.38.4.tgz#5c2eaf8f2ea506e626ecd1971bb2751c113b3ec7"
   integrity sha512-s7/5BpLKO+WJRHspvpqTydxFob8i1vo2rEx4pY6TGY7QSMuUfWUuzaY0DIpXCkgHOo37BaFC+SJQb99dDUXT3Q==
 
-drizzle-zero@^0.2.4:
-  version "0.2.4"
-  resolved "https://registry.yarnpkg.com/drizzle-zero/-/drizzle-zero-0.2.4.tgz#47d77fd4fce919e15c55241520b218d7ac758dbb"
-  integrity sha512-sVvvRuq+GRALYLsX6nC1cj3nACgEKjCL+vGjd5qhj2zoVMYG1UXzMI+2YNtIrIXhZvdHh12uLmRLKpLsLW3WcA==
+drizzle-zero@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/drizzle-zero/-/drizzle-zero-0.3.0.tgz#8133ed759903f580b59695d3abf67c91a4026c06"
+  integrity sha512-C8CRdyOTZfhF1tKzsV48LZuV8XaeOvTNTizJZfm01RhFnoupIODHXZJFZTjoCe5yC2bTs/saFmP3xz2du2Bh3Q==
 
 duplexify@^4.1.3:
   version "4.1.3"

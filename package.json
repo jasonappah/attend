@@ -48,7 +48,7 @@
     "better-auth": "1.1.6",
     "date-fns": "^4.1.0",
     "drizzle-orm": "^0.38.4",
-    "drizzle-zero": "^0.2.4",
+    "drizzle-zero": "^0.3.0",
     "expo": "^52.0.27",
     "expo-dev-client": "~5.0.10",
     "node-ical": "^0.20.1",
