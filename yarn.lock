@@ -3250,10 +3250,10 @@
     bindings "^1.5.0"
     prebuild-install "^7.1.1"
 
-"@rocicorp/zero@0.11.2025011402":
-  version "0.11.2025011402"
-  resolved "https://registry.yarnpkg.com/@rocicorp/zero/-/zero-0.11.2025011402.tgz#72df125c1b81784f391bcb95516f788abaf1cb80"
-  integrity sha512-9auqKPPXeZHVlGdFbhl2qTHmCjYWV/BQILiDUeBRCtME0bVokg3RKv8gF/MhB/kBZ5OyptDJC+dJaADcKecyog==
+"@rocicorp/zero@0.12":
+  version "0.12.2025012501"
+  resolved "https://registry.yarnpkg.com/@rocicorp/zero/-/zero-0.12.2025012501.tgz#6a1b2bb1aa69076fa1035aa1835810bee826aaaa"
+  integrity sha512-lL+1dspZAo6xEsLZi/BlelN2sk+BL4zKLTITSaMLCKSgMgaf2zDPQ0zaSKSVLNedAgYKexFMMZmsoqSSFxM/3A==
   dependencies:
     "@badrap/valita" "0.3.11"
     "@databases/escape-identifier" "^1.0.3"
