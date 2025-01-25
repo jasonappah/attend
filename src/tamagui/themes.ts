@@ -1,4 +1,3 @@
-// @ts-nocheck
 type Theme = {
   accentBackground: string
   accentColor: string
@@ -42,11 +41,11 @@ type Theme = {
 function t(a: [number, number][]) {
   let res: Record<string, string> = {}
   for (const [ki, vi] of a) {
-    res[ks[ki] as string] = colors[vi] as string
+    res[ks[ki] as string] = vs[vi] as string
   }
   return res as Theme
 }
-export const colors = [
+const vs = [
   'hsla(50, 100%, 48%, 1)',
   'hsla(41, 100%, 85%, 0)',
   'hsla(41, 100%, 85%, 0.25)',
@@ -199,6 +198,8 @@ const n1 = t([
   [35, 13],
   [36, 18],
 ])
+
+export const light = n1
 const n2 = t([
   [0, 21],
   [1, 21],
@@ -238,6 +239,8 @@ const n2 = t([
   [35, 34],
   [36, 38],
 ])
+
+export const dark = n2
 const n3 = t([
   [0, 8],
   [1, 8],
@@ -277,6 +280,8 @@ const n3 = t([
   [35, 51],
   [36, 55],
 ])
+
+export const light_accent = n3
 const n4 = t([
   [0, 34],
   [1, 34],
@@ -316,18 +321,24 @@ const n4 = t([
   [35, 21],
   [36, 55],
 ])
+
+export const dark_accent = n4
 const n5 = t([
   [30, 15],
   [31, 14],
   [32, 15],
   [33, 14],
 ])
+
+export const light_alt1 = n5
 const n6 = t([
   [30, 14],
   [31, 13],
   [32, 14],
   [33, 13],
 ])
+
+export const light_alt2 = n6
 const n7 = t([
   [22, 8],
   [23, 7],
@@ -338,6 +349,11 @@ const n7 = t([
   [29, 11],
   [28, 12],
 ])
+
+export const light_active = n7
+export const light_surface3 = n7
+export const light_Button = n7
+export const light_SliderTrackActive = n7
 const n8 = t([
   [22, 6],
   [23, 5],
@@ -348,6 +364,16 @@ const n8 = t([
   [29, 9],
   [28, 10],
 ])
+
+export const light_surface1 = n8
+export const light_ListItem = n8
+export const light_SelectTrigger = n8
+export const light_Card = n8
+export const light_Progress = n8
+export const light_TooltipArrow = n8
+export const light_SliderTrack = n8
+export const light_Input = n8
+export const light_TextArea = n8
 const n9 = t([
   [22, 7],
   [23, 6],
@@ -358,6 +384,12 @@ const n9 = t([
   [29, 10],
   [28, 11],
 ])
+
+export const light_surface2 = n9
+export const light_Checkbox = n9
+export const light_Switch = n9
+export const light_TooltipContent = n9
+export const light_RadioGroupItem = n9
 const n10 = t([
   [22, 10],
   [23, 10],
@@ -368,18 +400,24 @@ const n10 = t([
   [29, 11],
   [28, 11],
 ])
+
+export const light_surface4 = n10
 const n11 = t([
   [30, 35],
   [31, 14],
   [32, 35],
   [33, 14],
 ])
+
+export const dark_alt1 = n11
 const n12 = t([
   [30, 14],
   [31, 34],
   [32, 14],
   [33, 34],
 ])
+
+export const dark_alt2 = n12
 const n13 = t([
   [22, 29],
   [23, 30],
@@ -390,6 +428,11 @@ const n13 = t([
   [29, 32],
   [28, 31],
 ])
+
+export const dark_active = n13
+export const dark_surface3 = n13
+export const dark_Button = n13
+export const dark_SliderTrackActive = n13
 const n14 = t([
   [22, 27],
   [23, 28],
@@ -400,6 +443,16 @@ const n14 = t([
   [29, 30],
   [28, 29],
 ])
+
+export const dark_surface1 = n14
+export const dark_ListItem = n14
+export const dark_SelectTrigger = n14
+export const dark_Card = n14
+export const dark_Progress = n14
+export const dark_TooltipArrow = n14
+export const dark_SliderTrack = n14
+export const dark_Input = n14
+export const dark_TextArea = n14
 const n15 = t([
   [22, 28],
   [23, 29],
@@ -410,6 +463,12 @@ const n15 = t([
   [29, 31],
   [28, 30],
 ])
+
+export const dark_surface2 = n15
+export const dark_Checkbox = n15
+export const dark_Switch = n15
+export const dark_TooltipContent = n15
+export const dark_RadioGroupItem = n15
 const n16 = t([
   [22, 31],
   [23, 31],
@@ -420,18 +479,24 @@ const n16 = t([
   [29, 30],
   [28, 30],
 ])
+
+export const dark_surface4 = n16
 const n17 = t([
   [30, 53],
   [31, 52],
   [32, 53],
   [33, 52],
 ])
+
+export const light_accent_alt1 = n17
 const n18 = t([
   [30, 52],
   [31, 51],
   [32, 52],
   [33, 51],
 ])
+
+export const light_accent_alt2 = n18
 const n19 = t([
   [22, 0],
   [23, 47],
@@ -442,6 +507,11 @@ const n19 = t([
   [29, 50],
   [28, 21],
 ])
+
+export const light_accent_active = n19
+export const light_accent_surface3 = n19
+export const light_accent_Button = n19
+export const light_accent_SliderTrackActive = n19
 const n20 = t([
   [22, 46],
   [23, 45],
@@ -452,6 +522,16 @@ const n20 = t([
   [29, 48],
   [28, 49],
 ])
+
+export const light_accent_surface1 = n20
+export const light_accent_ListItem = n20
+export const light_accent_SelectTrigger = n20
+export const light_accent_Card = n20
+export const light_accent_Progress = n20
+export const light_accent_TooltipArrow = n20
+export const light_accent_SliderTrack = n20
+export const light_accent_Input = n20
+export const light_accent_TextArea = n20
 const n21 = t([
   [22, 47],
   [23, 46],
@@ -462,6 +542,12 @@ const n21 = t([
   [29, 49],
   [28, 50],
 ])
+
+export const light_accent_surface2 = n21
+export const light_accent_Checkbox = n21
+export const light_accent_Switch = n21
+export const light_accent_TooltipContent = n21
+export const light_accent_RadioGroupItem = n21
 const n22 = t([
   [22, 49],
   [23, 49],
@@ -472,18 +558,24 @@ const n22 = t([
   [29, 50],
   [28, 50],
 ])
+
+export const light_accent_surface4 = n22
 const n23 = t([
   [30, 68],
   [31, 67],
   [32, 68],
   [33, 67],
 ])
+
+export const dark_accent_alt1 = n23
 const n24 = t([
   [30, 67],
   [31, 21],
   [32, 67],
   [33, 21],
 ])
+
+export const dark_accent_alt2 = n24
 const n25 = t([
   [22, 64],
   [23, 65],
@@ -494,6 +586,11 @@ const n25 = t([
   [29, 50],
   [28, 65],
 ])
+
+export const dark_accent_active = n25
+export const dark_accent_surface3 = n25
+export const dark_accent_Button = n25
+export const dark_accent_SliderTrackActive = n25
 const n26 = t([
   [22, 63],
   [23, 49],
@@ -504,6 +601,16 @@ const n26 = t([
   [29, 65],
   [28, 64],
 ])
+
+export const dark_accent_surface1 = n26
+export const dark_accent_ListItem = n26
+export const dark_accent_SelectTrigger = n26
+export const dark_accent_Card = n26
+export const dark_accent_Progress = n26
+export const dark_accent_TooltipArrow = n26
+export const dark_accent_SliderTrack = n26
+export const dark_accent_Input = n26
+export const dark_accent_TextArea = n26
 const n27 = t([
   [22, 49],
   [23, 64],
@@ -514,6 +621,12 @@ const n27 = t([
   [29, 65],
   [28, 65],
 ])
+
+export const dark_accent_surface2 = n27
+export const dark_accent_Checkbox = n27
+export const dark_accent_Switch = n27
+export const dark_accent_TooltipContent = n27
+export const dark_accent_RadioGroupItem = n27
 const n28 = t([
   [22, 65],
   [23, 65],
@@ -524,6 +637,8 @@ const n28 = t([
   [29, 65],
   [28, 65],
 ])
+
+export const dark_accent_surface4 = n28
 const n29 = t([
   [30, 6],
   [31, 5],
@@ -538,7 +653,19 @@ const n29 = t([
   [29, 12],
   [28, 11],
 ])
+
+export const light_SwitchThumb = n29
+export const light_SliderThumb = n29
+export const light_Tooltip = n29
+export const light_ProgressIndicator = n29
 const n30 = t([[22, 69]])
+
+export const light_SheetOverlay = n30
+export const light_DialogOverlay = n30
+export const light_ModalOverlay = n30
+export const light_accent_SheetOverlay = n30
+export const light_accent_DialogOverlay = n30
+export const light_accent_ModalOverlay = n30
 const n31 = t([
   [30, 27],
   [31, 28],
@@ -553,7 +680,19 @@ const n31 = t([
   [29, 33],
   [28, 32],
 ])
+
+export const dark_SwitchThumb = n31
+export const dark_SliderThumb = n31
+export const dark_Tooltip = n31
+export const dark_ProgressIndicator = n31
 const n32 = t([[22, 70]])
+
+export const dark_SheetOverlay = n32
+export const dark_DialogOverlay = n32
+export const dark_ModalOverlay = n32
+export const dark_accent_SheetOverlay = n32
+export const dark_accent_DialogOverlay = n32
+export const dark_accent_ModalOverlay = n32
 const n33 = t([
   [30, 46],
   [31, 45],
@@ -568,6 +707,11 @@ const n33 = t([
   [29, 21],
   [28, 50],
 ])
+
+export const light_accent_SwitchThumb = n33
+export const light_accent_SliderThumb = n33
+export const light_accent_Tooltip = n33
+export const light_accent_ProgressIndicator = n33
 const n34 = t([
   [30, 63],
   [31, 49],
@@ -583,155 +727,7 @@ const n34 = t([
   [28, 50],
 ])
 
-type ThemeNames =
-  | 'light'
-  | 'dark'
-  | 'light_accent'
-  | 'dark_accent'
-  | 'light_alt1'
-  | 'light_alt2'
-  | 'light_active'
-  | 'light_surface3'
-  | 'light_surface1'
-  | 'light_surface2'
-  | 'light_surface4'
-  | 'dark_alt1'
-  | 'dark_alt2'
-  | 'dark_active'
-  | 'dark_surface3'
-  | 'dark_surface1'
-  | 'dark_surface2'
-  | 'dark_surface4'
-  | 'light_accent_alt1'
-  | 'light_accent_alt2'
-  | 'light_accent_active'
-  | 'light_accent_surface3'
-  | 'light_accent_surface1'
-  | 'light_accent_surface2'
-  | 'light_accent_surface4'
-  | 'dark_accent_alt1'
-  | 'dark_accent_alt2'
-  | 'dark_accent_active'
-  | 'dark_accent_surface3'
-  | 'dark_accent_surface1'
-  | 'dark_accent_surface2'
-  | 'dark_accent_surface4'
-
-export const themes: Record<ThemeNames, Theme> = {
-  light: n1,
-  dark: n2,
-  light_accent: n3,
-  dark_accent: n4,
-  light_alt1: n5,
-  light_alt2: n6,
-  light_active: n7,
-  light_surface3: n7,
-  light_Button: n7,
-  light_SliderTrackActive: n7,
-  light_surface1: n8,
-  light_ListItem: n8,
-  light_SelectTrigger: n8,
-  light_Card: n8,
-  light_Progress: n8,
-  light_TooltipArrow: n8,
-  light_SliderTrack: n8,
-  light_Input: n8,
-  light_TextArea: n8,
-  light_surface2: n9,
-  light_Checkbox: n9,
-  light_Switch: n9,
-  light_TooltipContent: n9,
-  light_RadioGroupItem: n9,
-  light_surface4: n10,
-  dark_alt1: n11,
-  dark_alt2: n12,
-  dark_active: n13,
-  dark_surface3: n13,
-  dark_Button: n13,
-  dark_SliderTrackActive: n13,
-  dark_surface1: n14,
-  dark_ListItem: n14,
-  dark_SelectTrigger: n14,
-  dark_Card: n14,
-  dark_Progress: n14,
-  dark_TooltipArrow: n14,
-  dark_SliderTrack: n14,
-  dark_Input: n14,
-  dark_TextArea: n14,
-  dark_surface2: n15,
-  dark_Checkbox: n15,
-  dark_Switch: n15,
-  dark_TooltipContent: n15,
-  dark_RadioGroupItem: n15,
-  dark_surface4: n16,
-  light_accent_alt1: n17,
-  light_accent_alt2: n18,
-  light_accent_active: n19,
-  light_accent_surface3: n19,
-  light_accent_Button: n19,
-  light_accent_SliderTrackActive: n19,
-  light_accent_surface1: n20,
-  light_accent_ListItem: n20,
-  light_accent_SelectTrigger: n20,
-  light_accent_Card: n20,
-  light_accent_Progress: n20,
-  light_accent_TooltipArrow: n20,
-  light_accent_SliderTrack: n20,
-  light_accent_Input: n20,
-  light_accent_TextArea: n20,
-  light_accent_surface2: n21,
-  light_accent_Checkbox: n21,
-  light_accent_Switch: n21,
-  light_accent_TooltipContent: n21,
-  light_accent_RadioGroupItem: n21,
-  light_accent_surface4: n22,
-  dark_accent_alt1: n23,
-  dark_accent_alt2: n24,
-  dark_accent_active: n25,
-  dark_accent_surface3: n25,
-  dark_accent_Button: n25,
-  dark_accent_SliderTrackActive: n25,
-  dark_accent_surface1: n26,
-  dark_accent_ListItem: n26,
-  dark_accent_SelectTrigger: n26,
-  dark_accent_Card: n26,
-  dark_accent_Progress: n26,
-  dark_accent_TooltipArrow: n26,
-  dark_accent_SliderTrack: n26,
-  dark_accent_Input: n26,
-  dark_accent_TextArea: n26,
-  dark_accent_surface2: n27,
-  dark_accent_Checkbox: n27,
-  dark_accent_Switch: n27,
-  dark_accent_TooltipContent: n27,
-  dark_accent_RadioGroupItem: n27,
-  dark_accent_surface4: n28,
-  light_SwitchThumb: n29,
-  light_SliderThumb: n29,
-  light_Tooltip: n29,
-  light_ProgressIndicator: n29,
-  light_SheetOverlay: n30,
-  light_DialogOverlay: n30,
-  light_ModalOverlay: n30,
-  light_accent_SheetOverlay: n30,
-  light_accent_DialogOverlay: n30,
-  light_accent_ModalOverlay: n30,
-  dark_SwitchThumb: n31,
-  dark_SliderThumb: n31,
-  dark_Tooltip: n31,
-  dark_ProgressIndicator: n31,
-  dark_SheetOverlay: n32,
-  dark_DialogOverlay: n32,
-  dark_ModalOverlay: n32,
-  dark_accent_SheetOverlay: n32,
-  dark_accent_DialogOverlay: n32,
-  dark_accent_ModalOverlay: n32,
-  light_accent_SwitchThumb: n33,
-  light_accent_SliderThumb: n33,
-  light_accent_Tooltip: n33,
-  light_accent_ProgressIndicator: n33,
-  dark_accent_SwitchThumb: n34,
-  dark_accent_SliderThumb: n34,
-  dark_accent_Tooltip: n34,
-  dark_accent_ProgressIndicator: n34,
-}
+export const dark_accent_SwitchThumb = n34
+export const dark_accent_SliderThumb = n34
+export const dark_accent_Tooltip = n34
+export const dark_accent_ProgressIndicator = n34

@@ -17,10 +17,10 @@ const config = defineConfig(async (args) => {
           },
         },
         server: {
-          platform: 'node',
+          platform: 'vercel',
         },
         react: {
-          scan: true,
+          scan: false,
           compiler: false,
         },
       }),
