@@ -16,7 +16,7 @@
     "migrate:auth": "npx @better-auth/cli migrate --config ./src/better-auth/auth.ts",
     "seed": "tsx ./src/postgres/seed.ts",
     "serve": "one serve",
-    "zero:prod": "zero-cache --schema-file ./src/zero/zero-schema.json --replica-file /tmp/attend_replica.db",
+    "zero:prod": "zero-cache --schema-file ./src/zero/zero-schema.json --replica-file /mnt/persist/attend_replica.db",
     "zero:dev": "zero-cache-dev -p ./src/zero/schema.ts --replica-file /tmp/attend_replica.db",
     "zero:build-schema": "cd ./src/zero && zero-build-schema -p './schema.ts'",
     "android": "one run:android",
