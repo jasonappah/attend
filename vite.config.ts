@@ -17,7 +17,7 @@ const config = defineConfig(async (args) => {
           },
         },
         server: {
-          platform: 'vercel',
+          platform: 'node',
         },
         react: {
           scan: false,
