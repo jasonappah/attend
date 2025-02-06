@@ -5763,10 +5763,10 @@ better-auth@1.0.23-beta.3:
     uncrypto "^0.1.3"
     zod "^3.23.8"
 
-better-auth@1.1.6:
-  version "1.1.6"
-  resolved "https://registry.yarnpkg.com/better-auth/-/better-auth-1.1.6.tgz#313bf41dd0ef99341d7fe3441e14aefed76b9daa"
-  integrity sha512-avoj9TxEm4K1IE8E4PBcGNQdoHaY8LR3O4vEiLK78l1CyM7lK1frd9NVqUbxz8RR95mR9SF87FKlyorQ+SW0Og==
+better-auth@1.1.16:
+  version "1.1.16"
+  resolved "https://registry.yarnpkg.com/better-auth/-/better-auth-1.1.16.tgz#51b1b6e63d9acb4034375bf203b3f50e0b52a1c1"
+  integrity sha512-Xc5pxafKZw4QVU8WYfkV2z4Hd8KCXXbphrgOpe2gA/EfanysLBhE1G/F7cEi5e0bW2pGR+vw6gf0ARHA7VFihg==
   dependencies:
     "@better-auth/utils" "0.2.3"
     "@better-fetch/fetch" "1.1.12"
@@ -5774,10 +5774,20 @@ better-auth@1.1.6:
     "@noble/hashes" "^1.6.1"
     "@simplewebauthn/browser" "^13.0.0"
     "@simplewebauthn/server" "^13.0.0"
-    better-call "0.3.3-beta.4"
+    better-call "0.3.3"
     defu "^6.1.4"
     jose "^5.9.6"
     kysely "^0.27.4"
+    nanostores "^0.11.3"
+    zod "^3.24.1"
+
+better-call@0.3.3:
+  version "0.3.3"
+  resolved "https://registry.yarnpkg.com/better-call/-/better-call-0.3.3.tgz#297c0e6502cf51012626d2c6d81351b7a880dec8"
+  integrity sha512-N4lDVm0NGmFfDJ0XMQ4O83Zm/3dPlvIQdxvwvgSLSkjFX5PM4GUYSVAuxNzXN27QZMHDkrJTWUqxBrm4tPC3eA==
+  dependencies:
+    "@better-fetch/fetch" "^1.1.4"
+    rou3 "^0.5.1"
     uncrypto "^0.1.3"
     zod "^3.24.1"
 
