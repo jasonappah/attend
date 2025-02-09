@@ -1,3 +1,4 @@
+import { createReplicacheReactNativeOPSQLiteKVStore } from '@react-native-replicache/react-native-op-sqlite'
 import { type Query, type QueryType, type Smash, Zero } from '@rocicorp/zero'
 import { createUseZero, useQuery, useZero } from '@rocicorp/zero/react'
 import { createEmitter } from '@vxrn/emitter'
@@ -15,7 +16,7 @@ function createZero({ auth, userID = 'anon' }: { auth?: string; userID?: string 
     auth,
     server: env.VITE_PUBLIC_ZERO_SERVER,
     schema,
-    kvStore: 'mem',
+    kvStore: createReplicacheReactNativeOPSQLiteKVStore,
   })
 }
 
