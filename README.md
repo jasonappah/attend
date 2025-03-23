@@ -2,6 +2,10 @@
 
 This project is a React Native app built with [One](https://one.dev) and [Zero](https://zero.dev).
 
+For running on Android...
+- you'll want this: https://gist.github.com/zetavg/93adf1ac8e0ec881ab65cf7f7fa2fbd4
+- then in the same build.gradle file, add `autolinkLibrariesWithApp()` into the react block. seems to be needed for op-sqlite, couldn't figure out how to manually specify it and have the build work. got the idea from https://github.com/OP-Engineering/op-sqlite/blob/ec509dfa2ecbeac195ca79f54cba0fb5fbc0d0d8/example/android/app/build.gradle#L10
+
 *Original README below:*
 
 ---
