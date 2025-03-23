@@ -2328,10 +2328,10 @@
   dependencies:
     semver "^7.3.5"
 
-"@op-engineering/op-sqlite@^11.4.4":
-  version "11.4.4"
-  resolved "https://registry.yarnpkg.com/@op-engineering/op-sqlite/-/op-sqlite-11.4.4.tgz#69993fd1be714b7700ca14b213ae694876f89413"
-  integrity sha512-nxj6/yXC0RQg8r5ZSyAI5txeugdX5UHgrdslERUk2to3SlEonzHlJPkZMlgGeIow18lzyE3YmOOfzHbHmWYJ1Q==
+"@op-engineering/op-sqlite@^11.4.8":
+  version "11.4.8"
+  resolved "https://registry.yarnpkg.com/@op-engineering/op-sqlite/-/op-sqlite-11.4.8.tgz#7b74cf77a35b795bd6d995f1739818d1d9e6464d"
+  integrity sha512-sZajJaKbaeSavdE5DyR+SaUYZOCeBZ0lvRoA9SC8KY8dFseScoGj4fbEBp9E0IjF3pjEaSpEpewUBg1HqFuaPA==
 
 "@opentelemetry/api-logs@0.56.0":
   version "0.56.0"
