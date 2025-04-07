@@ -26,16 +26,6 @@ services:
       - pgdata:/var/lib/postgresql/data
       - ./src/postgres/seed.sql:/docker-entrypoint-initdb.d/seed.sql
 
-  # seeder:
-  #   image: oven/bun:latest
-  #   depends_on:
-  #     - postgres
-  #   volumes:
-  #     - ./src/postgres/:/app
-  #   working_dir: /app
-  #   environment:
-  #     - ZERO_UPSTREAM_DB=${ZERO_UPSTREAM_DB}
-  #   command: sh -c "bun install && bun run seed.ts"
 
   zero-cache-dev:
     image: node:22.12.0-alpine
