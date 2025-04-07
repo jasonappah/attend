@@ -3,22 +3,22 @@ import { one } from 'one/vite'
 import { defineConfig } from 'vite'
 import { loadEnv } from 'vxrn'
 
-const config = defineConfig(async (args) => {
-  await loadEnv(args.command === 'build' ? 'production' : 'development')
+const config = defineConfig(async () => {
   return {
     plugins: [
       one({
         web: {
           defaultRenderMode: 'spa',
+          deploy: 'vercel',
         },
         setupFile: './src/setup.ts',
         deps: {
           '@expo/vector-icons': {
             '**/*.js': ['jsx'],
           },
-        },
-        server: {
-          platform: 'node',
+          'expo-sqlite': {
+            '**/*.js': ['jsx'],
+          },
         },
         react: {
           scan: false,
@@ -26,19 +26,21 @@ const config = defineConfig(async (args) => {
         },
       }),
       tamaguiPlugin({
-        // vxrn loadEnv needs to run before env validation happens
-        optimize: await import('./src/env')
-          .then((src) => src.env)
-          .then((env) => env.NODE_ENV === 'production'),
+        optimize: true,
         components: ['tamagui'],
         config: './src/tamagui/tamagui.config.ts',
-        themeBuilder: {
-          input: './src/tamagui/theme-builder.ts',
-          output: './src/tamagui/themes.ts',
-        },
         outputCSS: './src/tamagui/tamagui.css',
       }),
     ],
+    ssr: {
+      noExternal: true,
+    },
+    optimizeDeps: {
+      include: ['@tamagui/core', '@tamagui/config'],
+    },
+    build: {
+      cssTarget: 'safari15',
+    },
   }
 })
 

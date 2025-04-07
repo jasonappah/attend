@@ -9,7 +9,7 @@
     "newArchEnabled": true,
     "platforms": ["ios", "android", "web"],
     "ios": {
-      "bundleIdentifier": "me.jasonaa.one-zero"
+      "bundleIdentifier": "me.jasonaa.attend"
     },
     "android": {
       "package": "me.jasonaa.attend"

@@ -5,10 +5,9 @@ import { ZeroProvider } from '@rocicorp/zero/react'
 import { SchemeProvider, useColorScheme } from '@vxrn/color-scheme'
 import { LoadProgressBar, Slot } from 'one'
 import { useState } from 'react'
-import { TamaguiProvider, View, isWeb } from 'tamagui'
+import { TamaguiProvider, View } from 'tamagui'
 import { AuthEffects } from '~/better-auth/AuthEffects'
 import { env } from '~/env'
-import { DragDropFile } from '~/interface/upload/DragDropFile'
 import config from '~/tamagui/tamagui.config'
 import { TRPCProvider } from '~/trpc/provider'
 import { useZeroEmit, zero } from '~/zero/zero'
@@ -16,39 +15,38 @@ import { useZeroEmit, zero } from '~/zero/zero'
 
 export default function Layout() {
   return (
-    <>
-      {isWeb && (
-        <>
-          <meta charSet="utf-8" />
-          <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
-          <meta property="og:image" content={`${env.ONE_SERVER_URL}/og.jpg`} />
-          <meta property="og:image:width" content="1200" />
-          <meta property="og:image:height" content="630" />
-          <meta property="twitter:card" content="summary_large_image" />
-          <meta property="twitter:image" content={`${env.ONE_SERVER_URL}/og.jpg`} />
-          <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-          <link rel="icon" href="/favicon.svg" />
-        </>
-      )}
+    <html lang='en'>
+      <head>
+        <meta charSet="utf-8" />
+        <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
+        <meta property="og:image" content={`${env.ONE_SERVER_URL}/og.jpg`} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="twitter:card" content="summary_large_image" />
+        <meta property="twitter:image" content={`${env.ONE_SERVER_URL}/og.jpg`} />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+        <link rel="icon" href="/favicon.svg" />
+      </head>
+
 
       <LoadProgressBar startDelay={1_000} />
 
       <AuthEffects />
 
-      <DragDropFile>
+      
         <DataProvider>
           <SchemeProvider>
             <ThemeProvider>
               <TRPCProvider>
-                <View backgroundColor="$color1" minHeight="100%">
+                <View>
                   <Slot />
                 </View>
               </TRPCProvider>
             </ThemeProvider>
           </SchemeProvider>
         </DataProvider>
-      </DragDropFile>
-    </>
+     
+    </html>
   )
 }
 

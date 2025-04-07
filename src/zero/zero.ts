@@ -1,9 +1,10 @@
-import { createReplicacheReactNativeOPSQLiteKVStore } from '@react-native-replicache/react-native-op-sqlite'
-import { type Query, type QueryType, type Smash, Zero } from '@rocicorp/zero'
-import { createUseZero, useQuery, useZero } from '@rocicorp/zero/react'
+import { createReplicacheExpoSQLiteKVStore } from '@react-native-replicache/react-native-expo-sqlite'
+import { type Query, Zero } from '@rocicorp/zero'
+import { useZero, useQuery as useZeroQuery } from '@rocicorp/zero/react'
 import { createEmitter } from '@vxrn/emitter'
 import { env } from '~/env'
 import { type Schema, schema } from '~/zero/schema'
+import { isWeb } from 'tamagui'
 
 export let zero = createZero()
 
@@ -16,7 +17,9 @@ function createZero({ auth, userID = 'anon' }: { auth?: string; userID?: string 
     auth,
     server: env.VITE_PUBLIC_ZERO_SERVER,
     schema,
-    kvStore: createReplicacheReactNativeOPSQLiteKVStore,
+    // TODO: use lazy import for expo sqlite on web or try to get op sqlite working so we can use same kv store for web and native
+    // kvStore: isWeb ? 'idb' : createReplicacheExpoSQLiteKVStore,
+    kvStore: 'idb',
   })
 }
 
@@ -28,17 +31,12 @@ export function setZeroAuth({ jwtToken, userID }: { jwtToken: string; userID: st
   zeroEmitter.emit(zero)
 }
 
-export type QueryResult<TReturn extends QueryType> = [
-  Smash<TReturn>,
-  {
-    type: 'unknown' | 'complete'
-  },
-]
-
-export function useZeroQuery<
-  QueryBuilder extends (z: Zero<Schema>['query']) => Query<any, any>,
-  Q extends ReturnType<QueryBuilder>,
->(createQuery: QueryBuilder): Q extends Query<any, infer Return> ? QueryResult<Return> : never {
-  const z = useZero<Schema>()
-  return useQuery(createQuery(z.query)) as any
+export function useQuery<
+  TSchema extends Schema,
+  TTable extends keyof TSchema['tables'] & string,
+  TReturn,
+>(createQuery: (z: Zero<TSchema>['query']) => Query<TSchema, TTable, TReturn>, enable?: boolean) {
+  const z = useZero<TSchema>()
+  z.query
+  return useZeroQuery<TSchema, TTable, TReturn>(createQuery(z.query), enable)
 }
