@@ -43,7 +43,7 @@
     "@tauri-apps/plugin-shell": "^2.2.1",
     "@trpc/client": "^11.0.2",
     "@trpc/react-query": "^11.0.2",
-    "@trpc/server": "^11.0.2",
+    "@trpc/server": "^11.1.1",
     "@vxrn/better-auth": "^1.1.478",
     "@vxrn/color-scheme": "^1.1.478",
     "@vxrn/emitter": "^1.1.478",
