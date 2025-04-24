@@ -5342,10 +5342,10 @@
   resolved "https://registry.yarnpkg.com/@trpc/react-query/-/react-query-11.0.2.tgz#49c148e6486a551b08dce2c3b59670415e4523b7"
   integrity sha512-i/u6cbZspGekRAHhEk/jdG1J/XR0ccF+UGFTCEozwPBMBX6eBOe3LTVJ6FLXL2n8IHbSaJEP9h76rzIMXv44lg==
 
-"@trpc/server@^11.0.2":
-  version "11.0.2"
-  resolved "https://registry.yarnpkg.com/@trpc/server/-/server-11.0.2.tgz#e0c2fc2ab742e6fa58a09d252e75e9bcc962e4f7"
-  integrity sha512-PIcm8UWFyE0AnIYjxsyc1zfVa6X10m9Opm1SJ2ou9Vu8dlXO6rMtmafLUXJsMeQk/3ecxObFtEiZIX8TvB3eCg==
+"@trpc/server@^11.1.1":
+  version "11.1.1"
+  resolved "https://registry.yarnpkg.com/@trpc/server/-/server-11.1.1.tgz#8738734c4e4ff1ccbec4f2c474be6c5c1a511696"
+  integrity sha512-ZjPN3ypBHvGMAlMgeZPrxlRcH/3dn4AK0s5Ph1z+E6uiAvIQVCj7ZoMlXeeBsIy4THGDAk953jHVW2kMnlbb4g==
 
 "@tybys/wasm-util@^0.9.0":
   version "0.9.0"
