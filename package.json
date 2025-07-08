@@ -47,7 +47,7 @@
     "@vxrn/better-auth": "^1.1.478",
     "@vxrn/color-scheme": "^1.1.478",
     "@vxrn/emitter": "^1.1.478",
-    "better-auth": "^1.1.16",
+    "better-auth": "^1.2.10",
     "date-fns": "^4.1.0",
     "drizzle-orm": "^0.39.3",
     "drizzle-zero": "^0.5.4",
