@@ -1,12 +1,12 @@
 import { tamaguiPlugin } from '@tamagui/vite-plugin'
 import { one } from 'one/vite'
 import { defineConfig } from 'vite'
-import { loadEnv } from 'vxrn'
 
-const config = defineConfig(async () => {
+const config = defineConfig(() => {
   return {
     plugins: [
       one({
+        native: {bundler: 'metro',},
         web: {
           defaultRenderMode: 'spa',
           deploy: 'vercel',
@@ -32,9 +32,6 @@ const config = defineConfig(async () => {
         outputCSS: './src/tamagui/tamagui.css',
       }),
     ],
-    ssr: {
-      noExternal: true,
-    },
     optimizeDeps: {
       include: ['@tamagui/core', '@tamagui/config'],
     },
