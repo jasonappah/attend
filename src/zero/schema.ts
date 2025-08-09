@@ -5,67 +5,8 @@ import {
   type TableSchema,
   definePermissions,
 } from '@rocicorp/zero'
+import { schema, type Schema } from "./schema.gen";
 
-import { createZeroSchema } from 'drizzle-zero'
-import * as drizzleSchema from '~/db/schema'
-
-const timestamps = {
-  createdAt: true,
-  updatedAt: true,
-}
-export const schema = createZeroSchema(drizzleSchema, {
-  version: 1,
-  tables: {
-    user: {
-      id: true,
-      name: true,
-      email: true,
-      emailVerified: true,
-      image: true,
-      ...timestamps,
-    },
-    course: {
-      id: true,
-      calendarEventName: true,
-      courseName: true,
-      roomId: true,
-      userId: true,
-      calendarId: true,
-      calendarEventId: true,
-      calendarEventLastModified: true,
-      ...timestamps,
-    },
-    courseSession: {
-      id: true,
-      courseId: true,
-      attendance: true,
-      startTime: true,
-      endTime: true,
-      ...timestamps,
-    },
-    calendar: {
-      id: true,
-      upstreamUrl: true,
-      userId: true,
-      ...timestamps,
-    },
-    room: {
-      id: true,
-      buildingCode: true,
-      roomNumber: true,
-      latitude: true,
-      longitude: true,
-      level: true,
-      concept3dMapId: true,
-      concept3dShape: true,
-      concept3dCategoryName: true,
-      concept3dLocationId: true,
-      concept3dCategoryId: true,
-      concept3dMarkId: true,
-      ...timestamps,
-    },
-  },
-})
 
 // Define the structure of your JWT auth data
 type AuthData = {
@@ -74,7 +15,6 @@ type AuthData = {
   roles?: string[]
 }
 
-export type Schema = typeof schema
 type Tables = Schema['tables']
 
 export const permissions = definePermissions<AuthData, Schema>(schema, () => {
@@ -143,3 +83,6 @@ export type User = Row<typeof schema.tables.user>
 export type Course = Row<typeof schema.tables.course>
 export type CourseSession = Row<typeof schema.tables.courseSession>
 export type Room = Row<typeof schema.tables.room>
+
+export type {Schema}
+export {schema}

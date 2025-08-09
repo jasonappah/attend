@@ -44,9 +44,11 @@ export const auth = betterAuth({
     },
   },
   advanced: {
-    generateId() {
-      return randomID()
-    },
+    database: {
+      generateId() {
+        return randomID()
+      },
+    }
   },
   socialProviders: {
     google: {

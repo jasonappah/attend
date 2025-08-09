@@ -1,14 +1,13 @@
-import { useZero } from '@rocicorp/zero/react'
+import { useQuery, useZero } from '@rocicorp/zero/react'
 import { Fragment } from 'react/jsx-runtime'
 import { Button, H2 } from 'tamagui'
 import { AttendanceHistory } from '~/interface/attendance-history/attendance-history'
 import type { Schema } from '~/zero/schema'
-import { useZeroQuery } from '~/zero/zero'
 
 export default function AttendanceHistoryPage() {
   const zero = useZero<Schema>()
-  const [courses] = useZeroQuery((q) => q.course.orderBy('courseName', 'asc'))
-  const [sessions] = useZeroQuery((q) => q.courseSession.orderBy('startTime', 'asc'))
+  const [courses] = useQuery(zero.query.course.orderBy('courseName', 'asc'))
+  const [sessions] = useQuery(zero.query.courseSession.orderBy('startTime', 'asc'))
 
   return (
     <Fragment>

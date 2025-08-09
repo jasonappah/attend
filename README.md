@@ -1,5 +1,11 @@
 # attend
 
+attend is a mobile application that will automatically keep track of my class attendance using location data.
+
+
+currently WIP and not really ready for use - the notes that remain are mostly for myself
+
+
 This project is a React Native app built with [One](https://one.dev) and [Zero](https://zero.dev).
 
 For running on Android...

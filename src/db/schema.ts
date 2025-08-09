@@ -1,9 +1,8 @@
-import { relations, sql } from 'drizzle-orm'
+import { relations } from 'drizzle-orm'
 import {
   boolean,
   integer,
   jsonb,
-  numeric,
   pgEnum,
   pgTable,
   real,
@@ -138,9 +137,7 @@ export const courseSession = pgTable(
     startTime: timestamp('startTime').notNull(),
     endTime: timestamp('endTime').notNull(),
   },
-  (t) => ({
-    noDuplicateSessions: unique().on(t.courseId, t.endTime, t.startTime),
-  })
+  (t) => [unique().on(t.courseId, t.endTime, t.startTime)]
 )
 
 export const courseSessionRelations = relations(courseSession, ({ one }) => ({
@@ -203,7 +200,5 @@ export const room = pgTable(
     concept3dMarkId: integer('concept3dRoomId').notNull(),
     ...timestamps,
   },
-  (t) => ({
-    noDuplicateRooms: unique().on(t.buildingCode, t.roomNumber),
-  })
+  (t) => [unique().on(t.buildingCode, t.roomNumber)]
 )
