@@ -78,7 +78,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
-    "@react-native-community/cli": "^19.1.1",
+    "@react-native-community/cli": "^19.1.2",
     "@tamagui/vite-plugin": "^1.136.1",
     "@tauri-apps/cli": "^2.7.1",
     "@types/node": "^22.17.1",
