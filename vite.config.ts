@@ -1,12 +1,10 @@
 import { tamaguiPlugin } from '@tamagui/vite-plugin'
 import { one } from 'one/vite'
-import { defineConfig } from 'vite'
 
-const config = defineConfig(() => {
-  return {
+const config = {
     plugins: [
       one({
-        native: {bundler: 'metro',},
+        native: {bundler: 'metro'},
         web: {
           defaultRenderMode: 'spa',
           deploy: 'vercel',
@@ -21,7 +19,6 @@ const config = defineConfig(() => {
           },
         },
         react: {
-          scan: false,
           compiler: false,
         },
       }),
@@ -39,6 +36,5 @@ const config = defineConfig(() => {
       cssTarget: 'safari15',
     },
   }
-})
 
 export default config
