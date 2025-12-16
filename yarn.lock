@@ -8157,12 +8157,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@trpc/server@npm:^11.4.4":
-  version: 11.4.4
-  resolution: "@trpc/server@npm:11.4.4"
+"@trpc/server@npm:^11.8.0":
+  version: 11.8.0
+  resolution: "@trpc/server@npm:11.8.0"
   peerDependencies:
     typescript: ">=5.7.2"
-  checksum: 10c0/94fefaa3538a9c4fe9995dea2563b32d43e7af51014c55ce041282cf008fe3925aa46607c49a68ebe4899cc884a12e96a9f2650c4e744e8aad6d87d09d1ccbba
+  checksum: 10c0/1be1e13aab5a6a85cec868fcd303277bbfb64e69ad95fb7f340513a2b7eb7689909e7c9ea8ad8c3b72c5c687ab2da0c5f96daf67d781cb3a8d9283ae6095c451
   languageName: node
   linkType: hard
 
@@ -9114,7 +9114,7 @@ __metadata:
     "@tauri-apps/plugin-shell": "npm:^2.3.0"
     "@trpc/client": "npm:^11.4.4"
     "@trpc/react-query": "npm:^11.4.4"
-    "@trpc/server": "npm:^11.4.4"
+    "@trpc/server": "npm:^11.8.0"
     "@types/node": "npm:^22.17.1"
     "@types/react": "npm:~19.1.0"
     "@vxrn/better-auth": "npm:^1.1.513"
