@@ -12,6 +12,9 @@ For running on Android...
 - you'll want this: https://gist.github.com/zetavg/93adf1ac8e0ec881ab65cf7f7fa2fbd4
 - then in the same build.gradle file, add `autolinkLibrariesWithApp()` into the react block. seems to be needed for op-sqlite, couldn't figure out how to manually specify it and have the build work. got the idea from https://github.com/OP-Engineering/op-sqlite/blob/ec509dfa2ecbeac195ca79f54cba0fb5fbc0d0d8/example/android/app/build.gradle#L10
 
+
+One thing that I've always thought of in passing that I would like to build using the data this app has scraped is just an app that randomly picks a building for me to study out of. I've found that the change in environment and intentionally going to a location with the purpose of being academically productive is helpful. 
+
 *Original README below:*
 
 ---
