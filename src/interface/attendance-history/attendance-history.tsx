@@ -43,15 +43,15 @@ export function AttendanceHistory({ courses, sessions }: AttendanceHistoryProps)
   }
 
   return (
-    <Card elevation={2} bordered padding="$4" width="100%">
+    <Card elevation={2} borderWidth={1} borderColor="$borderColor" p="$4" width="100%">
       <ScrollView horizontal>
         <XStack>
           <YStack>
-            <Text height={40} width={80} fontWeight="bold" padding="$2">
+            <Text height={40} width={80} fontWeight="bold" p="$2">
               Date
             </Text>
             {dates.map((date) => (
-              <Text key={date.toISOString()} height={40} width={80} textAlign="center" padding="$2">
+              <Text key={date.toISOString()} height={40} width={80} text="center" p="$2">
                 {format(date, 'M/d')}
               </Text>
             ))}
@@ -59,7 +59,7 @@ export function AttendanceHistory({ courses, sessions }: AttendanceHistoryProps)
 
           {courses.map((course) => (
             <YStack key={course.id}>
-              <Text height={40} width={200} fontWeight="bold" padding="$2" numberOfLines={1}>
+              <Text height={40} width={200} fontWeight="bold" p="$2" numberOfLines={1}>
                 {course.courseName}
               </Text>
               {dates.map((date) => {
@@ -69,8 +69,8 @@ export function AttendanceHistory({ courses, sessions }: AttendanceHistoryProps)
                     key={date.toISOString()}
                     height={40}
                     width={200}
-                    alignItems="center"
-                    paddingLeft="$2"
+                    items="center"
+                    pl="$2"
                     borderColor="$borderColor"
                     borderWidth={1}
                   >
@@ -113,7 +113,7 @@ const AttendanceSelect = ({
       <Select.Trigger width={180} iconAfter={ChevronDown}>
         <Select.Value placeholder="Set status">
           {currentOption?.icon}
-          <Text marginLeft="$2">{currentOption?.label}</Text>
+          <Text ml="$2">{currentOption?.label}</Text>
         </Select.Value>
       </Select.Trigger>
 
@@ -143,8 +143,14 @@ const AttendanceSelect = ({
       </Adapt> */}
 
       <Select.Content>
-        <Select.ScrollUpButton ai="center" jc="center" pos="relative" w="100%" h="$3">
-          <YStack zIndex={10}>
+        <Select.ScrollUpButton
+          items="center"
+          justify="center"
+          position="relative"
+          width="100%"
+          height="$3"
+        >
+          <YStack z={10}>
             <ChevronUp size={20} />
           </YStack>
           <LinearGradient
@@ -152,16 +158,16 @@ const AttendanceSelect = ({
             end={[0, 1]}
             fullscreen
             colors={['$background', '$backgroundTransparent']}
-            borderRadius="$4"
+            rounded="$4"
           />
         </Select.ScrollUpButton>
 
-        <Select.Viewport minWidth={200}>
+        <Select.Viewport minW={200}>
           <Select.Group>
             {attendanceOptions.map((option) => (
               <Select.Item key={option.value} value={option.value ?? ''} index={0}>
                 <Select.ItemText>
-                  <XStack alignItems="center" space="$2">
+                  <XStack items="center" gap="$2">
                     {option.icon}
                     <Text>{option.label}</Text>
                   </XStack>
@@ -171,8 +177,14 @@ const AttendanceSelect = ({
           </Select.Group>
         </Select.Viewport>
 
-        <Select.ScrollDownButton ai="center" jc="center" pos="relative" w="100%" h="$3">
-          <YStack zIndex={10}>
+        <Select.ScrollDownButton
+          items="center"
+          justify="center"
+          position="relative"
+          width="100%"
+          height="$3"
+        >
+          <YStack z={10}>
             <ChevronDown size={20} />
           </YStack>
           <LinearGradient
@@ -180,7 +192,7 @@ const AttendanceSelect = ({
             end={[0, 1]}
             fullscreen
             colors={['$backgroundTransparent', '$background']}
-            borderRadius="$4"
+            rounded="$4"
           />
         </Select.ScrollDownButton>
       </Select.Content>

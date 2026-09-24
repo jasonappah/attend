@@ -17,13 +17,13 @@ export default function HomePage() {
   return (
     <YStack
       $platform-ios={{ pt: '$10' }}
-      f={1}
+      flex={1}
       p="$4"
       gap="$4"
-      ai="flex-start"
-      maw={600}
-      w="100%"
-      als="center"
+      items="flex-start"
+      maxW={600}
+      width="100%"
+      self="center"
     >
       <H1>Attend.</H1>
 
