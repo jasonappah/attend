@@ -2,7 +2,7 @@ import '~/tamagui/tamagui.css'
 import './_layout.css'
 
 import { ZeroProvider } from '@rocicorp/zero/react'
-import { SchemeProvider, useColorScheme } from '@vxrn/color-scheme'
+import { SchemeProvider, useUserScheme } from '@vxrn/color-scheme'
 import { LoadProgressBar, Slot } from 'one'
 import { useState } from 'react'
 import { TamaguiProvider, View } from 'tamagui'
@@ -61,7 +61,7 @@ const DataProvider = ({ children }: { children: React.ReactNode }) => {
 }
 
 const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
-  const [scheme] = useColorScheme()
+  const { value: scheme } = useUserScheme()
 
   return (
     <TamaguiProvider disableInjectCSS config={config} defaultTheme={scheme}>

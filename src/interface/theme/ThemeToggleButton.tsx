@@ -1,6 +1,6 @@
 import { View } from '@tamagui/core'
-import { Moon, Sun, SunMoon } from '@tamagui/lucide-icons'
-import { useSchemeSetting } from '@vxrn/color-scheme'
+import { Moon, Sun, SunMoon } from '@tamagui/lucide-icons-2'
+import { useUserScheme } from '@vxrn/color-scheme'
 import { Appearance } from 'react-native'
 import { Paragraph, YStack, isWeb } from 'tamagui'
 
@@ -29,7 +29,7 @@ export function ToggleThemeButton() {
 
       <YStack>
         <Paragraph
-          animation="100ms"
+          transition="100ms"
           size="$1"
           mb={-20}
           color="$color10"
@@ -47,7 +47,7 @@ export function ToggleThemeButton() {
 }
 
 export function useToggleTheme() {
-  const [{ setting, scheme }, setSchemeSetting] = useSchemeSetting()
+  const { setting, value: scheme, set: setSchemeSetting } = useUserScheme()
   const Icon = setting === 'system' ? SunMoon : setting === 'dark' ? Moon : Sun
 
   return {

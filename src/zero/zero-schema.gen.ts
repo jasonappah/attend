@@ -397,6 +397,33 @@ export const schema = {
             "createdAt"
           >,
         },
+        expiresAt: {
+          type: "number",
+          optional: true,
+          customType: null as unknown as ZeroCustomType<
+            typeof zeroSchema,
+            "jwks",
+            "expiresAt"
+          >,
+        },
+        alg: {
+          type: "string",
+          optional: true,
+          customType: null as unknown as ZeroCustomType<
+            typeof zeroSchema,
+            "jwks",
+            "alg"
+          >,
+        },
+        crv: {
+          type: "string",
+          optional: true,
+          customType: null as unknown as ZeroCustomType<
+            typeof zeroSchema,
+            "jwks",
+            "crv"
+          >,
+        },
       },
       primaryKey: ["id"],
     },
