@@ -10,6 +10,7 @@ const disableSignupInProduction = async () => env.NODE_ENV === 'development'
 
 export const auth = betterAuth({
   secret: env.BETTER_AUTH_SECRET,
+  baseURL: env.ONE_SERVER_URL,
   trustedOrigins: ['attend://'],
   database: drizzleAdapter(db, {
     provider: 'pg',

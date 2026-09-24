@@ -1,6 +1,7 @@
 import { QueryClient, defaultShouldDehydrateQuery } from '@tanstack/react-query'
 import { httpBatchLink, loggerLink } from '@trpc/client'
 import { createTRPCReact } from '@trpc/react-query'
+import { getURL } from 'one'
 import superjson from 'superjson'
 import { env } from '~/env'
 import type { AppRouter } from './routers'
@@ -16,7 +17,7 @@ export const createTRPCClient = () => {
           (opts.direction === 'down' && opts.result instanceof Error),
       }),
       httpBatchLink({
-        url: `http://localhost:8081/api/trpc`,
+        url: `${getURL()}/api/trpc`,
         transformer: superjson,
       }),
     ],
