@@ -83,9 +83,9 @@ export default function TodayPage() {
           cellWidth="$18"
           cellHeight="$7"
           borderWidth={0}
-          padding="$4"
-          maxWidth="100%"
-          maxHeight={600}
+          p="$4"
+          maxW="100%"
+          maxH={600}
           gap="$5"
         >
           <Table.Head>
@@ -101,15 +101,15 @@ export default function TodayPage() {
                         : 'middle'
                   }
                   key={headerGroup.id}
-                  justifyContent="flex-start"
+                  justify="flex-start"
                 >
                   {headerGroup.headers.map((header) => (
                     <Table.HeaderCell
                       cellLocation="middle"
                       key={header.id}
                       borderWidth={0}
-                      justifyContent="flex-start"
-                      flexShrink={3}
+                      justify="flex-start"
+                      shrink={3}
                     >
                       <Text>
                         {header.isPlaceholder
@@ -128,7 +128,7 @@ export default function TodayPage() {
               return (
                 <Table.Row
                   hoverStyle={{
-                    backgroundColor: '$color2',
+                    bg: '$color2',
                   }}
                   rowLocation={
                     rowCounter.current === 0
@@ -144,8 +144,8 @@ export default function TodayPage() {
                       cellLocation="middle"
                       key={cell.id}
                       borderWidth={0}
-                      justifyContent="flex-start"
-                      flexShrink={3}
+                      justify="flex-start"
+                      shrink={3}
                     >
                       <Text theme="alt1">
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}

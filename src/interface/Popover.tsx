@@ -7,14 +7,14 @@ export const PopoverContent = ({
 }: PopoverContentProps & { arrow?: boolean }) => {
   return (
     <Popover.Content
-      backgroundColor="$color2"
+      bg="$color2"
       borderWidth={1}
-      ai="flex-start"
+      items="flex-start"
       borderColor="$borderColor"
       enterStyle={{ y: -10, opacity: 0 }}
       exitStyle={{ y: -10, opacity: 0 }}
       elevation="$5"
-      animation={[
+      transition={[
         'quick',
         {
           opacity: {
@@ -22,17 +22,10 @@ export const PopoverContent = ({
           },
         },
       ]}
-      padding={0}
+      p={0}
       {...props}
     >
-      {arrow && (
-        <Popover.Arrow
-          borderWidth={1}
-          borderColor="$borderColor"
-          backgroundColor="$color2"
-          size="$4"
-        />
-      )}
+      {arrow && <Popover.Arrow borderWidth={1} borderColor="$borderColor" bg="$color2" size="$4" />}
 
       {children}
     </Popover.Content>

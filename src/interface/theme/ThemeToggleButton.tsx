@@ -1,6 +1,6 @@
 import { View } from '@tamagui/core'
-import { Moon, Sun, SunMoon } from '@tamagui/lucide-icons'
-import { useSchemeSetting } from '@vxrn/color-scheme'
+import { Moon, Sun, SunMoon } from '@tamagui/lucide-icons-2'
+import { useUserScheme } from '@vxrn/color-scheme'
 import { Appearance } from 'react-native'
 import { Paragraph, YStack, isWeb } from 'tamagui'
 
@@ -10,10 +10,10 @@ export function ToggleThemeButton() {
   const { onPress, Icon, setting } = useToggleTheme()
 
   return (
-    <View group ai="center" containerType="normal" gap="$1">
+    <View group items="center" containerType="normal" gap="$1">
       <View
         p="$3"
-        br="$10"
+        rounded="$10"
         hoverStyle={{
           bg: '$color2',
         }}
@@ -21,7 +21,7 @@ export function ToggleThemeButton() {
           bg: '$color1',
         }}
         pointerEvents="auto"
-        cur="pointer"
+        cursor="pointer"
         onPress={onPress}
       >
         <Icon size={22} color="$accent12" />
@@ -29,13 +29,13 @@ export function ToggleThemeButton() {
 
       <YStack>
         <Paragraph
-          animation="100ms"
+          transition="100ms"
           size="$1"
           mb={-20}
           color="$color10"
-          o={0}
+          opacity={0}
           $group-hover={{
-            o: 1,
+            opacity: 1,
           }}
         >
           {setting[0].toUpperCase()}
@@ -47,7 +47,7 @@ export function ToggleThemeButton() {
 }
 
 export function useToggleTheme() {
-  const [{ setting, scheme }, setSchemeSetting] = useSchemeSetting()
+  const { setting, value: scheme, set: setSchemeSetting } = useUserScheme()
   const Icon = setting === 'system' ? SunMoon : setting === 'dark' ? Moon : Sun
 
   return {

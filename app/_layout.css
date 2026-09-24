@@ -40,7 +40,8 @@ body {
   min-height: 100vh;
 }
 
-body > div {
+/* one-devtools is a dev-only shadow-root host, it shouldn't take up space */
+body > div:not(#one-devtools) {
   min-height: 100vh !important;
 }
 

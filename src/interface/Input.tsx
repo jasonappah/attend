@@ -1,6 +1,6 @@
 import { getFontSized } from '@tamagui/get-font-sized'
 import { getSpace } from '@tamagui/get-token'
-import { User } from '@tamagui/lucide-icons'
+import { User } from '@tamagui/lucide-icons-2'
 import type { SizeVariantSpreadFunction } from '@tamagui/web'
 import { useState } from 'react'
 import type { ColorTokens, FontSizeTokens } from 'tamagui'
@@ -49,10 +49,10 @@ export const defaultInputGroupStyles = {
       }),
 
   borderColor: '$borderColor',
-  backgroundColor: '$color2',
+  bg: '$color2',
 
   // this fixes a flex bug where it overflows container
-  minWidth: 0,
+  minW: 0,
 
   hoverStyle: {
     borderColor: '$borderColorHover',
@@ -67,7 +67,7 @@ export const defaultInputGroupStyles = {
 } as const
 
 const InputGroupFrame = styled(XGroup, {
-  justifyContent: 'space-between',
+  justify: 'space-between',
   context: InputContext,
   variants: {
     unstyled: {
@@ -86,7 +86,7 @@ const InputGroupFrame = styled(XGroup, {
     size: {
       '...size': (val, { tokens }) => {
         return {
-          borderRadius: tokens.radius[val],
+          rounded: tokens.radius[val as keyof typeof tokens.radius],
         }
       },
     },
@@ -115,7 +115,8 @@ const InputGroupImpl = InputGroupFrame.styleable((props, forwardedRef) => {
 })
 
 export const inputSizeVariant: SizeVariantSpreadFunction<any> = (val = '$true', extras) => {
-  const radiusToken = extras.tokens.radius[val] ?? extras.tokens.radius['$true']
+  const radiusToken =
+    extras.tokens.radius[val as keyof typeof extras.tokens.radius] ?? extras.tokens.radius['$true']
   const paddingHorizontal = getSpace(val, {
     shift: -1,
     bounds: [2],
@@ -128,8 +129,8 @@ export const inputSizeVariant: SizeVariantSpreadFunction<any> = (val = '$true', 
   return {
     ...fontStyle,
     height: val,
-    borderRadius: extras.props.circular ? 100_000 : radiusToken,
-    paddingHorizontal,
+    rounded: extras.props.circular ? 100_000 : radiusToken,
+    px: paddingHorizontal,
   }
 }
 
@@ -158,30 +159,30 @@ const InputImpl = InputFrame.styleable((props, ref) => {
 })
 
 const InputSection = styled(XGroup.Item, {
-  justifyContent: 'center',
-  alignItems: 'center',
+  justify: 'center',
+  items: 'center',
   context: InputContext,
 })
 
 const Button = styled(TButton, {
   context: InputContext,
-  justifyContent: 'center',
-  alignItems: 'center',
+  justify: 'center',
+  items: 'center',
 
   variants: {
     size: {
       '...size': (val = '$true', { tokens }) => {
         if (typeof val === 'number') {
           return {
-            paddingHorizontal: 0,
+            px: 0,
             height: val,
-            borderRadius: val * 0.2,
+            rounded: val * 0.2,
           }
         }
         return {
-          paddingHorizontal: 0,
+          px: 0,
           height: val,
-          borderRadius: tokens.radius[val],
+          rounded: tokens.radius[val as keyof typeof tokens.radius],
         }
       },
     },
@@ -191,15 +192,15 @@ const Button = styled(TButton, {
 // Icon starts
 
 export const InputIconFrame = styled(View, {
-  justifyContent: 'center',
-  alignItems: 'center',
+  justify: 'center',
+  items: 'center',
   context: InputContext,
 
   variants: {
     size: {
       '...size': (val, { tokens }) => {
         return {
-          paddingHorizontal: tokens.space[val],
+          px: tokens.space[val as keyof typeof tokens.space],
         }
       },
     },
@@ -239,7 +240,7 @@ export const InputContainerFrame = styled(View, {
   variants: {
     size: {
       '...size': (val, { tokens }) => ({
-        gap: tokens.space[val].val * 0.3,
+        gap: tokens.space[val as keyof typeof tokens.space].val * 0.3,
       }),
     },
     color: {
@@ -297,9 +298,10 @@ const InputXGroup = styled(XGroup, {
   variants: {
     size: {
       '...size': (val, { tokens }) => {
-        const radiusToken = tokens.radius[val] ?? tokens.radius['$true']
+        const radiusToken =
+          tokens.radius[val as keyof typeof tokens.radius] ?? tokens.radius['$true']
         return {
-          borderRadius: radiusToken,
+          rounded: radiusToken,
         }
       },
     },
@@ -319,7 +321,7 @@ export const Input = withStaticProperties(InputContainerFrame, {
 
 export const InputNew = () => {
   return (
-    <Input w={400} size="$3">
+    <Input width={400} size="$3">
       <Input.Box>
         <Input.Section>
           <Input.Icon>
@@ -327,7 +329,7 @@ export const InputNew = () => {
           </Input.Icon>
         </Input.Section>
         <Input.Section>
-          <Input.Area paddingLeft={0} />
+          <Input.Area pl={0} />
         </Input.Section>
         <Input.Section>
           <Input.Button>
