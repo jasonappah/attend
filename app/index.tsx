@@ -1,4 +1,4 @@
-import { Redirect, useParams } from 'one'
+import { type Href, Redirect, useParams } from 'one'
 import { Button, H1, Paragraph, YStack } from 'tamagui'
 import { authClient, useAuth } from '~/better-auth/authClient'
 import { Link } from '~/interface/Link'
@@ -10,8 +10,13 @@ export default function HomePage() {
     error?: string
   }>()
 
-  if (params.redirect && loggedIn) {
-    return <Redirect href={params.redirect} />
+  // only follow same-site paths so ?redirect= can't bounce users to another domain
+  // (browsers treat both `//host` and `/\host` as another origin)
+  const redirect =
+    params.redirect && /^\/(?![/\\])/.test(params.redirect) ? params.redirect : undefined
+
+  if (redirect && loggedIn) {
+    return <Redirect href={redirect as Href} />
   }
 
   return (
@@ -29,7 +34,7 @@ export default function HomePage() {
 
       <Paragraph>A simple app to track your class attendance.</Paragraph>
 
-      {params.redirect && <Paragraph>You need to log in to continue.</Paragraph>}
+      {redirect && <Paragraph>You need to log in to continue.</Paragraph>}
       {params.error && <Paragraph>{params.error}</Paragraph>}
 
       {loggedIn ? (
@@ -41,7 +46,7 @@ export default function HomePage() {
           onPress={async () => {
             await authClient.signIn.social({
               provider: 'google',
-              callbackURL: params.redirect,
+              callbackURL: redirect,
             })
           }}
         >

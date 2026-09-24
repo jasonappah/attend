@@ -1,3 +1,4 @@
+import { expo } from '@better-auth/expo'
 import { betterAuth } from 'better-auth'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
 import { bearer, jwt } from 'better-auth/plugins'
@@ -10,6 +11,7 @@ const disableSignupInProduction = async () => env.NODE_ENV === 'development'
 
 export const auth = betterAuth({
   secret: env.BETTER_AUTH_SECRET,
+  baseURL: env.ONE_SERVER_URL,
   trustedOrigins: ['attend://'],
   database: drizzleAdapter(db, {
     provider: 'pg',
@@ -35,6 +37,9 @@ export const auth = betterAuth({
     }),
 
     bearer(),
+
+    // handles the attend:// deep-link redirect + origin checks for the native app
+    expo(),
   ],
   databaseHooks: {
     user: {

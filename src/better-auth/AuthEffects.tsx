@@ -34,14 +34,10 @@ const useAuthPassTokenToTauriEffect = () => {
 
         switch (url.host) {
           case 'finish-auth': {
-            const token = url.searchParams.get('token')
             const session = url.searchParams.get('session')
 
-            if (token && session) {
-              setAuthClientToken({
-                token,
-                session,
-              })
+            if (session) {
+              setAuthClientToken({ session })
             }
 
             break

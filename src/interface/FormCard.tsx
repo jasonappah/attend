@@ -3,7 +3,7 @@ import { View, styled } from 'tamagui'
 import { useMedia } from 'tamagui'
 
 export const FormCard = styled(View, {
-  tag: 'form',
+  render: 'form',
   flexDirection: 'row',
   maxWidth: '100%',
   borderRadius: 30,
