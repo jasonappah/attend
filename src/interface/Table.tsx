@@ -60,27 +60,27 @@ const Cell = styled(ThemeableStack, {
   render: 'td',
   flexDirection: 'row',
   context: TableContext,
-  flexGrow: 0,
-  flexShrink: 1,
+  grow: 0,
+  shrink: 1,
   variants: {
     cellWidth: {
       '...size': (name, { tokens }) => {
         return {
-          width: tokens.size[name],
+          width: tokens.size[name as keyof typeof tokens.size],
         }
       },
     },
     cellHeight: {
       '...size': (name, { tokens }) => {
         return {
-          minHeight: tokens.size[name],
+          minH: tokens.size[name as keyof typeof tokens.size],
         }
       },
     },
     alignCells: (val: AlignCells) => {
       return {
-        alignItems: val.y === 'center' ? 'center' : `flex-${val.y}`,
-        justifyContent: val.x === 'center' ? 'center' : `flex-${val.x}`,
+        items: val.y === 'center' ? 'center' : `flex-${val.y}`,
+        justify: val.x === 'center' ? 'center' : `flex-${val.x}`,
       }
     },
     cellLocation: {
@@ -105,23 +105,23 @@ const HeaderCell = styled(ThemeableStack, {
   render: 'th',
   flexDirection: 'row',
   context: TableContext,
-  flexGrow: 0,
-  flexShrink: 1,
-  paddingVertical: '$3',
+  grow: 0,
+  shrink: 1,
+  py: '$3',
 
   variants: {
     cellWidth: {
       '...size': (name, { tokens }) => {
         return {
-          width: tokens.size[name],
+          width: tokens.size[name as keyof typeof tokens.size],
         }
       },
     },
 
     alignHeaderCells: (val: AlignHeaderCells) => {
       return {
-        alignItems: val.y === 'center' ? 'center' : `flex-${val.y}`,
-        justifyContent: val.x === 'center' ? 'center' : `flex-${val.x}`,
+        items: val.y === 'center' ? 'center' : `flex-${val.y}`,
+        justify: val.x === 'center' ? 'center' : `flex-${val.x}`,
       }
     },
 
@@ -147,28 +147,28 @@ const TableBody = styled(ThemeableStack, {
   render: 'tbody',
   flexDirection: 'column',
   context: TableContext,
-  flexShrink: 1,
+  shrink: 1,
 })
 
 const TableHead = styled(ThemeableStack, {
   render: 'thead',
   flexDirection: 'column',
   context: TableContext,
-  flexShrink: 1,
+  shrink: 1,
 })
 
 const TableFoot = styled(ThemeableStack, {
   render: 'tfoot',
   flexDirection: 'column',
   context: TableContext,
-  flexShrink: 1,
+  shrink: 1,
 })
 
 const TableComp = styled(ThemeableStack, {
   render: 'table',
   context: TableContext,
   borderWidth: 1,
-  backgrounded: true,
+  bg: '$background',
   variants: {
     /** just added these empty variants to avoid ts erros on Table */
     cellWidth: {
