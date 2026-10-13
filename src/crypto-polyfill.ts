@@ -11,7 +11,7 @@ export function bootCryptoPolyfill() {
   if (global.crypto) {
     return
   }
-  
+
   global.crypto = {
     getRandomValues(array: Uint8Array) {
       return Crypto.getRandomValues(array)

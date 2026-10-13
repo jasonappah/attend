@@ -1,7 +1,7 @@
 import { onOpenUrl } from '@tauri-apps/plugin-deep-link'
 import { useEffect } from 'react'
-import { setZeroAuth } from '../zero/zero'
 import { isTauri } from '../tauri/constants'
+import { setZeroAuth } from '../zero/zero'
 import { setAuthClientToken, useAuth } from './authClient'
 
 export const AuthEffects = () => {

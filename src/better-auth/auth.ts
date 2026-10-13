@@ -53,7 +53,7 @@ export const auth = betterAuth({
       generateId() {
         return randomID()
       },
-    }
+    },
   },
   socialProviders: {
     google: {

@@ -94,12 +94,8 @@
           "name": "account_userId_user_id_fk",
           "tableFrom": "account",
           "tableTo": "user",
-          "columnsFrom": [
-            "userId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["userId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -152,12 +148,8 @@
           "name": "calendar_userId_user_id_fk",
           "tableFrom": "calendar",
           "tableTo": "user",
-          "columnsFrom": [
-            "userId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["userId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -167,9 +159,7 @@
         "calendar_upstreamUrl_unique": {
           "name": "calendar_upstreamUrl_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "upstreamUrl"
-          ]
+          "columns": ["upstreamUrl"]
         }
       },
       "policies": {},
@@ -248,12 +238,8 @@
           "name": "course_roomId_room_id_fk",
           "tableFrom": "course",
           "tableTo": "room",
-          "columnsFrom": [
-            "roomId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["roomId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -261,12 +247,8 @@
           "name": "course_userId_user_id_fk",
           "tableFrom": "course",
           "tableTo": "user",
-          "columnsFrom": [
-            "userId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["userId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -274,12 +256,8 @@
           "name": "course_calendarId_calendar_id_fk",
           "tableFrom": "course",
           "tableTo": "calendar",
-          "columnsFrom": [
-            "calendarId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["calendarId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -289,9 +267,7 @@
         "course_calendarEventId_unique": {
           "name": "course_calendarEventId_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "calendarEventId"
-          ]
+          "columns": ["calendarEventId"]
         }
       },
       "policies": {},
@@ -353,12 +329,8 @@
           "name": "courseSession_courseId_course_id_fk",
           "tableFrom": "courseSession",
           "tableTo": "course",
-          "columnsFrom": [
-            "courseId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["courseId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -368,11 +340,7 @@
         "courseSession_courseId_endTime_startTime_unique": {
           "name": "courseSession_courseId_endTime_startTime_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "courseId",
-            "endTime",
-            "startTime"
-          ]
+          "columns": ["courseId", "endTime", "startTime"]
         }
       },
       "policies": {},
@@ -531,10 +499,7 @@
         "room_buildingCode_roomNumber_unique": {
           "name": "room_buildingCode_roomNumber_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "buildingCode",
-            "roomNumber"
-          ]
+          "columns": ["buildingCode", "roomNumber"]
         }
       },
       "policies": {},
@@ -601,12 +566,8 @@
           "name": "session_userId_user_id_fk",
           "tableFrom": "session",
           "tableTo": "user",
-          "columnsFrom": [
-            "userId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["userId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -616,9 +577,7 @@
         "session_token_unique": {
           "name": "session_token_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "token"
-          ]
+          "columns": ["token"]
         }
       },
       "policies": {},
@@ -680,9 +639,7 @@
         "user_email_unique": {
           "name": "user_email_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "email"
-          ]
+          "columns": ["email"]
         }
       },
       "policies": {},
@@ -743,10 +700,7 @@
     "public.attendance": {
       "name": "attendance",
       "schema": "public",
-      "values": [
-        "present",
-        "absent"
-      ]
+      "values": ["present", "absent"]
     }
   },
   "schemas": {},
