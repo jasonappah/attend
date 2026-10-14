@@ -15,11 +15,11 @@
  * ------------------------------------------------------------
  */
 
-import type { ZeroCustomType } from "drizzle-zero";
-import type * as drizzleSchema from "../db/schema";
-import type { DrizzleToZeroSchema } from "drizzle-zero";
+import type { ZeroCustomType } from 'drizzle-zero'
+import type { DrizzleToZeroSchema } from 'drizzle-zero'
+import type * as drizzleSchema from '../db/schema'
 
-type ZeroSchema = DrizzleToZeroSchema<typeof drizzleSchema>;
+type ZeroSchema = DrizzleToZeroSchema<typeof drizzleSchema>
 
 /**
  * The Zero schema object.
@@ -28,817 +28,537 @@ type ZeroSchema = DrizzleToZeroSchema<typeof drizzleSchema>;
 export const schema = {
   tables: {
     account: {
-      name: "account",
+      name: 'account',
       columns: {
         id: {
-          type: "string",
+          type: 'string',
           optional: false,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "account",
-            "id"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'account', 'id'>,
         },
         accountId: {
-          type: "string",
+          type: 'string',
           optional: false,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "account",
-            "accountId"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'account', 'accountId'>,
         },
         providerId: {
-          type: "string",
+          type: 'string',
           optional: false,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "account",
-            "providerId"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'account', 'providerId'>,
         },
         userId: {
-          type: "string",
+          type: 'string',
           optional: false,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "account",
-            "userId"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'account', 'userId'>,
         },
         accessToken: {
-          type: "string",
+          type: 'string',
           optional: true,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "account",
-            "accessToken"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'account', 'accessToken'>,
         },
         refreshToken: {
-          type: "string",
+          type: 'string',
           optional: true,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "account",
-            "refreshToken"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'account', 'refreshToken'>,
         },
         idToken: {
-          type: "string",
+          type: 'string',
           optional: true,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "account",
-            "idToken"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'account', 'idToken'>,
         },
         accessTokenExpiresAt: {
-          type: "number",
+          type: 'number',
           optional: true,
           customType: null as unknown as ZeroCustomType<
             ZeroSchema,
-            "account",
-            "accessTokenExpiresAt"
+            'account',
+            'accessTokenExpiresAt'
           >,
         },
         refreshTokenExpiresAt: {
-          type: "number",
+          type: 'number',
           optional: true,
           customType: null as unknown as ZeroCustomType<
             ZeroSchema,
-            "account",
-            "refreshTokenExpiresAt"
+            'account',
+            'refreshTokenExpiresAt'
           >,
         },
         scope: {
-          type: "string",
+          type: 'string',
           optional: true,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "account",
-            "scope"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'account', 'scope'>,
         },
         password: {
-          type: "string",
+          type: 'string',
           optional: true,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "account",
-            "password"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'account', 'password'>,
         },
         createdAt: {
-          type: "number",
+          type: 'number',
           optional: true,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "account",
-            "createdAt"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'account', 'createdAt'>,
         },
         updatedAt: {
-          type: "number",
+          type: 'number',
           optional: true,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "account",
-            "updatedAt"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'account', 'updatedAt'>,
         },
       },
-      primaryKey: ["id"],
+      primaryKey: ['id'],
     },
     calendar: {
-      name: "calendar",
+      name: 'calendar',
       columns: {
         id: {
-          type: "string",
+          type: 'string',
           optional: false,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "calendar",
-            "id"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'calendar', 'id'>,
         },
         upstreamUrl: {
-          type: "string",
+          type: 'string',
           optional: false,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "calendar",
-            "upstreamUrl"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'calendar', 'upstreamUrl'>,
         },
         userId: {
-          type: "string",
+          type: 'string',
           optional: false,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "calendar",
-            "userId"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'calendar', 'userId'>,
         },
         createdAt: {
-          type: "number",
+          type: 'number',
           optional: true,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "calendar",
-            "createdAt"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'calendar', 'createdAt'>,
         },
         updatedAt: {
-          type: "number",
+          type: 'number',
           optional: true,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "calendar",
-            "updatedAt"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'calendar', 'updatedAt'>,
         },
       },
-      primaryKey: ["id"],
+      primaryKey: ['id'],
     },
     course: {
-      name: "course",
+      name: 'course',
       columns: {
         id: {
-          type: "string",
+          type: 'string',
           optional: false,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "course",
-            "id"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'course', 'id'>,
         },
         calendarEventName: {
-          type: "string",
+          type: 'string',
           optional: false,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "course",
-            "calendarEventName"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'course', 'calendarEventName'>,
         },
         courseName: {
-          type: "string",
+          type: 'string',
           optional: false,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "course",
-            "courseName"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'course', 'courseName'>,
         },
         roomId: {
-          type: "string",
+          type: 'string',
           optional: false,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "course",
-            "roomId"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'course', 'roomId'>,
         },
         userId: {
-          type: "string",
+          type: 'string',
           optional: false,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "course",
-            "userId"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'course', 'userId'>,
         },
         calendarId: {
-          type: "string",
+          type: 'string',
           optional: false,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "course",
-            "calendarId"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'course', 'calendarId'>,
         },
         calendarEventId: {
-          type: "string",
+          type: 'string',
           optional: false,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "course",
-            "calendarEventId"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'course', 'calendarEventId'>,
         },
         calendarEventLastModified: {
-          type: "number",
+          type: 'number',
           optional: false,
           customType: null as unknown as ZeroCustomType<
             ZeroSchema,
-            "course",
-            "calendarEventLastModified"
+            'course',
+            'calendarEventLastModified'
           >,
         },
         createdAt: {
-          type: "number",
+          type: 'number',
           optional: true,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "course",
-            "createdAt"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'course', 'createdAt'>,
         },
         updatedAt: {
-          type: "number",
+          type: 'number',
           optional: true,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "course",
-            "updatedAt"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'course', 'updatedAt'>,
         },
       },
-      primaryKey: ["id"],
+      primaryKey: ['id'],
     },
     courseSession: {
-      name: "courseSession",
+      name: 'courseSession',
       columns: {
         id: {
-          type: "string",
+          type: 'string',
           optional: false,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "courseSession",
-            "id"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'courseSession', 'id'>,
         },
         courseId: {
-          type: "string",
+          type: 'string',
           optional: false,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "courseSession",
-            "courseId"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'courseSession', 'courseId'>,
         },
         createdAt: {
-          type: "number",
+          type: 'number',
           optional: true,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "courseSession",
-            "createdAt"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'courseSession', 'createdAt'>,
         },
         updatedAt: {
-          type: "number",
+          type: 'number',
           optional: true,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "courseSession",
-            "updatedAt"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'courseSession', 'updatedAt'>,
         },
         attendance: {
-          type: "string",
+          type: 'string',
           optional: true,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "courseSession",
-            "attendance"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'courseSession', 'attendance'>,
         },
         startTime: {
-          type: "number",
+          type: 'number',
           optional: false,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "courseSession",
-            "startTime"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'courseSession', 'startTime'>,
         },
         endTime: {
-          type: "number",
+          type: 'number',
           optional: false,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "courseSession",
-            "endTime"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'courseSession', 'endTime'>,
         },
       },
-      primaryKey: ["id"],
+      primaryKey: ['id'],
     },
     jwks: {
-      name: "jwks",
+      name: 'jwks',
       columns: {
         id: {
-          type: "string",
+          type: 'string',
           optional: false,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "jwks",
-            "id"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'jwks', 'id'>,
         },
         publicKey: {
-          type: "string",
+          type: 'string',
           optional: false,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "jwks",
-            "publicKey"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'jwks', 'publicKey'>,
         },
         privateKey: {
-          type: "string",
+          type: 'string',
           optional: false,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "jwks",
-            "privateKey"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'jwks', 'privateKey'>,
         },
         createdAt: {
-          type: "number",
+          type: 'number',
           optional: false,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "jwks",
-            "createdAt"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'jwks', 'createdAt'>,
         },
       },
-      primaryKey: ["id"],
+      primaryKey: ['id'],
     },
     room: {
-      name: "room",
+      name: 'room',
       columns: {
         id: {
-          type: "string",
+          type: 'string',
           optional: false,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "room",
-            "id"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'room', 'id'>,
         },
         buildingCode: {
-          type: "string",
+          type: 'string',
           optional: false,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "room",
-            "buildingCode"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'room', 'buildingCode'>,
         },
         roomNumber: {
-          type: "string",
+          type: 'string',
           optional: false,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "room",
-            "roomNumber"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'room', 'roomNumber'>,
         },
         latitude: {
-          type: "number",
+          type: 'number',
           optional: false,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "room",
-            "latitude"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'room', 'latitude'>,
         },
         longitude: {
-          type: "number",
+          type: 'number',
           optional: false,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "room",
-            "longitude"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'room', 'longitude'>,
         },
         level: {
-          type: "number",
+          type: 'number',
           optional: false,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "room",
-            "level"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'room', 'level'>,
         },
         concept3dMapId: {
-          type: "number",
+          type: 'number',
           optional: false,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "room",
-            "concept3dMapId"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'room', 'concept3dMapId'>,
         },
         concept3dShape: {
-          type: "json",
+          type: 'json',
           optional: true,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "room",
-            "concept3dShape"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'room', 'concept3dShape'>,
         },
         concept3dCategoryName: {
-          type: "string",
+          type: 'string',
           optional: false,
           customType: null as unknown as ZeroCustomType<
             ZeroSchema,
-            "room",
-            "concept3dCategoryName"
+            'room',
+            'concept3dCategoryName'
           >,
         },
         concept3dLocationId: {
-          type: "number",
+          type: 'number',
           optional: false,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "room",
-            "concept3dLocationId"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'room', 'concept3dLocationId'>,
         },
         concept3dCategoryId: {
-          type: "number",
+          type: 'number',
           optional: false,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "room",
-            "concept3dCategoryId"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'room', 'concept3dCategoryId'>,
         },
         concept3dMarkId: {
-          type: "number",
+          type: 'number',
           optional: false,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "room",
-            "concept3dMarkId"
-          >,
-          serverName: "concept3dRoomId",
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'room', 'concept3dMarkId'>,
+          serverName: 'concept3dRoomId',
         },
         createdAt: {
-          type: "number",
+          type: 'number',
           optional: true,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "room",
-            "createdAt"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'room', 'createdAt'>,
         },
         updatedAt: {
-          type: "number",
+          type: 'number',
           optional: true,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "room",
-            "updatedAt"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'room', 'updatedAt'>,
         },
       },
-      primaryKey: ["id"],
+      primaryKey: ['id'],
     },
     session: {
-      name: "session",
+      name: 'session',
       columns: {
         id: {
-          type: "string",
+          type: 'string',
           optional: false,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "session",
-            "id"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'session', 'id'>,
         },
         expiresAt: {
-          type: "number",
+          type: 'number',
           optional: false,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "session",
-            "expiresAt"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'session', 'expiresAt'>,
         },
         token: {
-          type: "string",
+          type: 'string',
           optional: false,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "session",
-            "token"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'session', 'token'>,
         },
         ipAddress: {
-          type: "string",
+          type: 'string',
           optional: true,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "session",
-            "ipAddress"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'session', 'ipAddress'>,
         },
         userAgent: {
-          type: "string",
+          type: 'string',
           optional: true,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "session",
-            "userAgent"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'session', 'userAgent'>,
         },
         userId: {
-          type: "string",
+          type: 'string',
           optional: false,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "session",
-            "userId"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'session', 'userId'>,
         },
         createdAt: {
-          type: "number",
+          type: 'number',
           optional: true,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "session",
-            "createdAt"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'session', 'createdAt'>,
         },
         updatedAt: {
-          type: "number",
+          type: 'number',
           optional: true,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "session",
-            "updatedAt"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'session', 'updatedAt'>,
         },
       },
-      primaryKey: ["id"],
+      primaryKey: ['id'],
     },
     user: {
-      name: "user",
+      name: 'user',
       columns: {
         id: {
-          type: "string",
+          type: 'string',
           optional: false,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "user",
-            "id"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'user', 'id'>,
         },
         name: {
-          type: "string",
+          type: 'string',
           optional: false,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "user",
-            "name"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'user', 'name'>,
         },
         email: {
-          type: "string",
+          type: 'string',
           optional: false,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "user",
-            "email"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'user', 'email'>,
         },
         emailVerified: {
-          type: "boolean",
+          type: 'boolean',
           optional: false,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "user",
-            "emailVerified"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'user', 'emailVerified'>,
         },
         image: {
-          type: "string",
+          type: 'string',
           optional: true,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "user",
-            "image"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'user', 'image'>,
         },
         createdAt: {
-          type: "number",
+          type: 'number',
           optional: true,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "user",
-            "createdAt"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'user', 'createdAt'>,
         },
         updatedAt: {
-          type: "number",
+          type: 'number',
           optional: true,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "user",
-            "updatedAt"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'user', 'updatedAt'>,
         },
       },
-      primaryKey: ["id"],
+      primaryKey: ['id'],
     },
     verification: {
-      name: "verification",
+      name: 'verification',
       columns: {
         id: {
-          type: "string",
+          type: 'string',
           optional: false,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "verification",
-            "id"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'verification', 'id'>,
         },
         identifier: {
-          type: "string",
+          type: 'string',
           optional: false,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "verification",
-            "identifier"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'verification', 'identifier'>,
         },
         value: {
-          type: "string",
+          type: 'string',
           optional: false,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "verification",
-            "value"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'verification', 'value'>,
         },
         expiresAt: {
-          type: "number",
+          type: 'number',
           optional: false,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "verification",
-            "expiresAt"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'verification', 'expiresAt'>,
         },
         createdAt: {
-          type: "number",
+          type: 'number',
           optional: true,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "verification",
-            "createdAt"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'verification', 'createdAt'>,
         },
         updatedAt: {
-          type: "number",
+          type: 'number',
           optional: true,
-          customType: null as unknown as ZeroCustomType<
-            ZeroSchema,
-            "verification",
-            "updatedAt"
-          >,
+          customType: null as unknown as ZeroCustomType<ZeroSchema, 'verification', 'updatedAt'>,
         },
       },
-      primaryKey: ["id"],
+      primaryKey: ['id'],
     },
   },
   relationships: {
     account: {
       user: [
         {
-          sourceField: ["userId"],
-          destField: ["id"],
-          destSchema: "user",
-          cardinality: "one",
+          sourceField: ['userId'],
+          destField: ['id'],
+          destSchema: 'user',
+          cardinality: 'one',
         },
       ],
     },
     calendar: {
       user: [
         {
-          sourceField: ["userId"],
-          destField: ["id"],
-          destSchema: "user",
-          cardinality: "one",
+          sourceField: ['userId'],
+          destField: ['id'],
+          destSchema: 'user',
+          cardinality: 'one',
         },
       ],
     },
     course: {
       user: [
         {
-          sourceField: ["userId"],
-          destField: ["id"],
-          destSchema: "user",
-          cardinality: "one",
+          sourceField: ['userId'],
+          destField: ['id'],
+          destSchema: 'user',
+          cardinality: 'one',
         },
       ],
       room: [
         {
-          sourceField: ["roomId"],
-          destField: ["id"],
-          destSchema: "room",
-          cardinality: "one",
+          sourceField: ['roomId'],
+          destField: ['id'],
+          destSchema: 'room',
+          cardinality: 'one',
         },
       ],
     },
     courseSession: {
       course: [
         {
-          sourceField: ["courseId"],
-          destField: ["id"],
-          destSchema: "course",
-          cardinality: "one",
+          sourceField: ['courseId'],
+          destField: ['id'],
+          destSchema: 'course',
+          cardinality: 'one',
         },
       ],
     },
     session: {
       user: [
         {
-          sourceField: ["userId"],
-          destField: ["id"],
-          destSchema: "user",
-          cardinality: "one",
+          sourceField: ['userId'],
+          destField: ['id'],
+          destSchema: 'user',
+          cardinality: 'one',
         },
       ],
     },
     user: {
       sessions: [
         {
-          sourceField: ["id"],
-          destField: ["userId"],
-          destSchema: "session",
-          cardinality: "many",
+          sourceField: ['id'],
+          destField: ['userId'],
+          destSchema: 'session',
+          cardinality: 'many',
         },
       ],
       accounts: [
         {
-          sourceField: ["id"],
-          destField: ["userId"],
-          destSchema: "account",
-          cardinality: "many",
+          sourceField: ['id'],
+          destField: ['userId'],
+          destSchema: 'account',
+          cardinality: 'many',
         },
       ],
       courses: [
         {
-          sourceField: ["id"],
-          destField: ["userId"],
-          destSchema: "course",
-          cardinality: "many",
+          sourceField: ['id'],
+          destField: ['userId'],
+          destSchema: 'course',
+          cardinality: 'many',
         },
       ],
     },
   },
-} as const;
+} as const
 
 /**
  * Represents the Zero schema type.
  * This type is auto-generated from your Drizzle schema definition.
  */
-export type Schema = typeof schema;
+export type Schema = typeof schema

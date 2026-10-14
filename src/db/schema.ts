@@ -90,6 +90,9 @@ export const jwks = pgTable('jwks', {
   publicKey: text('publicKey').notNull(),
   privateKey: text('privateKey').notNull(),
   createdAt: timestamp('createdAt').notNull(),
+  expiresAt: timestamp('expiresAt'),
+  alg: text('alg'),
+  crv: text('crv'),
 })
 
 export const course = pgTable('course', {

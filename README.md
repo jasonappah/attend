@@ -38,10 +38,12 @@ For login, we have set up Github auth with [Better Auth](https://www.better-auth
 in three separate tabs:
 
 ```
-yarn docker up
-yarn zero
+docker compose up postgres
+yarn migrate:run && yarn zero:dev
 yarn dev
 ```
+
+`yarn dev` serves on port 8081 by default. To run on another port (e.g. a second checkout), pass `--port` and point `ONE_SERVER_URL` / `ZERO_AUTH_JWKS_URL` in `.env` at the same port. Google OAuth only works on ports whose `/api/auth/callback/google` redirect URI is registered on the OAuth client.
 
 to run tauri you can run this instead of `yarn dev`:
 

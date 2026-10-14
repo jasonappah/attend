@@ -5,8 +5,7 @@ import {
   type TableSchema,
   definePermissions,
 } from '@rocicorp/zero'
-import { schema, type Schema } from "./schema.gen";
-
+import { type Schema, schema } from './schema.gen'
 
 // Define the structure of your JWT auth data
 type AuthData = {
@@ -84,5 +83,5 @@ export type Course = Row<typeof schema.tables.course>
 export type CourseSession = Row<typeof schema.tables.courseSession>
 export type Room = Row<typeof schema.tables.room>
 
-export type {Schema}
-export {schema}
+export type { Schema }
+export { schema }

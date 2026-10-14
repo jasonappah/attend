@@ -1,5 +1,5 @@
 import { useZero } from '@rocicorp/zero/react'
-import { AlertCircle, Check, ChevronDown, ChevronUp, Moon, X } from '@tamagui/lucide-icons'
+import { AlertCircle, Check, ChevronDown, ChevronUp, Moon, X } from '@tamagui/lucide-icons-2'
 import { addDays, format, isSameDay, startOfWeek } from 'date-fns'
 import { useState } from 'react'
 import { Adapt, Card, ScrollView, Select, Text, XStack, YStack } from 'tamagui'
@@ -135,7 +135,7 @@ const AttendanceSelect = ({
             </Select.Sheet.ScrollView>
           </Select.Sheet.Frame>
           <Sheet.Overlay
-            animation="lazy"
+            transition="lazy"
             enterStyle={{ opacity: 0 }}
             exitStyle={{ opacity: 0 }}
           />

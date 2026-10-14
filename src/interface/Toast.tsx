@@ -32,7 +32,7 @@ export const ToastDisplay = () => {
       y={0}
       opacity={1}
       scale={1}
-      animation="100ms"
+      transition="100ms"
       viewportName={currentToast.viewportName}
     >
       <YStack>
