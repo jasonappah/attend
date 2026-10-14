@@ -27,13 +27,13 @@ export const syncCoursesFromCalendar = async (
   const ics = await ical.async.fromURL(calendarFromDb.upstreamUrl)
 
   // TODO: maybe need to have a concept of semesters
-  const classStartDate = new Date(2024, 7, 1)
-  const classEndDate = new Date(2024, 11, 31)
+  const classStartDate = new Date(2026, 7)
+  const classEndDate = new Date(2027, 1)
 
   const dateInRange = (date: Date) => date > classStartDate && date < classEndDate
 
   type Out = [string, ical.VEvent & { details: CourseDetails }][]
-  const icsEventsForFall2024Courses = Object.fromEntries(
+  const icsEventsForCurrentTermCourses = Object.fromEntries(
     (Object.entries(ics).filter(([, item]) => item.type === 'VEVENT') as [string, ical.VEvent][])
       .filter(([, evt]) => dateInRange(evt.start))
       .reduce((acc, [key, evt]) => {
@@ -44,7 +44,7 @@ export const syncCoursesFromCalendar = async (
       }, [] as Out)
   )
 
-  if (Object.keys(icsEventsForFall2024Courses).length === 0) {
+  if (Object.keys(icsEventsForCurrentTermCourses).length === 0) {
     logger.warn('No courses found in ics')
     return
   }
@@ -53,7 +53,7 @@ export const syncCoursesFromCalendar = async (
   const insertedCourses = await db
     .insert(course)
     .values(
-      Object.values(icsEventsForFall2024Courses).map((evt) => {
+      Object.values(icsEventsForCurrentTermCourses).map((evt) => {
         const [buildingCode, roomNumber] = evt.details.roomNumber.split(' ')
         const room = rooms.find(
           (r) => r.buildingCode === buildingCode && r.roomNumber === roomNumber
@@ -92,7 +92,7 @@ export const syncCoursesFromCalendar = async (
       logger.warn('Missing calendarEventId', course)
       continue
     }
-    const evt = icsEventsForFall2024Courses[course.calendarEventId]
+    const evt = icsEventsForCurrentTermCourses[course.calendarEventId]
     if (!evt.rrule) {
       logger.trace('Missing rrule', evt)
       continue

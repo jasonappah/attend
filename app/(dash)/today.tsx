@@ -42,7 +42,7 @@ const columns = [
 ]
 
 export default function TodayPage() {
-  const now = new Date(2024, 10, 19)
+  const now = new Date()
   const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate())
   const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1)
   const [rawSessionsToday] = useQuery(
