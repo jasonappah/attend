@@ -1,4 +1,4 @@
-import { drizzleZeroConfig } from "drizzle-zero";
-import * as drizzleSchema from "../db/schema";
+import { drizzleZeroConfig } from 'drizzle-zero'
+import * as drizzleSchema from '../db/schema'
 
-export const schema = drizzleZeroConfig(drizzleSchema, {});
+export const schema = drizzleZeroConfig(drizzleSchema, {})

@@ -4,7 +4,13 @@
     "enabled": true
   },
   "files": {
-    "ignore": ["**/*/generated-new.ts", "**/*/generated-v2.ts", ".tamagui", "routes.d.ts"]
+    "ignore": [
+      "**/*/generated-new.ts",
+      "**/*/generated-v2.ts",
+      "src/zero/schema.gen.ts",
+      ".tamagui",
+      "routes.d.ts"
+    ]
   },
   "vcs": {
     "enabled": true,

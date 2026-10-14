@@ -1,4 +1,4 @@
-import { useZero, useQuery } from '@rocicorp/zero/react'
+import { useQuery, useZero } from '@rocicorp/zero/react'
 import {
   createColumnHelper,
   flexRender,
@@ -44,7 +44,8 @@ export default function TodayPage() {
   const now = new Date(2024, 10, 19)
   const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate())
   const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1)
-  const [rawSessionsToday] = useQuery(zero.query.courseSession
+  const [rawSessionsToday] = useQuery(
+    zero.query.courseSession
       .where('startTime', '>=', startOfDay.getTime())
       .where('endTime', '<', endOfDay.getTime())
       .related('course', (q) => q.related('room'))

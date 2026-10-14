@@ -12,10 +12,9 @@ import config from '~/tamagui/tamagui.config'
 import { TRPCProvider } from '~/trpc/provider'
 import { useZeroEmit, zero } from '~/zero/zero'
 
-
 export default function Layout() {
   return (
-    <html lang='en'>
+    <html lang="en">
       <head>
         <meta charSet="utf-8" />
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
@@ -28,24 +27,21 @@ export default function Layout() {
         <link rel="icon" href="/favicon.svg" />
       </head>
 
-
       <LoadProgressBar startDelay={1_000} />
 
       <AuthEffects />
 
-      
-        <DataProvider>
-          <SchemeProvider>
-            <ThemeProvider>
-              <TRPCProvider>
-                <View>
-                  <Slot />
-                </View>
-              </TRPCProvider>
-            </ThemeProvider>
-          </SchemeProvider>
-        </DataProvider>
-     
+      <DataProvider>
+        <SchemeProvider>
+          <ThemeProvider>
+            <TRPCProvider>
+              <View>
+                <Slot />
+              </View>
+            </TRPCProvider>
+          </ThemeProvider>
+        </SchemeProvider>
+      </DataProvider>
     </html>
   )
 }

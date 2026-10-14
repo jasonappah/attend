@@ -1,3 +1,4 @@
+import { expo } from '@better-auth/expo'
 import { betterAuth } from 'better-auth'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
 import { bearer, jwt } from 'better-auth/plugins'
@@ -36,6 +37,9 @@ export const auth = betterAuth({
     }),
 
     bearer(),
+
+    // handles the attend:// deep-link redirect + origin checks for the native app
+    expo(),
   ],
   databaseHooks: {
     user: {
@@ -49,7 +53,7 @@ export const auth = betterAuth({
       generateId() {
         return randomID()
       },
-    }
+    },
   },
   socialProviders: {
     google: {
