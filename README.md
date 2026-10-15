@@ -43,7 +43,9 @@ yarn migrate:run && yarn zero:dev
 yarn dev
 ```
 
-`yarn dev` serves on port 8081 by default. To run on another port (e.g. a second checkout), pass `--port` and point `ONE_SERVER_URL` / `ZERO_AUTH_JWKS_URL` in `.env` at the same port. Google OAuth only works on ports whose `/api/auth/callback/google` redirect URI is registered on the OAuth client.
+`yarn dev` serves on port 8081 by default. To run on another port (e.g. a second checkout), pass `--port` and point `ONE_SERVER_URL` in `.env` at the same port (docker compose derives `ZERO_QUERY_URL`/`ZERO_MUTATE_URL` from it). Google OAuth only works on ports whose `/api/auth/callback/google` redirect URI is registered on the OAuth client.
+
+Reads and writes now go through the app's Zero query/mutate endpoints (`/api/zero/query`, `/api/zero/mutate`), which `zero-cache` calls back into — so `yarn dev` must be running for sync to work.
 
 to run tauri you can run this instead of `yarn dev`:
 

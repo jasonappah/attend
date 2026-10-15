@@ -32,10 +32,17 @@ services:
     depends_on:
       db-migrator-dev:
         condition: service_completed_successfully
+    env_file:
+      - .env
     volumes:
       - .:/app
       - zero-cache-node-modules:/app/node_modules
     working_dir: /app
+    environment:
+      - ZERO_QUERY_URL=${ONE_SERVER_URL:-http://localhost:8081}/api/zero/query
+      - ZERO_MUTATE_URL=${ONE_SERVER_URL:-http://localhost:8081}/api/zero/mutate
+      - ZERO_QUERY_FORWARD_COOKIES=true
+      - ZERO_MUTATE_FORWARD_COOKIES=true
     command: sh -c "corepack enable && yarn --immutable && yarn run zero:dev"
 
   db-migrator-dev:
@@ -43,6 +50,11 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    env_file:
+      - .env
+    # reach postgres over the compose network (this service has no host networking)
+    environment:
+      - ZERO_UPSTREAM_DB=postgres://user:password@postgres:5432/postgres
     volumes:
       - .:/app
       - zero-cache-node-modules:/app/node_modules

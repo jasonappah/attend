@@ -5,7 +5,8 @@ import { useState } from 'react'
 import { Adapt, Card, ScrollView, Select, Text, XStack, YStack } from 'tamagui'
 import { LinearGradient } from 'tamagui/linear-gradient'
 import type { Attendance } from '~/db/schema'
-import type { Course, CourseSession, Schema } from '~/zero/schema'
+import type { Course, CourseSession } from '~/zero/schema'
+import { mutators } from '~/zero/mutators'
 
 type AttendanceHistoryProps = {
   courses: readonly Course[]
@@ -95,13 +96,15 @@ const AttendanceSelect = ({
   sessionId: string
   currentStatus: AttendanceStatus
 }) => {
-  const zero = useZero<Schema>()
+  const zero = useZero()
   const currentOption = attendanceOptions.find((opt) => opt.value === currentStatus)
   const handleAttendanceUpdate = async (value: string) => {
-    await zero.mutate.courseSession.update({
-      id: sessionId,
-      attendance: value === '' ? undefined : (value as Attendance),
-    })
+    await zero.mutate(
+      mutators.courseSession.updateAttendance({
+        id: sessionId,
+        attendance: value === '' ? null : (value as Attendance),
+      })
+    )
   }
 
   return (

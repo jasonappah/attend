@@ -1,4 +1,4 @@
-import { useQuery, useZero } from '@rocicorp/zero/react'
+import { useQuery } from '@rocicorp/zero/react'
 import {
   createColumnHelper,
   flexRender,
@@ -9,9 +9,10 @@ import { Fragment, useMemo, useRef } from 'react'
 import { H2, Paragraph, Text } from 'tamagui'
 import { Table } from '~/interface/Table'
 
-import type { Course, CourseSession, Room, Schema } from '~/zero/schema'
+import type { Course, CourseSession, Room } from '~/zero/schema'
+import { queries } from '~/zero/queries'
 
-const columnHelper = createColumnHelper<CourseSession & { course: Course & { room: Room[] } }>()
+const columnHelper = createColumnHelper<CourseSession & { course: Course & { room: Room | null } }>()
 const columns = [
   columnHelper.accessor('course.courseName', {
     header: 'Course',
@@ -20,7 +21,8 @@ const columns = [
   columnHelper.accessor('course.room', {
     header: 'Room',
     cell: (info) => {
-      const [room] = info.getValue()
+      const room = info.getValue()
+      if (!room) return '—'
       return `${room.buildingCode} ${room.roomNumber}`
     },
   }),
@@ -40,15 +42,11 @@ const columns = [
 ]
 
 export default function TodayPage() {
-  const zero = useZero<Schema>()
   const now = new Date(2024, 10, 19)
   const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate())
   const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1)
   const [rawSessionsToday] = useQuery(
-    zero.query.courseSession
-      .where('startTime', '>=', startOfDay.getTime())
-      .where('endTime', '<', endOfDay.getTime())
-      .related('course', (q) => q.related('room'))
+    queries.sessionsToday({ start: startOfDay.getTime(), end: endOfDay.getTime() })
   )
 
   const sessionsToday = useMemo(() => {

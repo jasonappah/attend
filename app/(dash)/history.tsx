@@ -2,28 +2,30 @@ import { useQuery, useZero } from '@rocicorp/zero/react'
 import { Fragment } from 'react/jsx-runtime'
 import { Button, H2 } from 'tamagui'
 import { AttendanceHistory } from '~/interface/attendance-history/attendance-history'
-import type { Schema } from '~/zero/schema'
+import { mutators } from '~/zero/mutators'
+import { queries } from '~/zero/queries'
 
 export default function AttendanceHistoryPage() {
-  const zero = useZero<Schema>()
-  const [courses] = useQuery(zero.query.course.orderBy('courseName', 'asc'))
-  const [sessions] = useQuery(zero.query.courseSession.orderBy('startTime', 'asc'))
+  const zero = useZero()
+  const [courses] = useQuery(queries.courses())
+  const [sessions] = useQuery(queries.sessions())
 
   return (
     <Fragment>
       <H2>Attendance History</H2>
       <Button
         onPress={async () => {
-          await zero.mutateBatch(async (trx) => {
-            for (const session of sessions) {
-              const rand = Math.random()
-              await trx.courseSession.update({
-                id: session.id,
-                // attendance: rand > 1 / 2 ? "present" : "absent",
-                attendance: rand > 2 / 3 ? 'present' : rand > 1 / 3 ? 'absent' : null,
-              })
+          const randomized = sessions.map((session) => {
+            const rand = Math.random()
+            return {
+              id: session.id,
+              attendance: (rand > 2 / 3 ? 'present' : rand > 1 / 3 ? 'absent' : null) as
+                | 'present'
+                | 'absent'
+                | null,
             }
           })
+          await zero.mutate(mutators.courseSession.updateAttendanceBulk({ sessions: randomized }))
         }}
       >
         Randomize Attendance
