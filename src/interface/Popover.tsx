@@ -11,9 +11,8 @@ export const PopoverContent = ({
       borderWidth={1}
       items="flex-start"
       borderColor="borderColor"
-      enterStyle={{ y: -10, opacity: 0 }}
-      exitStyle={{ y: -10, opacity: 0 }}
-      elevation="5"
+      y="0 enter:-10 exit:-10"
+      opacity="1 enter:0 exit:0"
       transition="quickLessBouncy"
       p={0}
       {...props}

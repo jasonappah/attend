@@ -53,10 +53,10 @@ export default function DashLayout() {
         <Button onPress={() => syncRoomsFromConcept3dMap.mutate()}>
           Resync Rooms from Concept3D Map
         </Button>
-        <Link href="/today">
+        <Link href="/today" asChild>
           <Button>Today</Button>
         </Link>
-        <Link href="/history">
+        <Link href="/history" asChild>
           <Button>History</Button>
         </Link>
       </XStack>

@@ -39,7 +39,7 @@ export default function HomePage() {
       {params.error && <Paragraph>{params.error}</Paragraph>}
 
       {loggedIn ? (
-        <Link href="/today">
+        <Link href="/today" asChild>
           <Button>Continue</Button>
         </Link>
       ) : (

@@ -44,7 +44,7 @@ export function AttendanceHistory({ courses, sessions }: AttendanceHistoryProps)
   }
 
   return (
-    <Card elevation={2} borderWidth={1} borderColor="borderColor" p="4" width="100%">
+    <Card borderWidth={1} borderColor="borderColor" p="4" width="100%">
       <ScrollView horizontal>
         <XStack>
           <YStack>
@@ -118,7 +118,9 @@ const AttendanceSelect = ({
           {currentOption?.icon}
           <Text ml="2">{currentOption?.label}</Text>
         </Select.Value>
-        <Select.Icon><ChevronDown size={16} /></Select.Icon>
+        <Select.Icon>
+          <ChevronDown size={16} />
+        </Select.Icon>
       </Select.Trigger>
 
       {/* <Adapt when="sm" platform="touch" >
@@ -160,7 +162,8 @@ const AttendanceSelect = ({
           <LinearGradient
             start={[0, 0]}
             end={[0, 1]}
-            fullscreen
+            position="absolute"
+            inset={0}
             colors={['background', 'backgroundTransparent']}
             rounded="4"
           />
@@ -194,7 +197,8 @@ const AttendanceSelect = ({
           <LinearGradient
             start={[0, 0]}
             end={[0, 1]}
-            fullscreen
+            position="absolute"
+            inset={0}
             colors={['backgroundTransparent', 'background']}
             rounded="4"
           />

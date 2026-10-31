@@ -1,196 +1,96 @@
-// https://tamagui.dev/bento/elements/tables
+import { createContext, useContext } from 'react'
+import { View, withStaticProperties } from 'tamagui'
+import type { GetProps, SizeTokens } from 'tamagui'
 
-import type { SizeTokens } from 'tamagui'
-import { View as ThemeableStack, createStyledContext, styled, withStaticProperties } from 'tamagui'
-
-type AlignCells = {
-  y: 'center' | 'start' | 'end'
-  x: 'center' | 'start' | 'end'
+type Alignment = { x: 'start' | 'center' | 'end'; y: 'start' | 'center' | 'end' }
+type TableSettings = {
+  cellWidth: SizeTokens
+  cellHeight: SizeTokens
+  alignHeaderCells: Alignment
+  alignCells: Alignment
 }
-
-type AlignHeaderCells = AlignCells
-
-const TableContext = createStyledContext<{
-  cellWidth: SizeTokens | number
-  cellHeight: SizeTokens | number
-  alignHeaderCells: {
-    y: 'center' | 'start' | 'end'
-    x: 'center' | 'start' | 'end'
-  }
-  alignCells: {
-    y: 'center' | 'start' | 'end'
-    x: 'center' | 'start' | 'end'
-  }
-  borderColor: string
-}>({
+const defaults: TableSettings = {
   cellWidth: '8',
   cellHeight: '8',
   alignHeaderCells: { x: 'start', y: 'center' },
   alignCells: { x: 'center', y: 'center' },
-  borderColor: 'borderColor',
-})
+}
+const TableContext = createContext(defaults)
+type ViewProps = GetProps<typeof View>
+type Location = 'first' | 'middle' | 'last'
 
-/** Table Components */
-const Row = styled(ThemeableStack, {
-  render: 'tr',
-  flexDirection: 'row',
-  context: TableContext,
-  variants: {
-    rowLocation: {
-      first: () => {
-        return {
-          borderBottomWidth: 0.5,
-        }
-      },
-      last: () => {
-        return {
-          borderBottomWidth: 0,
-        }
-      },
-      middle: () => {
-        return {
-          borderBottomWidth: 0.5,
-        }
-      },
-    },
-  },
-})
+function TableRoot({
+  cellWidth = defaults.cellWidth,
+  cellHeight = defaults.cellHeight,
+  alignHeaderCells = defaults.alignHeaderCells,
+  alignCells = defaults.alignCells,
+  children,
+  ...props
+}: ViewProps & Partial<TableSettings>) {
+  return (
+    <TableContext.Provider value={{ cellWidth, cellHeight, alignHeaderCells, alignCells }}>
+      <View render="table" borderWidth={1} bg="background" {...props}>
+        {children}
+      </View>
+    </TableContext.Provider>
+  )
+}
 
-const Cell = styled(ThemeableStack, {
-  render: 'td',
-  flexDirection: 'row',
-  context: TableContext,
-  grow: 0,
-  shrink: 1,
-  variants: {
-    cellWidth: {
-      '...size': (name, { tokens }) => {
-        return {
-          width: tokens.size[name as keyof typeof tokens.size],
-        }
-      },
-    },
-    cellHeight: {
-      '...size': (name, { tokens }) => {
-        return {
-          minH: tokens.size[name as keyof typeof tokens.size],
-        }
-      },
-    },
-    alignCells: (val: AlignCells) => {
-      return {
-        items: val.y === 'center' ? 'center' : `flex-${val.y}`,
-        justify: val.x === 'center' ? 'center' : `flex-${val.x}`,
-      }
-    },
-    cellLocation: {
-      first: () => {
-        return {}
-      },
-      last: () => {
-        return {
-          borderLeftWidth: 0.5,
-        }
-      },
-      middle: () => {
-        return {
-          borderLeftWidth: 0.5,
-        }
-      },
-    },
-  } as const,
-})
+function Row({ rowLocation, ...props }: ViewProps & { rowLocation?: Location }) {
+  return (
+    <View
+      render="tr"
+      flexDirection="row"
+      borderBottomWidth={rowLocation === 'last' ? 0 : 0.5}
+      {...props}
+    />
+  )
+}
 
-const HeaderCell = styled(ThemeableStack, {
-  render: 'th',
-  flexDirection: 'row',
-  context: TableContext,
-  grow: 0,
-  shrink: 1,
-  py: '3',
+function Cell({ cellLocation, ...props }: ViewProps & { cellLocation?: Location }) {
+  const { cellWidth, cellHeight, alignCells } = useContext(TableContext)
+  return (
+    <View
+      render="td"
+      flexDirection="row"
+      grow={0}
+      shrink={1}
+      width={cellWidth}
+      minH={cellHeight}
+      items={alignCells.y === 'center' ? 'center' : `flex-${alignCells.y}`}
+      justify={alignCells.x === 'center' ? 'center' : `flex-${alignCells.x}`}
+      borderLeftWidth={cellLocation === 'first' ? 0 : 0.5}
+      {...props}
+    />
+  )
+}
 
-  variants: {
-    cellWidth: {
-      '...size': (name, { tokens }) => {
-        return {
-          width: tokens.size[name as keyof typeof tokens.size],
-        }
-      },
-    },
+function HeaderCell({ cellLocation, ...props }: ViewProps & { cellLocation?: Location }) {
+  const { cellWidth, alignHeaderCells } = useContext(TableContext)
+  return (
+    <View
+      render="th"
+      flexDirection="row"
+      grow={0}
+      shrink={1}
+      py="3"
+      width={cellWidth}
+      items={alignHeaderCells.y === 'center' ? 'center' : `flex-${alignHeaderCells.y}`}
+      justify={alignHeaderCells.x === 'center' ? 'center' : `flex-${alignHeaderCells.x}`}
+      borderLeftWidth={cellLocation === 'first' ? 0 : 1}
+      {...props}
+    />
+  )
+}
 
-    alignHeaderCells: (val: AlignHeaderCells) => {
-      return {
-        items: val.y === 'center' ? 'center' : `flex-${val.y}`,
-        justify: val.x === 'center' ? 'center' : `flex-${val.x}`,
-      }
-    },
+const Head = (props: ViewProps) => (
+  <View render="thead" flexDirection="column" shrink={1} {...props} />
+)
+const Body = (props: ViewProps) => (
+  <View render="tbody" flexDirection="column" shrink={1} {...props} />
+)
+const Foot = (props: ViewProps) => (
+  <View render="tfoot" flexDirection="column" shrink={1} {...props} />
+)
 
-    cellLocation: {
-      first: () => {
-        return {}
-      },
-      last: () => {
-        return {
-          borderLeftWidth: 1,
-        }
-      },
-      middle: () => {
-        return {
-          borderLeftWidth: 1,
-        }
-      },
-    },
-  } as const,
-})
-
-const TableBody = styled(ThemeableStack, {
-  render: 'tbody',
-  flexDirection: 'column',
-  context: TableContext,
-  shrink: 1,
-})
-
-const TableHead = styled(ThemeableStack, {
-  render: 'thead',
-  flexDirection: 'column',
-  context: TableContext,
-  shrink: 1,
-})
-
-const TableFoot = styled(ThemeableStack, {
-  render: 'tfoot',
-  flexDirection: 'column',
-  context: TableContext,
-  shrink: 1,
-})
-
-const TableComp = styled(ThemeableStack, {
-  render: 'table',
-  context: TableContext,
-  borderWidth: 1,
-  bg: 'background',
-  variants: {
-    /** just added these empty variants to avoid ts erros on Table */
-    cellWidth: {
-      '...size': () => {
-        return {}
-      },
-    },
-    cellHeight: {
-      '...size': () => {
-        return {}
-      },
-    },
-    alignHeaderCells: (_val) => ({}),
-    alignCells: (_val) => ({}),
-  },
-})
-
-export const Table = withStaticProperties(TableComp, {
-  Head: TableHead,
-  Body: TableBody,
-  Row,
-  Cell,
-  HeaderCell,
-  Foot: TableFoot,
-})
+export const Table = withStaticProperties(TableRoot, { Head, Body, Foot, Row, Cell, HeaderCell })

@@ -12,7 +12,9 @@ import { Table } from '~/interface/Table'
 import type { Course, CourseSession, Room } from '~/zero/schema'
 import { queries } from '~/zero/queries'
 
-const columnHelper = createColumnHelper<CourseSession & { course: Course & { room: Room | null } }>()
+const columnHelper = createColumnHelper<
+  CourseSession & { course: Course & { room: Room | null } }
+>()
 const columns = [
   columnHelper.accessor('course.courseName', {
     header: 'Course',
@@ -126,9 +128,7 @@ export default function TodayPage() {
               rowCounter.current++
               return (
                 <Table.Row
-                  hoverStyle={{
-                    bg: 'color2',
-                  }}
+                  bg="hover:color2"
                   rowLocation={
                     rowCounter.current === 0
                       ? 'first'
@@ -146,7 +146,7 @@ export default function TodayPage() {
                       justify="flex-start"
                       shrink={3}
                     >
-                      <Text theme="alt1">
+                      <Text color="color10">
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </Text>
                     </Table.Cell>
