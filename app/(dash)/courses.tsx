@@ -63,8 +63,7 @@ function CourseCard({
   const metrics = [
     { label: lastWeek ? 'Last week' : 'This week', value: attendanceRate(recordedWeek) },
     { label: 'This month', value: attendanceRate(monthSessions) },
-    { label: 'Term', value: courseRate },
-    { label: 'Course', value: courseRate },
+    { label: 'Overall', value: courseRate },
   ]
 
   return (
@@ -93,10 +92,6 @@ function CourseCard({
           </YStack>
         ))}
       </XStack>
-      <Text fontSize="2" color="color10">
-        Based on recorded attendance. Term and course cover the same sessions.
-      </Text>
-
       <YStack gap="3">
         <XStack justify="space-between" items="center" flexWrap="wrap" gap="2">
           <YStack>
