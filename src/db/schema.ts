@@ -105,9 +105,7 @@ export const course = pgTable('course', {
   userId: uuid('userId')
     .notNull()
     .references(() => user.id),
-  calendarId: uuid('calendarId')
-    .references(() => calendar.id)
-    .notNull(),
+  calendarId: uuid('calendarId').references(() => calendar.id, { onDelete: 'set null' }),
   calendarEventId: text('calendarEventId').unique().notNull(),
   calendarEventLastModified: timestamp('calendarEventLastModified').notNull(),
   ...timestamps,

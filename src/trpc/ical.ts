@@ -80,11 +80,13 @@ export const syncCoursesFromCalendar = async (
     .onConflictDoUpdate({
       target: course.calendarEventId,
       set: {
+        calendarId: calendarFromDb.id,
         calendarEventName: sql.raw(`excluded."${course.calendarEventName.name}"`),
         calendarEventLastModified: sql.raw(`excluded."${course.calendarEventLastModified.name}"`),
         courseName: sql.raw(`excluded."${course.courseName.name}"`),
         roomId: sql.raw(`excluded."${course.roomId.name}"`),
       },
+      setWhere: eq(course.userId, calendarFromDb.userId),
     })
 
   for (const course of insertedCourses) {
