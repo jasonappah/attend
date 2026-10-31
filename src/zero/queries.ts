@@ -9,10 +9,20 @@ export const queries = defineQueries({
     zql.course.where('userId', ctx?.userId ?? '').orderBy('courseName', 'asc')
   ),
 
+  coursesWithRooms: defineQuery(({ ctx }) =>
+    zql.course.where('userId', ctx?.userId ?? '').orderBy('courseName', 'asc').related('room')
+  ),
+
   sessions: defineQuery(({ ctx }) =>
     zql.courseSession
       .whereExists('course', (q) => q.where('userId', ctx?.userId ?? ''))
       .orderBy('startTime', 'asc')
+  ),
+
+  sessionsWithRooms: defineQuery(({ ctx }) =>
+    zql.courseSession
+      .whereExists('course', (q) => q.where('userId', ctx?.userId ?? ''))
+      .related('course', (q) => q.related('room'))
   ),
 
   sessionsToday: defineQuery(

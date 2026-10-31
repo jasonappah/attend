@@ -1,6 +1,9 @@
 import { useQuery } from '@rocicorp/zero/react'
 import { useState } from 'react'
+import { Linking } from 'react-native'
 import { Button, H2, H3, Input, Paragraph, XStack, YStack } from 'tamagui'
+import { env } from '~/env'
+import { TimelineImport } from '~/timeline/TimelineImport'
 import { trpc } from '~/trpc/client'
 import { queries } from '~/zero/queries'
 
@@ -48,6 +51,12 @@ export default function SettingsPage() {
         {addCalendar.error && <Paragraph>{addCalendar.error.message}</Paragraph>}
         {removeCalendar.error && <Paragraph>{removeCalendar.error.message}</Paragraph>}
       </YStack>
+      <TimelineImport />
+      {env.NODE_ENV === 'development' && (
+        <Button onPress={() => void Linking.openURL('http://localhost:4983')}>
+          Open Drizzle Studio
+        </Button>
+      )}
       <Button onPress={() => addCoursesFromIcs.mutate()}>Resync Courses from Calendar</Button>
       <Button onPress={() => syncRoomsFromConcept3dMap.mutate()}>
         Resync Rooms from Concept3D Map

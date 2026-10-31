@@ -6,6 +6,26 @@ const attendanceSchema = z.enum(['present', 'absent']).nullable()
 
 export const mutators = defineMutators({
   courseSession: {
+    importAttendance: defineMutator(
+      z.object({
+        sessions: z
+          .array(z.object({ id: z.string(), attendance: z.enum(['present', 'absent']) }))
+          .max(5000),
+      }),
+      async ({ tx, ctx, args: { sessions } }) => {
+        if (!ctx?.userId) throw new Error('Not authenticated')
+        for (const session of sessions) {
+          const existing = await tx.run(
+            zql.courseSession
+              .where('id', session.id)
+              .whereExists('course', (q) => q.where('userId', ctx.userId))
+              .one()
+          )
+          if (!existing) throw new Error('Access denied')
+          if (existing.attendance === null) await tx.mutate.courseSession.update(session)
+        }
+      }
+    ),
     updateAttendance: defineMutator(
       z.object({
         id: z.string(),
