@@ -10,9 +10,11 @@ declare module 'one' {
         | `/`
         | `/(dash)`
         | `/(dash)/history`
+        | `/(dash)/settings`
         | `/(dash)/today`
         | `/_sitemap`
         | `/history`
+        | `/settings`
         | `/today`
       DynamicRoutes: never
       DynamicRouteTemplate: never

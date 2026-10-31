@@ -1,16 +1,12 @@
 import { type Href, Redirect, Slot, usePathname } from 'one'
-import { Button, SizableText, XStack, YStack, isWeb } from 'tamagui'
+import { Button, SizableText, XStack, YStack } from 'tamagui'
 import { authClient, useAuth } from '~/better-auth/authClient'
 import { Gravatar } from '~/interface/Gravatar'
 import { Link } from '~/interface/Link'
 import { ToggleThemeButton } from '~/interface/theme/ThemeToggleButton'
-import { isTauri } from '~/tauri/constants'
-import { trpc } from '~/trpc/client'
 export default function DashLayout() {
   const { user, loggedIn, isPending } = useAuth()
   const pathname = usePathname()
-  const addCoursesFromIcs = trpc.utils.addCoursesFromIcs.useMutation()
-  const syncRoomsFromConcept3dMap = trpc.utils.syncRoomsFromConcept3dMap.useMutation()
 
   if (isPending) {
     // TODO: render loading
@@ -49,15 +45,14 @@ export default function DashLayout() {
       </XStack>
 
       <XStack gap="4">
-        <Button onPress={() => addCoursesFromIcs.mutate()}>Resync Courses from Calendar</Button>
-        <Button onPress={() => syncRoomsFromConcept3dMap.mutate()}>
-          Resync Rooms from Concept3D Map
-        </Button>
         <Link href="/today" asChild>
           <Button>Today</Button>
         </Link>
         <Link href="/history" asChild>
           <Button>History</Button>
+        </Link>
+        <Link href="/settings" asChild>
+          <Button>Settings</Button>
         </Link>
       </XStack>
       <Slot />
