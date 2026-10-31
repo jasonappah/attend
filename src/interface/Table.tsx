@@ -1,7 +1,7 @@
 // https://tamagui.dev/bento/elements/tables
 
 import type { SizeTokens } from 'tamagui'
-import { ThemeableStack, createStyledContext, styled, withStaticProperties } from 'tamagui'
+import { View as ThemeableStack, createStyledContext, styled, withStaticProperties } from 'tamagui'
 
 type AlignCells = {
   y: 'center' | 'start' | 'end'
@@ -23,11 +23,11 @@ const TableContext = createStyledContext<{
   }
   borderColor: string
 }>({
-  cellWidth: '$8',
-  cellHeight: '$8',
+  cellWidth: '8',
+  cellHeight: '8',
   alignHeaderCells: { x: 'start', y: 'center' },
   alignCells: { x: 'center', y: 'center' },
-  borderColor: '$borderColor',
+  borderColor: 'borderColor',
 })
 
 /** Table Components */
@@ -107,7 +107,7 @@ const HeaderCell = styled(ThemeableStack, {
   context: TableContext,
   grow: 0,
   shrink: 1,
-  py: '$3',
+  py: '3',
 
   variants: {
     cellWidth: {
@@ -168,7 +168,7 @@ const TableComp = styled(ThemeableStack, {
   render: 'table',
   context: TableContext,
   borderWidth: 1,
-  bg: '$background',
+  bg: 'background',
   variants: {
     /** just added these empty variants to avoid ts erros on Table */
     cellWidth: {

@@ -1,6 +1,7 @@
 import { type Href, Redirect, useParams } from 'one'
 import { Button, H1, Paragraph, YStack } from 'tamagui'
-import { authClient, useAuth } from '~/better-auth/authClient'
+import { useAuth } from '~/better-auth/authClient'
+import { signInWithGoogle } from '~/better-auth/signIn'
 import { Link } from '~/interface/Link'
 
 export default function HomePage() {
@@ -21,10 +22,10 @@ export default function HomePage() {
 
   return (
     <YStack
-      $platform-ios={{ pt: '$10' }}
       flex={1}
-      p="$4"
-      gap="$4"
+      p="4"
+      pt="4 ios:10"
+      gap="4"
       items="flex-start"
       maxW={600}
       width="100%"
@@ -44,10 +45,7 @@ export default function HomePage() {
       ) : (
         <Button
           onPress={async () => {
-            await authClient.signIn.social({
-              provider: 'google',
-              callbackURL: redirect,
-            })
+            await signInWithGoogle(redirect)
           }}
         >
           Login with Google

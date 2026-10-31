@@ -25,16 +25,16 @@ export default function DashLayout() {
   // TODO: use a drawer
   return (
     <YStack
-      $platform-ios={{ pt: '$10' }}
       flex={1}
-      p="$4"
-      gap="$4"
+      p="4"
+      pt="4 ios:10"
+      gap="4"
       items="flex-start"
       maxW={600}
       width="100%"
       self="center"
     >
-      <XStack items="center" gap="$4">
+      <XStack items="center" gap="4">
         <Gravatar email={user?.email || ''} />
         <SizableText>{user?.name}</SizableText>
 
@@ -48,7 +48,7 @@ export default function DashLayout() {
         <ToggleThemeButton />
       </XStack>
 
-      <XStack gap="$4">
+      <XStack gap="4">
         <Button onPress={() => addCoursesFromIcs.mutate()}>Resync Courses from Calendar</Button>
         <Button onPress={() => syncRoomsFromConcept3dMap.mutate()}>
           Resync Rooms from Concept3D Map

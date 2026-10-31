@@ -1,11 +1,8 @@
-import { expoClient } from '@better-auth/expo/client'
-import * as SecureStore from 'expo-secure-store'
+import { nativeBearerClient } from './nativeBearerClient'
+import { nativeBearerTokenStore } from './nativeTokenStore'
 
-// native: persist the session in the keychain and handle the attend:// OAuth redirect
+// native: persist the Better Auth bearer token in the keychain and send it on
+// every request. Replaces @better-auth/expo's cookie-backed client.
 export const platformAuthClientPlugins = [
-  expoClient({
-    scheme: 'attend',
-    storagePrefix: 'attend',
-    storage: SecureStore,
-  }),
+  nativeBearerClient({ tokenStore: nativeBearerTokenStore }),
 ] as const

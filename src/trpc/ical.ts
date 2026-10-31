@@ -89,12 +89,12 @@ export const syncCoursesFromCalendar = async (
 
   for (const course of insertedCourses) {
     if (!course.calendarEventId) {
-      logger.warn('Missing calendarEventId', course)
+      logger.warn({ course }, 'Missing calendarEventId')
       continue
     }
     const evt = icsEventsForCurrentTermCourses[course.calendarEventId]
     if (!evt.rrule) {
-      logger.trace('Missing rrule', evt)
+      logger.trace({ evt }, 'Missing rrule')
       continue
     }
 

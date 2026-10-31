@@ -79,13 +79,13 @@ export default function TodayPage() {
         <Table
           alignCells={{ x: 'center', y: 'center' }}
           alignHeaderCells={{ y: 'center', x: 'center' }}
-          cellWidth="$18"
-          cellHeight="$7"
+          cellWidth="18"
+          cellHeight="7"
           borderWidth={0}
-          p="$4"
+          p="4"
           maxW="100%"
           maxH={600}
-          gap="$5"
+          gap="5"
         >
           <Table.Head>
             {headerGroups.map((headerGroup) => {
@@ -127,7 +127,7 @@ export default function TodayPage() {
               return (
                 <Table.Row
                   hoverStyle={{
-                    bg: '$color2',
+                    bg: 'color2',
                   }}
                   rowLocation={
                     rowCounter.current === 0

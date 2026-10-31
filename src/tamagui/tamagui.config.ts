@@ -1,7 +1,11 @@
-import { defaultConfig } from '@tamagui/config/v4'
+import { defaultConfig } from '@tamagui/config/v5'
 import { createTamagui } from 'tamagui'
+import { animations } from './animations'
 
-const config = createTamagui(defaultConfig)
+const config = createTamagui({
+  ...defaultConfig,
+  animations,
+})
 
 export type Conf = typeof config
 

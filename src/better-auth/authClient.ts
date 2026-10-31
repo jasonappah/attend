@@ -3,28 +3,12 @@ import { createAuthClient } from 'better-auth/react'
 import { getURL } from 'one'
 import { useEffect, useState } from 'react'
 import { platformAuthClientPlugins } from './authClientPlugins'
-
-// Tauri can't share the browser's cookies, so after login the browser hands it the
-// session token via deep link (see AuthEffects) and we send it as a bearer token
-const BEARER_TOKEN_KEY = 'attend.bearer_token'
-
-const getStoredBearerToken = () => {
-  try {
-    return globalThis.localStorage?.getItem(BEARER_TOKEN_KEY) ?? undefined
-  } catch {
-    return undefined
-  }
-}
+import { BEARER_TOKEN_KEY, platformFetchOptions } from './fetchOptions'
 
 export const authClient = createAuthClient({
   baseURL: `${getURL()}/api/auth`,
   plugins: [jwtClient(), ...platformAuthClientPlugins],
-  fetchOptions: {
-    auth: {
-      type: 'Bearer',
-      token: getStoredBearerToken,
-    },
-  },
+  fetchOptions: platformFetchOptions,
 })
 
 export function setAuthClientToken({ session }: { session: string }) {

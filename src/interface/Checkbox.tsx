@@ -1,4 +1,4 @@
-import { Check } from '@tamagui/lucide-icons-2'
+import { Check } from 'lucide-react-native'
 import { forwardRef } from 'react'
 import type { CheckboxProps, TamaguiElement } from 'tamagui'
 import { Checkbox as TamaguiCheckbox } from 'tamagui'

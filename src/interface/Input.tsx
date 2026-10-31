@@ -1,6 +1,6 @@
 import { getFontSized } from '@tamagui/get-font-sized'
 import { getSpace } from '@tamagui/get-token'
-import { User } from '@tamagui/lucide-icons-2'
+import { User } from 'lucide-react-native'
 import type { SizeVariantSpreadFunction } from '@tamagui/web'
 import { useState } from 'react'
 import type { ColorTokens, FontSizeTokens } from 'tamagui'

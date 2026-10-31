@@ -1,57 +1,66 @@
-import '~/tamagui/tamagui.css'
-import './_layout.css'
+import '~/tamagui/styles'
 
 import { ZeroProvider } from '@rocicorp/zero/react'
-import { SchemeProvider, useUserScheme } from '@vxrn/color-scheme'
-import { LoadProgressBar, Slot } from 'one'
-import { useState } from 'react'
+import { LoadProgressBar, SchemeProvider, Slot, Stack, useUserScheme } from 'one'
+import { Platform } from 'react-native'
 import { TamaguiProvider, View } from 'tamagui'
 import { AuthEffects } from '~/better-auth/AuthEffects'
 import { env } from '~/env'
 import config from '~/tamagui/tamagui.config'
 import { TRPCProvider } from '~/trpc/provider'
-import { useZeroEmit, zero } from '~/zero/zero'
+import { useZeroEmit } from '~/zero/zero'
 
 export default function Layout() {
+  if (Platform.OS === 'web') {
+    return (
+      <html lang="en">
+        <head>
+          <meta charSet="utf-8" />
+          <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
+          <meta property="og:image" content={`${env.ONE_SERVER_URL}/og.jpg`} />
+          <meta property="og:image:width" content="1200" />
+          <meta property="og:image:height" content="630" />
+          <meta property="twitter:card" content="summary_large_image" />
+          <meta property="twitter:image" content={`${env.ONE_SERVER_URL}/og.jpg`} />
+          <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+          <link rel="icon" href="/favicon.svg" />
+        </head>
+
+        <body>
+          <LoadProgressBar startDelay={1_000} />
+          <AppProviders>
+            <AuthEffects />
+            <Slot />
+          </AppProviders>
+        </body>
+      </html>
+    )
+  }
+
   return (
-    <html lang="en">
-      <head>
-        <meta charSet="utf-8" />
-        <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
-        <meta property="og:image" content={`${env.ONE_SERVER_URL}/og.jpg`} />
-        <meta property="og:image:width" content="1200" />
-        <meta property="og:image:height" content="630" />
-        <meta property="twitter:card" content="summary_large_image" />
-        <meta property="twitter:image" content={`${env.ONE_SERVER_URL}/og.jpg`} />
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-        <link rel="icon" href="/favicon.svg" />
-      </head>
-
-      <LoadProgressBar startDelay={1_000} />
-
+    <AppProviders>
       <AuthEffects />
+      <Stack screenOptions={{ headerShown: false }} />
+    </AppProviders>
+  )
+}
 
-      <DataProvider>
-        <SchemeProvider>
-          <ThemeProvider>
-            <TRPCProvider>
-              <View>
-                <Slot />
-              </View>
-            </TRPCProvider>
-          </ThemeProvider>
-        </SchemeProvider>
-      </DataProvider>
-    </html>
+const AppProviders = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <DataProvider>
+      <SchemeProvider>
+        <ThemeProvider>
+          <TRPCProvider>
+            <View flex={1}>{children}</View>
+          </TRPCProvider>
+        </ThemeProvider>
+      </SchemeProvider>
+    </DataProvider>
   )
 }
 
 const DataProvider = ({ children }: { children: React.ReactNode }) => {
-  const [instance, setInstance] = useState(zero)
-
-  useZeroEmit((next) => {
-    setInstance(next)
-  })
+  const instance = useZeroEmit()
 
   return <ZeroProvider zero={instance}>{children}</ZeroProvider>
 }

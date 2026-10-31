@@ -6,32 +6,16 @@ export const FormCard = styled(View, {
   render: 'form',
   flexDirection: 'row',
   maxW: '100%',
-  rounded: 30,
-  $md: {
-    p: '$6',
-    shadowColor: '$shadowColor',
-    shadowOffset: {
-      width: 0,
-      height: 9,
-    },
-    shadowOpacity: 0.5,
-    shadowRadius: 12.35,
-  },
-  // @ts-expect-error valid at runtime, but ThemeMediaKeys resolves to never because keyof Themes is widened to string
-  '$theme-dark': {
-    borderWidth: 1,
-    borderColor: '$borderColor',
-  },
-  $maxSm: {
-    borderWidth: 0,
-    rounded: 0,
-    px: '$1',
-  },
+  rounded: '30px max-sm:0',
+  p: 'md:6',
+  px: 'max-sm:1',
+  borderWidth: 'dark:1 max-sm:0',
+  borderColor: 'borderColor',
 })
 
 export const Hide = ({
   children,
-  when = 'maxMd',
+  when = 'max-md',
 }: { children: React.ReactNode; when: MediaQueryKey }) => {
   const hide = useMedia()[when]
 

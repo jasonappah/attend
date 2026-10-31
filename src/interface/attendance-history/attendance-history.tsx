@@ -1,5 +1,5 @@
 import { useZero } from '@rocicorp/zero/react'
-import { AlertCircle, Check, ChevronDown, ChevronUp, Moon, X } from '@tamagui/lucide-icons-2'
+import { AlertCircle, Check, ChevronDown, ChevronUp, Moon, X } from 'lucide-react-native'
 import { addDays, format, isSameDay, startOfWeek } from 'date-fns'
 import { useState } from 'react'
 import { Adapt, Card, ScrollView, Select, Text, XStack, YStack } from 'tamagui'
@@ -44,15 +44,15 @@ export function AttendanceHistory({ courses, sessions }: AttendanceHistoryProps)
   }
 
   return (
-    <Card elevation={2} borderWidth={1} borderColor="$borderColor" p="$4" width="100%">
+    <Card elevation={2} borderWidth={1} borderColor="borderColor" p="4" width="100%">
       <ScrollView horizontal>
         <XStack>
           <YStack>
-            <Text height={40} width={80} fontWeight="bold" p="$2">
+            <Text height={40} width={80} fontWeight="bold" p="2">
               Date
             </Text>
             {dates.map((date) => (
-              <Text key={date.toISOString()} height={40} width={80} text="center" p="$2">
+              <Text key={date.toISOString()} height={40} width={80} text="center" p="2">
                 {format(date, 'M/d')}
               </Text>
             ))}
@@ -60,7 +60,7 @@ export function AttendanceHistory({ courses, sessions }: AttendanceHistoryProps)
 
           {courses.map((course) => (
             <YStack key={course.id}>
-              <Text height={40} width={200} fontWeight="bold" p="$2" numberOfLines={1}>
+              <Text height={40} width={200} fontWeight="bold" p="2" numberOfLines={1}>
                 {course.courseName}
               </Text>
               {dates.map((date) => {
@@ -71,8 +71,8 @@ export function AttendanceHistory({ courses, sessions }: AttendanceHistoryProps)
                     height={40}
                     width={200}
                     items="center"
-                    pl="$2"
-                    borderColor="$borderColor"
+                    pl="2"
+                    borderColor="borderColor"
                     borderWidth={1}
                   >
                     {session && (
@@ -113,11 +113,12 @@ const AttendanceSelect = ({
       value={currentStatus || ''}
       onValueChange={handleAttendanceUpdate}
     >
-      <Select.Trigger width={180} iconAfter={ChevronDown}>
+      <Select.Trigger width={180}>
         <Select.Value placeholder="Set status">
           {currentOption?.icon}
-          <Text ml="$2">{currentOption?.label}</Text>
+          <Text ml="2">{currentOption?.label}</Text>
         </Select.Value>
+        <Select.Icon><ChevronDown size={16} /></Select.Icon>
       </Select.Trigger>
 
       {/* <Adapt when="sm" platform="touch" >
@@ -151,7 +152,7 @@ const AttendanceSelect = ({
           justify="center"
           position="relative"
           width="100%"
-          height="$3"
+          height="3"
         >
           <YStack z={10}>
             <ChevronUp size={20} />
@@ -160,17 +161,17 @@ const AttendanceSelect = ({
             start={[0, 0]}
             end={[0, 1]}
             fullscreen
-            colors={['$background', '$backgroundTransparent']}
-            rounded="$4"
+            colors={['background', 'backgroundTransparent']}
+            rounded="4"
           />
         </Select.ScrollUpButton>
 
         <Select.Viewport minW={200}>
           <Select.Group>
             {attendanceOptions.map((option) => (
-              <Select.Item key={option.value} value={option.value ?? ''} index={0}>
+              <Select.Item key={option.value} value={option.value ?? ''}>
                 <Select.ItemText>
-                  <XStack items="center" gap="$2">
+                  <XStack items="center" gap="2">
                     {option.icon}
                     <Text>{option.label}</Text>
                   </XStack>
@@ -185,7 +186,7 @@ const AttendanceSelect = ({
           justify="center"
           position="relative"
           width="100%"
-          height="$3"
+          height="3"
         >
           <YStack z={10}>
             <ChevronDown size={20} />
@@ -194,8 +195,8 @@ const AttendanceSelect = ({
             start={[0, 0]}
             end={[0, 1]}
             fullscreen
-            colors={['$backgroundTransparent', '$background']}
-            rounded="$4"
+            colors={['backgroundTransparent', 'background']}
+            rounded="4"
           />
         </Select.ScrollDownButton>
       </Select.Content>
