@@ -10,21 +10,23 @@ export default function ClassOverviewPage() {
   const [sessions, sessionsQuery] = useQuery(queries.sessions())
 
   return (
-    <YStack gap="4">
-      <H2>Courses</H2>
-      {(coursesQuery.type === 'error' || sessionsQuery.type === 'error') && (
-        <Paragraph>Failed to load courses or attendance.</Paragraph>
-      )}
-      {sessionsQuery.type !== 'error' &&
-        courses.map((course) => (
-          <CourseCard
-            key={course.id}
-            data={course}
-            sessions={sessions.filter((session) => session.courseId === course.id)}
-            loading={sessionsQuery.type !== 'complete'}
-          />
-        ))}
-    </YStack>
+    <ScrollView flex={1} minH={0} width="100%">
+      <YStack gap="4" pb="4">
+        <H2>Courses</H2>
+        {(coursesQuery.type === 'error' || sessionsQuery.type === 'error') && (
+          <Paragraph>Failed to load courses or attendance.</Paragraph>
+        )}
+        {sessionsQuery.type !== 'error' &&
+          courses.map((course) => (
+            <CourseCard
+              key={course.id}
+              data={course}
+              sessions={sessions.filter((session) => session.courseId === course.id)}
+              loading={sessionsQuery.type !== 'complete'}
+            />
+          ))}
+      </YStack>
+    </ScrollView>
   )
 }
 
@@ -70,9 +72,7 @@ function CourseCard({
       <YStack gap="1">
         <H3>{data.courseName}</H3>
         <Text color="color10">
-          {data.room
-            ? `${data.room.buildingCode} ${data.room.roomNumber}`
-            : 'Room unavailable'}
+          {data.room ? `${data.room.buildingCode} ${data.room.roomNumber}` : 'Room unavailable'}
         </Text>
       </YStack>
 

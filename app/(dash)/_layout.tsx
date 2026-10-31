@@ -1,4 +1,5 @@
 import { type Href, Redirect, Slot, usePathname } from 'one'
+import { Platform, useWindowDimensions } from 'react-native'
 import { Button, SizableText, XStack, YStack } from 'tamagui'
 import { authClient, useAuth } from '~/better-auth/authClient'
 import { Gravatar } from '~/interface/Gravatar'
@@ -8,6 +9,7 @@ import { ToggleThemeButton } from '~/interface/theme/ThemeToggleButton'
 export default function DashLayout() {
   const { user, loggedIn, isPending } = useAuth()
   const pathname = usePathname()
+  const { height } = useWindowDimensions()
 
   if (isPending) {
     // TODO: render loading
@@ -23,6 +25,8 @@ export default function DashLayout() {
   return (
     <YStack
       flex={1}
+      height={Platform.OS === 'web' ? height : undefined}
+      minH={0}
       p="4"
       pt="4 ios:10"
       gap="4"
