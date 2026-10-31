@@ -33,7 +33,7 @@
     "@callstack/liquid-glass": "^0.8.2",
     "@react-navigation/core": "8.0.0-alpha.41",
     "@react-navigation/native": "8.0.0-alpha.51",
-    "@rocicorp/zero": "1.10.0",
+    "@rocicorp/zero": "1.11.3",
     "@t3-oss/env-core": "^0.13.8",
     "@tamagui/animations-css": "3.1.9",
     "@tamagui/animations-reanimated": "3.1.9",

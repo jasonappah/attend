@@ -4,6 +4,7 @@ import { authClient, useAuth } from '~/better-auth/authClient'
 import { Gravatar } from '~/interface/Gravatar'
 import { Link } from '~/interface/Link'
 import { ToggleThemeButton } from '~/interface/theme/ThemeToggleButton'
+
 export default function DashLayout() {
   const { user, loggedIn, isPending } = useAuth()
   const pathname = usePathname()
@@ -50,6 +51,9 @@ export default function DashLayout() {
         </Link>
         <Link href="/history" asChild>
           <Button>History</Button>
+        </Link>
+        <Link href="/courses" asChild>
+          <Button>Courses</Button>
         </Link>
         <Link href="/settings" asChild>
           <Button>Settings</Button>

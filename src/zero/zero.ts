@@ -24,8 +24,8 @@ export function useZeroEmit() {
   )
 }
 
-function createZero({ auth, userID = 'anon' }: { auth?: string; userID?: string } = {}) {
-  const context = userID && userID !== 'anon' ? { userId: userID } : undefined
+function createZero({ auth, userID }: { auth?: string; userID?: string } = {}) {
+  const context = userID ? { userId: userID } : undefined
   return new Zero({
     userID,
     cacheURL: env.VITE_PUBLIC_ZERO_SERVER,

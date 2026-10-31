@@ -9,10 +9,12 @@ declare module 'one' {
       StaticRoutes:
         | `/`
         | `/(dash)`
+        | `/(dash)/courses`
         | `/(dash)/history`
         | `/(dash)/settings`
         | `/(dash)/today`
         | `/_sitemap`
+        | `/courses`
         | `/history`
         | `/settings`
         | `/today`
