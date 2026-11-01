@@ -1,0 +1,115 @@
+{
+  "type": "diff",
+  "version": "9",
+  "dialect": "postgres",
+  "id": "1a7798ee-888e-478d-8807-8bca92e7bdcb",
+  "prevIds": [
+    "7e4778a3-5aac-4bca-944d-f2c0595e5ea4"
+  ],
+  "footprints": [
+    {
+      "statementType": "add_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "jwks",
+        "expiresAt"
+      ],
+      "writes": [
+        "s|col|public.jwks.expiresAt",
+        "n|col|public.jwks.expiresAt",
+        "e|col|public.jwks.expiresAt"
+      ],
+      "reads": [
+        "n|tbl|public.jwks",
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "add_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "jwks",
+        "alg"
+      ],
+      "writes": [
+        "s|col|public.jwks.alg",
+        "n|col|public.jwks.alg",
+        "e|col|public.jwks.alg"
+      ],
+      "reads": [
+        "n|tbl|public.jwks",
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "add_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "jwks",
+        "crv"
+      ],
+      "writes": [
+        "s|col|public.jwks.crv",
+        "n|col|public.jwks.crv",
+        "e|col|public.jwks.crv"
+      ],
+      "reads": [
+        "n|tbl|public.jwks",
+        "n|sch|public"
+      ]
+    }
+  ],
+  "deltas": [
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "jwks",
+        "name": "expiresAt",
+        "type": "timestamp",
+        "typeSchema": null,
+        "notNull": false,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "jwks",
+        "name": "alg",
+        "type": "text",
+        "typeSchema": null,
+        "notNull": false,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "jwks",
+        "name": "crv",
+        "type": "text",
+        "typeSchema": null,
+        "notNull": false,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    }
+  ]
+}

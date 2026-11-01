@@ -1,4 +1,4 @@
-import { relations } from 'drizzle-orm'
+import { defineRelations } from 'drizzle-orm'
 import {
   boolean,
   integer,
@@ -27,12 +27,6 @@ export const user = pgTable('user', {
   ...timestamps,
 })
 
-export const userRelations = relations(user, ({ many }) => ({
-  sessions: many(session),
-  accounts: many(account),
-  courses: many(course),
-}))
-
 export const session = pgTable('session', {
   id: uuid('id').primaryKey(),
   expiresAt: timestamp('expiresAt').notNull(),
@@ -44,13 +38,6 @@ export const session = pgTable('session', {
     .references(() => user.id),
   ...timestamps,
 })
-
-export const sessionRelations = relations(session, ({ one }) => ({
-  user: one(user, {
-    fields: [session.userId],
-    references: [user.id],
-  }),
-}))
 
 export const account = pgTable('account', {
   id: uuid('id').primaryKey(),
@@ -68,13 +55,6 @@ export const account = pgTable('account', {
   password: text('password'),
   ...timestamps,
 })
-
-export const accountRelations = relations(account, ({ one }) => ({
-  user: one(user, {
-    fields: [account.userId],
-    references: [user.id],
-  }),
-}))
 
 export const verification = pgTable('verification', {
   id: uuid('id').primaryKey(),
@@ -111,17 +91,6 @@ export const course = pgTable('course', {
   ...timestamps,
 })
 
-export const courseRelations = relations(course, ({ one }) => ({
-  user: one(user, {
-    fields: [course.userId],
-    references: [user.id],
-  }),
-  room: one(room, {
-    fields: [course.roomId],
-    references: [room.id],
-  }),
-}))
-
 export const attendanceEnum = pgEnum('attendance', ['present', 'absent'])
 
 export type Attendance = (typeof attendanceEnum)['enumValues'][number]
@@ -141,13 +110,6 @@ export const courseSession = pgTable(
   (t) => [unique().on(t.courseId, t.endTime, t.startTime)]
 )
 
-export const courseSessionRelations = relations(courseSession, ({ one }) => ({
-  course: one(course, {
-    fields: [courseSession.courseId],
-    references: [course.id],
-  }),
-}))
-
 export const calendar = pgTable('calendar', {
   id: uuid('id').primaryKey(),
   upstreamUrl: text('upstreamUrl').notNull().unique(),
@@ -156,13 +118,6 @@ export const calendar = pgTable('calendar', {
     .references(() => user.id),
   ...timestamps,
 })
-
-export const calendarRelations = relations(calendar, ({ one }) => ({
-  user: one(user, {
-    fields: [calendar.userId],
-    references: [user.id],
-  }),
-}))
 
 const GPSCoordinateSchema = z.tuple([z.number(), z.number()])
 
@@ -202,4 +157,58 @@ export const room = pgTable(
     ...timestamps,
   },
   (t) => [unique().on(t.buildingCode, t.roomNumber)]
+)
+
+export const relations = defineRelations(
+  { user, session, account, verification, jwks, course, courseSession, calendar, room },
+  (r) => ({
+    user: {
+      sessions: r.many.session({
+        from: r.user.id,
+        to: r.session.userId,
+      }),
+      accounts: r.many.account({
+        from: r.user.id,
+        to: r.account.userId,
+      }),
+      courses: r.many.course({
+        from: r.user.id,
+        to: r.course.userId,
+      }),
+    },
+    session: {
+      user: r.one.user({
+        from: r.session.userId,
+        to: r.user.id,
+      }),
+    },
+    account: {
+      user: r.one.user({
+        from: r.account.userId,
+        to: r.user.id,
+      }),
+    },
+    course: {
+      user: r.one.user({
+        from: r.course.userId,
+        to: r.user.id,
+      }),
+      room: r.one.room({
+        from: r.course.roomId,
+        to: r.room.id,
+      }),
+    },
+    courseSession: {
+      course: r.one.course({
+        from: r.courseSession.courseId,
+        to: r.course.id,
+      }),
+    },
+    calendar: {
+      user: r.one.user({
+        from: r.calendar.userId,
+        to: r.user.id,
+      }),
+    },
+  })
 )
