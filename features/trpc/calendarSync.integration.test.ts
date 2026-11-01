@@ -46,3 +46,19 @@ test('imports and resyncs calendar sessions without erasing attendance', async (
   const courses = await db.transaction(({ drizzle }) => drizzle.select().from(course))
   expect(courses[0].courseName).toBe('CS 1234 001')
 })
+
+test('rolls back an entire calendar when a later event has an unknown room', async () => {
+  const { syncedDb } = await import('../../database/syncedDb')
+  const { syncCalendars } = await import('./calendarSync')
+  const db = syncedDb('rollback-user')
+  const now = Date.now()
+  await db.transaction(async ({ drizzle }) => {
+    await drizzle.insert(calendar).values({ id: 'rollback-cal', userId: 'rollback-user', upstreamUrl: 'https://calendar.google.com/calendar/ical/rollback/basic.ics', createdAt: now })
+    await drizzle.insert(room).values({ id: 'rollback-room', buildingCode: 'TEST', roomNumber: '1.001', latitude: 32, longitude: -96, level: 1, concept3dMapId: 1, concept3dCategoryName: 'Classroom', concept3dLocationId: 2, concept3dCategoryId: 1, concept3dRoomId: 2, createdAt: now })
+  })
+  const event = (uid: string, location: string) => ['BEGIN:VEVENT', `UID:${uid}`, 'DTSTAMP:20261001T000000Z', 'DTSTART:20261001T100000Z', 'DTEND:20261001T110000Z', `SUMMARY:CS 1234 001 - ${location}`, 'END:VEVENT']
+  const ics = ['BEGIN:VCALENDAR', 'VERSION:2.0', ...event('rollback-valid', 'TEST 1.001'), ...event('rollback-invalid', 'UNKNOWN 1.000'), 'END:VCALENDAR'].join('\r\n')
+  await expect(syncCalendars('rollback-user', async () => new Response(ics), Date.parse('2026-11-01T12:00:00Z'))).rejects.toThrow('No room found')
+  const courses = await db.transaction(({ drizzle }) => drizzle.select().from(course).where(eq(course.userId, 'rollback-user')))
+  expect(courses).toHaveLength(0)
+})
