@@ -7,24 +7,15 @@ import type { Course, CourseSession, Room } from '~/zero/schema.gen'
 
 export default function ClassOverviewPage() {
   const [courses, coursesQuery] = useQuery(queries.coursesWithRooms())
-  const [sessions, sessionsQuery] = useQuery(queries.sessions())
 
   return (
     <ScrollView flex={1} minH={0} width="100%">
       <YStack gap="4" pb="4">
         <H2>Courses</H2>
-        {(coursesQuery.type === 'error' || sessionsQuery.type === 'error') && (
-          <Paragraph>Failed to load courses or attendance.</Paragraph>
-        )}
-        {sessionsQuery.type !== 'error' &&
-          courses.map((course) => (
-            <CourseCard
-              key={course.id}
-              data={course}
-              sessions={sessions.filter((session) => session.courseId === course.id)}
-              loading={sessionsQuery.type !== 'complete'}
-            />
-          ))}
+        {coursesQuery.type === 'error' && <Paragraph>Failed to load courses.</Paragraph>}
+        {courses.map((course) => (
+          <CourseCard key={course.id} data={course} />
+        ))}
       </YStack>
     </ScrollView>
   )
@@ -38,15 +29,9 @@ function attendanceRate(sessions: readonly CourseSession[]) {
   )
 }
 
-function CourseCard({
-  data,
-  sessions,
-  loading,
-}: {
-  data: Course & { room?: Room | null }
-  sessions: readonly CourseSession[]
-  loading: boolean
-}) {
+function CourseCard({ data }: { data: Course & { room?: Room | null } }) {
+  const [sessions, sessionsQuery] = useQuery(queries.sessionsForCourse({ courseId: data.id }))
+  const loading = sessionsQuery.type !== 'complete'
   const [lastWeek, setLastWeek] = useState(false)
   const now = new Date()
   const weekStart = addWeeks(startOfWeek(now, { weekStartsOn: 1 }), lastWeek ? -1 : 0)
@@ -117,7 +102,9 @@ function CourseCard({
             </Button>
           </XStack>
         </XStack>
-        {loading ? (
+        {sessionsQuery.type === 'error' ? (
+          <Text color="color10">Failed to load attendance.</Text>
+        ) : loading ? (
           <Text color="color10">Loading sessions…</Text>
         ) : weekSessions.length === 0 ? (
           <Text color="color10">No sessions scheduled this week.</Text>
