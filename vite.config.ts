@@ -1,35 +1,64 @@
-import { tamaguiPlugin } from '@tamagui/vite-plugin'
+import { createRequire } from 'node:module'
+import { onZeroPlugin } from 'on-zero/vite'
 import { one } from 'one/vite'
+import { orezSyncCfHostWasm } from 'orez-lite/cloudflare/vite-wasm-loader'
+import { orez } from 'orez-lite/vite'
 
-const config = {
+const { tamaguiPlugin } = createRequire(import.meta.url)('@tamagui/vite-plugin')
+const portOffset = Number(process.env.PORT_OFFSET || 0)
+const webPort = 4200 + portOffset
+const appVariant = process.env.APP_VARIANT || 'development'
+if (appVariant !== 'development' && appVariant !== 'preview' && appVariant !== 'production') {
+  throw new Error(`invalid APP_VARIANT: ${appVariant}`)
+}
+const appIdentity = {
+  development: { displayName: 'Attend (Dev)', bundleId: 'me.jasonaa.attend.dev' },
+  preview: { displayName: 'Attend (Preview)', bundleId: 'me.jasonaa.attend.preview' },
+  production: { displayName: 'Attend', bundleId: 'me.jasonaa.attend' },
+}[appVariant]
+
+export default {
+  root: import.meta.dirname,
+
   plugins: [
+    ...orezSyncCfHostWasm({ runtime: 'workerd' }),
+    orez(),
+    tamaguiPlugin({ config: './tamagui/tamagui.config.ts' }),
+
     one({
-      // Vite (Rolldown) is One's native bundler now. Metro remains available
-      // for debugging via `native.bundler: 'metro'`, but builds always use Vite.
+      setupFile: {
+        native: './setupNative.ts',
+      },
+
+      // scan every fs route as an optimizer entry. the flat default omits
+      // routes nested below depth 3 (feed, profile), whose first-visit
+      // discovery re-triggers optimization and 504s in-flight chunks.
+      optimization: {
+        autoEntriesScanning: true,
+      },
+
       native: {
-        bundler: 'vite',
         app: {
+          // the native target name is an identifier; the home screen shows displayName
           name: 'attend',
-          displayName: 'Attend',
+          displayName: appIdentity.displayName,
           scheme: 'attend',
-          version: '1.1.371',
+          version: '1.0.0',
           orientation: 'portrait',
           userInterfaceStyle: 'automatic',
-          icon: {
-            source: './assets/icon.png',
-            backgroundColor: '#ffffff',
-          },
-          splash: {
-            source: './assets/splash.png',
-            backgroundColor: '#ffffff',
-            resizeMode: 'contain',
-          },
+          icon: { source: './assets/icon.png', backgroundColor: '#e6dac1' },
+          splash: { source: './assets/logo.png', backgroundColor: '#e6dac1' },
           ios: {
-            bundleId: 'me.jasonaa.attend',
+            bundleId: appIdentity.bundleId,
+            tablet: false,
             deploymentTarget: '17.0',
           },
           android: {
-            applicationId: 'me.jasonaa.attend',
+            applicationId: appIdentity.bundleId,
+            adaptiveIcon: {
+              foreground: './assets/adaptive-icon.png',
+              backgroundColor: '#e6dac1',
+            },
             minSdk: 26,
           },
         },
@@ -37,27 +66,43 @@ const config = {
 
       web: {
         defaultRenderMode: 'spa',
-        deploy: 'vercel',
+        skewProtection: 'proactive',
+        deploy: {
+          target: 'cloudflare',
+          url: process.env.ONE_SERVER_URL,
+        },
       },
 
-      // pages, api routes, and middlewares build against one server config
       build: {
-        server: { unified: true },
-      },
-
-      react: {
-        compiler: false,
+        server: {
+          unified: true,
+        },
       },
     }),
-    tamaguiPlugin({
-      components: ['tamagui'],
-      config: './src/tamagui/tamagui.config.ts',
-      outputCSS: './src/tamagui/tamagui.css',
+
+    onZeroPlugin({
+      dir: './data',
     }),
   ],
-  build: {
-    cssTarget: 'safari15',
+
+  server: {
+    port: webPort,
+  },
+
+  // takeout-ui and other vendored packages ship .tsx source. vite pre-bundles only
+  // .js/.ts entries by default, so a .tsx entry would load raw and its own imports
+  // (tamagui subpaths, CJS react/jsx-runtime) would skip dependency discovery.
+  optimizeDeps: {
+    extensions: ['.tsx'],
+  },
+
+  resolve: {
+    dedupe: ['on-zero', '@rocicorp/zero'],
+  },
+
+  ssr: {
+    // auth packages expose React hooks from package code. bundle them through
+    // Vite so SSR uses the renderer's React instance.
+    noExternal: ['better-auth', '@o/helpers', 'takeout-better-auth'],
   },
 }
-
-export default config

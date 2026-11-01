@@ -1,70 +1,39 @@
-# attend
+# Attend
 
-attend is a mobile application that will automatically keep track of my class attendance using location data.
+Attend tracks class attendance on web and React Native. It uses the Takeout stack: One, Tamagui, Better Auth, SQLite, Lime Sync/Zero, and tRPC for calendar and room imports.
 
+## Development
 
-currently WIP and not really ready for use - the notes that remain are mostly for myself
-
-
-This project is a React Native app built with [One](https://one.dev) and [Zero](https://zero.dev).
-
-For running on Android...
-- you'll want this: https://gist.github.com/zetavg/93adf1ac8e0ec881ab65cf7f7fa2fbd4
-- then in the same build.gradle file, add `autolinkLibrariesWithApp()` into the react block. seems to be needed for op-sqlite, couldn't figure out how to manually specify it and have the build work. got the idea from https://github.com/OP-Engineering/op-sqlite/blob/ec509dfa2ecbeac195ca79f54cba0fb5fbc0d0d8/example/android/app/build.gradle#L10
-
-
-One thing that I've always thought of in passing that I would like to build using the data this app has scraped is just an app that randomly picks a building for me to study out of. I've found that the change in environment and intentionally going to a location with the purpose of being academically productive is helpful. 
-
-*Original README below:*
-
----
-
-## Install
-
-Install packages with yarn:
+Use Bun 1.4 and Node 24, then run:
 
 ```sh
-yarn
+bun install --frozen-lockfile
+bun dev
 ```
 
-For login, we have set up Github auth with [Better Auth](https://www.better-auth.com/) as an example.
+Open http://localhost:4200. In development, **Login as Demo User** provides a shared test account and sample classes without credentials. Do not put personal data in that account. Google sign-in requires `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`; the provider must allow the server's Better Auth callback URL. Calendar import also requires `CONCEPT3D_API_KEY` to load UTD rooms.
 
-1. [Create a new Github App](https://docs.github.com/en/apps/creating-github-apps/registering-a-github-app/registering-a-github-app##registering-a-github-app)
-2. Copy `.env.example` to `.env`
-3. Fill in `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET`
+`PORT_OFFSET=100 bun dev` moves the app and its companion services together. Only one dev instance should use a given `.orez/application-sql` database at a time.
 
-## Run
-
-in three separate tabs:
-
-```
-docker compose up postgres
-yarn migrate:run && yarn zero:dev
-yarn dev
+```sh
+bun run typecheck
+bun test features/attendance/infer.test.ts
+bun run build
+bun run generate
 ```
 
-`yarn dev` serves on port 8081 by default. To run on another port (e.g. a second checkout), pass `--port` and point `ONE_SERVER_URL` in `.env` at the same port (docker compose derives `ZERO_QUERY_URL`/`ZERO_MUTATE_URL` from it). Google OAuth only works on ports whose `/api/auth/callback/google` redirect URI is registered on the OAuth client.
+For Android, start the dev server and run `bunx one run:android` with an emulator or device connected. For iOS use `bunx one run:ios`. Native identity is configured through `APP_VARIANT=development|preview|production`; production uses the existing `me.jasonaa.attend` identifier and the `attend` URL scheme.
 
-Reads and writes now go through the app's Zero query/mutate endpoints (`/api/zero/query`, `/api/zero/mutate`), which `zero-cache` calls back into — so `yarn dev` must be running for sync to work.
+## Existing PostgreSQL data
 
-to run tauri you can run this instead of `yarn dev`:
+The starter's SQLite database does **not** automatically contain the old PostgreSQL data. `scripts/import-attend-postgres.ts` copies users, linked accounts, calendars, rooms, courses, and attendance into a new SQLite file. It reads PostgreSQL in a read-only snapshot and refuses to overwrite an existing file:
 
-```
-yarn dev:tauri
-```
-
-to reset all your data:
-
-```
-yarn docker:start:clean
+```sh
+ATTEND_POSTGRES_URL="$DATABASE_URL" bun scripts/import-attend-postgres.ts /absolute/path/to/new-attend.sqlite
 ```
 
-### Tauri
+Stop all app and sync processes before a cutover. Back up both databases, verify counts, account identities, timestamps, and attendance in the new file, and rehearse the complete login and sync flow before replacing any live database. The import does not transfer old login sessions; users must sign in again. Do not print the connection URL or share the database file: both may contain private information.
 
-Getting Tauri to handle auth in a sane way takes a bit of work, but we've set up most of it here for you. If you're using OAuth, you don't want to force your users to login via the Tauri window, as they will lack all saved credentials and be forced to memorize their password / not use passkeys, etc.
+## Deployment
 
-So instead we open the login link using target="_blank" so it opens in their default browser, making for a smooth login experience. But that means you need to pass back the credentials to Tauri once logged in.
-
-To do this, we added the deep-link plugin to Tuari, allowing for `attend://domain` style URLs to open with your native Tuari app. This allows for really nice hand-off.
-
-On Mac though, you can't use deep links in dev mode. So you'll need to make a production build, drag it to your Applications folder, and run your app from there. We set up the production build to hit your same development server for now, so you can actually just use that built app as your main dev driver. It includes dev tools as you'd normally want, too. Once you set this up development is easy, and login has great UX.
+The current production build targets Cloudflare, but this repository does not automatically deploy on `main`. The copied starter's deployment is not configured for Attend. Before deploying, choose and configure your own worker, sync worker, storage, auth secrets, and origin. `scripts/deploy-cloudflare.ts` requires explicit Attend worker and bucket variables; it must not be used against the starter's resources. A Node-hosted Lime Sync deployment would require separate production hosting work.

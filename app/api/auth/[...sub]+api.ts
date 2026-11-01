@@ -1,10 +1,74 @@
+import { APP_ANALYTICS_INSTALLATION_HEADER } from 'takeout-better-auth/analytics'
+import { authServer } from '~/auth/server/authServer'
+import { DEMO_EMAIL } from '~/auth/demoIdentity'
 import type { Endpoint } from 'one'
-import { auth } from '~/better-auth/auth'
 
-export const GET: Endpoint = async (req) => {
-  return await auth.handler(req)
+function isLoopback(hostname: string) {
+  return (
+    hostname === 'localhost' ||
+    hostname.endsWith('.localhost') ||
+    hostname === '127.0.0.1' ||
+    hostname === '[::1]'
+  )
 }
 
-export const POST: Endpoint = async (req) => {
-  return await auth.handler(req)
+function nativePreviewCorsHeaders(request: Request): Headers | null {
+  const origin = request.headers.get('origin')
+  if (!origin) return null
+
+  try {
+    const requestHostname = new URL(request.url).hostname
+    const originHostname = new URL(origin).hostname
+    if (!isLoopback(requestHostname) || !isLoopback(originHostname)) return null
+  } catch {
+    return null
+  }
+
+  return new Headers({
+    'access-control-allow-origin': origin,
+    'access-control-allow-methods': 'GET, POST, OPTIONS',
+    'access-control-allow-headers': `authorization, content-type, mobile-origin, ${APP_ANALYTICS_INSTALLATION_HEADER}`,
+    'access-control-expose-headers': 'set-auth-token',
+    'access-control-max-age': '3600',
+    vary: 'origin',
+  })
+}
+
+const handler: Endpoint = async (request) => {
+  // The demo password is intentionally known to the client. Never allow that
+  // shared identity to become a sign-in path on a production deployment.
+  const path = new URL(request.url).pathname
+  if (process.env.NODE_ENV !== 'development' && request.method === 'POST' &&
+      (path.startsWith('/api/auth/sign-in/') || path.startsWith('/api/auth/sign-up/'))) {
+    const contentType = request.headers.get('content-type') ?? ''
+    const body = contentType.includes('application/json')
+      ? await request.clone().json().catch(() => null) as { email?: unknown } | null
+      : contentType.includes('form')
+        ? { email: ((await request.clone().formData().catch(() => null)) as unknown as { get(name: string): unknown } | null)?.get('email') }
+        : null
+    if (typeof body?.email === 'string' && body.email.toLowerCase() === DEMO_EMAIL.toLowerCase()) {
+      return new Response('Demo login is available only in development.', { status: 403 })
+    }
+  }
+  const response = await authServer.handler(request)
+  const corsHeaders = nativePreviewCorsHeaders(request)
+  if (!corsHeaders) return response
+
+  const headers = new Headers(response.headers)
+  corsHeaders.forEach((value, name) => headers.set(name, value))
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers,
+  })
+}
+
+export const GET = handler
+export const POST = handler
+export const OPTIONS: Endpoint = (request) => {
+  const headers = nativePreviewCorsHeaders(request)
+  return new Response(null, {
+    status: headers ? 204 : 403,
+    headers: headers ?? undefined,
+  })
 }

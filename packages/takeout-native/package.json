@@ -1,0 +1,44 @@
+{
+  "name": "takeout-native",
+  "version": "0.1.0",
+  "description": "One-line native integration setup for One apps",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./ai/contract": "./src/ai/contract.ts",
+    "./ai/server": "./src/ai/server.ts",
+    "./feedback": "./src/feedback/index.ts",
+    "./feedback/contract": "./src/feedback/contract.ts",
+    "./feedback/overlay": "./src/feedback/overlay.ts",
+    "./feedback/server": "./src/feedback/server.ts",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "src",
+    "README.md"
+  ],
+  "sideEffects": [
+    "./src/index.ts"
+  ],
+  "keywords": [
+    "one",
+    "react-native",
+    "tamagui"
+  ],
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "peerDependencies": {
+    "@tamagui/native": "3.1.9",
+    "one": "2.13.1",
+    "react": "19.3.0",
+    "react-native": "0.88.0",
+    "react-native-gesture-handler": "~3.3.0",
+    "react-native-keyboard-controller": "1.22.5",
+    "react-native-svg": "15.16.0",
+    "react-native-teleport": "^1.2.2"
+  }
+}
