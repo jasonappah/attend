@@ -1,0 +1,45 @@
+// auto-generated from the on-zero data layout
+import { defineRelations } from 'drizzle-orm'
+import * as schema from "../../database/schema"
+
+export { appNotification, calendar, comment, course, courseSession, notificationPreference, post, room, userPublic } from "../../database/schema"
+export const relations = defineRelations(schema, (r) => ({
+  userPublic: {
+    posts: r.many.post({
+      from: r.userPublic.id,
+      to: r.post.userId,
+    }),
+    comments: r.many.comment({
+      from: r.userPublic.id,
+      to: r.comment.userId,
+    }),
+  },
+  post: {
+    user: r.one.userPublic({
+      from: r.post.userId,
+      to: r.userPublic.id,
+    }),
+    comments: r.many.comment({
+      from: r.post.id,
+      to: r.comment.postId,
+    }),
+  },
+  comment: {
+    user: r.one.userPublic({
+      from: r.comment.userId,
+      to: r.userPublic.id,
+    }),
+    post: r.one.post({
+      from: r.comment.postId,
+      to: r.post.id,
+    }),
+  },
+  course: {
+    room: r.one.room({ from: r.course.roomId, to: r.room.id }),
+    calendar: r.one.calendar({ from: r.course.calendarId, to: r.calendar.id }),
+    sessions: r.many.courseSession({ from: r.course.id, to: r.courseSession.courseId }),
+  },
+  courseSession: {
+    course: r.one.course({ from: r.courseSession.courseId, to: r.course.id }),
+  },
+}))

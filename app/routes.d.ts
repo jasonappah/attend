@@ -8,20 +8,68 @@ declare module 'one' {
     export interface __routes<T extends string = string> extends Record<string, unknown> {
       StaticRoutes:
         | `/`
-        | `/(dash)`
-        | `/(dash)/courses`
-        | `/(dash)/history`
-        | `/(dash)/settings`
-        | `/(dash)/today`
         | `/_sitemap`
-        | `/courses`
-        | `/history`
-        | `/settings`
-        | `/today`
-      DynamicRoutes: never
-      DynamicRouteTemplate: never
+        | `/auth`
+        | `/auth/`
+        | `/auth/login`
+        | `/auth/signup/otp`
+        | `/eula`
+        | `/home`
+        | `/home/(tabs)`
+        | `/home/(tabs)/action`
+        | `/home/(tabs)/courses`
+        | `/home/(tabs)/courses/`
+        | `/home/(tabs)/feed`
+        | `/home/(tabs)/feed/`
+        | `/home/(tabs)/feed/make`
+        | `/home/(tabs)/history`
+        | `/home/(tabs)/history/`
+        | `/home/(tabs)/profile`
+        | `/home/(tabs)/profile/`
+        | `/home/(tabs)/today`
+        | `/home/(tabs)/today/`
+        | `/home/action`
+        | `/home/courses`
+        | `/home/courses/`
+        | `/home/feed`
+        | `/home/feed/`
+        | `/home/feed/make`
+        | `/home/history`
+        | `/home/history/`
+        | `/home/profile`
+        | `/home/profile/`
+        | `/home/settings`
+        | `/home/settings/edit-profile`
+        | `/home/settings/notifications`
+        | `/home/today`
+        | `/home/today/`
+        | `/privacy-policy`
+        | `/terms-of-service`
+      DynamicRoutes:
+        | `/auth/signup/${OneRouter.SingleRoutePart<T>}`
+        | `/docs/${OneRouter.SingleRoutePart<T>}`
+        | `/home/(tabs)/feed/post/${OneRouter.SingleRoutePart<T>}`
+        | `/home/feed/post/${OneRouter.SingleRoutePart<T>}`
+      DynamicRouteTemplate:
+        | `/auth/signup/[method]`
+        | `/docs/[slug]`
+        | `/home/(tabs)/feed/post/[postId]`
+        | `/home/feed/post/[postId]`
       IsTyped: true
-      
+      RouteTypes: {
+        '/auth/signup/[method]': RouteInfo<{ method: string }, '/auth/signup/[method]'>
+        '/docs/[slug]': RouteInfo<{ slug: string }, '/docs/[slug]'>
+        '/home/(tabs)/feed/post/[postId]': RouteInfo<{ postId: string }, '/home/(tabs)/feed/post/[postId]'>
+        '/home/feed/post/[postId]': RouteInfo<{ postId: string }, '/home/feed/post/[postId]'>
+      }
     }
   }
+}
+
+/**
+ * Helper type for route information
+ */
+type RouteInfo<Params = Record<string, never>, Path extends string = string> = {
+  Params: Params
+  LoaderProps: import('one').LoaderProps<Params, OneRouter.LoaderSearchParams<Path>>
 }

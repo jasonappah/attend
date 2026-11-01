@@ -1,31 +1,23 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
-    "rootDir": ".",
-    "outDir": "dist",
-    "paths": {
-      "~/*": ["./src/*"]
-    },
-    "forceConsistentCasingInFileNames": true,
-    "verbatimModuleSyntax": true,
-    "esModuleInterop": true,
-    "module": "Preserve",
-    "target": "ESNext",
-    "moduleResolution": "Bundler",
-    "preserveSymlinks": true,
-    "allowArbitraryExtensions": true,
-    "strict": true,
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
     "jsx": "react-jsx",
-    "noImplicitReturns": false,
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
-    "preserveConstEnums": true,
+    "strict": true,
+    "allowArbitraryExtensions": true,
+    "strictFunctionTypes": false,
     "skipLibCheck": true,
-    "types": ["node", "react", "vite/client"],
-    "lib": ["dom", "esnext"]
+    "esModuleInterop": true,
+    "lib": ["dom", "esnext"],
+    "types": ["bun"],
+    "paths": {
+      "~/*": ["./*"]
+    }
   },
-  "exclude": ["node_modules", "**/test", "**/dist", "**/types", "**/__tests__"],
   "typeAcquisition": {
     "enable": true
-  }
+  },
+  "exclude": ["node_modules", "packages", "dist"]
 }
