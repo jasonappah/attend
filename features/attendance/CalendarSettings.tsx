@@ -30,7 +30,15 @@ export function CalendarSettings() {
       <Input aria-label="Google Calendar iCal URL" placeholder="Google Calendar iCal URL" value={url} onChangeText={setUrl} autoCapitalize="none" />
       <XStack gap={8} flexWrap="wrap">
         <Button disabled={busy || !url.trim()} onPress={() => void perform(async () => { await add.mutateAsync({ url: url.trim() }); setUrl('') }, 'Calendar added.')}>Add calendar</Button>
-        <Button disabled={busy} onPress={() => void perform(() => sync.mutateAsync(), 'Courses synced.')}>Sync courses</Button>
+        <Button disabled={busy} onPress={() => void (async () => {
+          const confirmed = await dialogConfirm({
+            title: 'Sync courses?',
+            description: 'Sessions no longer in the calendar may be removed if they have no attendance. Recorded attendance is kept.',
+            confirmLabel: 'Sync',
+            destructive: true,
+          })
+          if (confirmed) await perform(() => sync.mutateAsync(), 'Courses synced.')
+        })()}>Sync courses</Button>
         <Button disabled={busy} subtle onPress={() => void perform(() => rooms.mutateAsync(), 'Rooms synced.')}>Sync rooms</Button>
       </XStack>
       {message ? <Paragraph>{message}</Paragraph> : null}
