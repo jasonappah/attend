@@ -24,7 +24,8 @@ export default function DashLayout() {
   // TODO: use a drawer
   return (
     <YStack
-      flex={1}
+      flex={Platform.OS === 'web' ? undefined : 1}
+      shrink={Platform.OS === 'web' ? 0 : undefined}
       height={Platform.OS === 'web' ? height : undefined}
       minH={0}
       p="4"
