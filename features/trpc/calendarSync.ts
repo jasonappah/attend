@@ -3,7 +3,7 @@ import ical from 'node-ical'
 import type { VEvent } from 'node-ical'
 import { syncedDb } from '~/database/syncedDb'
 import { calendar, course, courseSession, room } from '~/database/schema'
-import { sessionTimes } from './calendarEvents'
+import { currentAcademicTerm, sessionTimes } from './calendarEvents'
 
 // Never follow a calendar redirect: calendar URLs can contain private tokens,
 // and forwarding them to a redirect target would also permit SSRF.
@@ -37,7 +37,7 @@ async function readCalendar(response: Response) {
   }
 }
 
-export async function syncCalendars(userId: string, fetchCalendar: (input: RequestInfo | URL, init?: RequestInit) => Promise<Response> = fetch) {
+export async function syncCalendars(userId: string, fetchCalendar: (input: RequestInfo | URL, init?: RequestInit) => Promise<Response> = fetch, now = Date.now()) {
   const db = syncedDb(userId)
   const calendars = await db.transaction(({ drizzle }) =>
     drizzle.select().from(calendar).where(eq(calendar.userId, userId)),
@@ -51,8 +51,10 @@ export async function syncCalendars(userId: string, fetchCalendar: (input: Reque
     if (!response.ok) throw new Error(`Calendar returned HTTP ${response.status}.`)
     const text = await readCalendar(response)
     const events = await ical.async.parseICS(text)
+    const term = currentAcademicTerm(now)
     const matching = Object.values(events).filter((event): event is VEvent & { summary: string; end: Date } =>
       event?.type === 'VEVENT' && typeof event.summary === 'string' &&
+      event.start instanceof Date && event.start.getTime() > term.start && event.start.getTime() < term.end &&
       event.end instanceof Date &&
       /^(\w{2,4} \d{4} \d{3}) - (.+)$/.test(event.summary),
     )
