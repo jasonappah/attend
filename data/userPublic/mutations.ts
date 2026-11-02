@@ -27,7 +27,7 @@ export const mutate = mutations(
         username: string | null
         image: string | null
         joinedAt: number
-      },
+      }
     ) => {
       const auth = ensureLoggedIn()
       await ctx.tx.mutate.userPublic.insert({ ...row, id: auth.id })
@@ -41,7 +41,7 @@ export const mutate = mutations(
         name?: string | null
         username?: string | null
         image?: string | null
-      },
+      }
     ) => {
       const auth = ensureLoggedIn()
       const existing = await ctx.tx.run(zql.userPublic.where('id', auth.id).one())
@@ -71,5 +71,5 @@ export const mutate = mutations(
       await ctx.tx.mutate.userPublic.delete({ id: auth.id })
     },
   },
-  { crud: false },
+  { crud: false }
 )

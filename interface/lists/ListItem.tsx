@@ -1,6 +1,6 @@
+import type { ReactNode } from 'react'
 import { SizableText, styled, View, XStack } from 'tamagui'
 import { Icons } from '~/interface/icons'
-import type { ReactNode } from 'react'
 
 const ListItemFrame = styled(XStack, {
   cursor: 'pointer',

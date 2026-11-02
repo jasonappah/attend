@@ -29,7 +29,7 @@ export type AuthData = {
 
 export async function getZeroAuthData(
   authServer: AuthServerLike,
-  request: Request,
+  request: Request
 ): Promise<AuthData | null> {
   try {
     const headers = new Headers(request.headers)
@@ -41,7 +41,7 @@ export async function getZeroAuthData(
         'Cookie',
         existing
           ? `${existing}; ${APP_SCHEME}.session_token=${token}`
-          : `${APP_SCHEME}.session_token=${token}`,
+          : `${APP_SCHEME}.session_token=${token}`
       )
     }
 

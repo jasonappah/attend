@@ -1,9 +1,9 @@
-import type { SfSymbolCatalogAddition } from './generated/sfSymbolCatalogAdditions'
 import type { ComponentType } from 'react'
 import type { ColorValue } from 'react-native'
 import type { SvgProps } from 'react-native-svg'
 import type { SFSymbol } from 'sf-symbols-typescript'
 import type { ColorTokens, SizeTokens } from 'tamagui'
+import type { SfSymbolCatalogAddition } from './generated/sfSymbolCatalogAdditions'
 
 // the exact installed Apple catalog. the dependency carries the stable union;
 // the generated additions close any gap when the local SF Symbols app moves

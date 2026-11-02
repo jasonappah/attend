@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { View, type TamaguiElement } from 'tamagui'
+import { type TamaguiElement, View } from 'tamagui'
 import type { ListSpacerProps } from './virtualListContract'
 
 // on web the list may not own its scrolling (a page whose document scrolls), so
@@ -27,11 +27,10 @@ export function ListSpacer({ height, side, onReach }: ListSpacerProps) {
       ([entry]) => {
         if (!entry?.isIntersecting) return
         const box = entry.boundingClientRect
-        const reach =
-          side === 'after' ? innerHeight * 3 - box.top : box.bottom + innerHeight * 2
+        const reach = side === 'after' ? innerHeight * 3 - box.top : box.bottom + innerHeight * 2
         onReachRef.current(Math.min(box.height, Math.max(0, reach)))
       },
-      { rootMargin: '200% 0px' },
+      { rootMargin: '200% 0px' }
     )
     observer.observe(node)
     return () => observer.disconnect()

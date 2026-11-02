@@ -1,8 +1,8 @@
+import type { NativeMenuAdapter, NativeMenuModule } from '@tamagui/native'
 import { One, type SFSymbolName } from 'one'
+import type { ComponentProps, ComponentType, ReactElement, ReactNode } from 'react'
 import React from 'react'
 import { Platform } from 'react-native'
-import type { NativeMenuAdapter, NativeMenuModule } from '@tamagui/native'
-import type { ComponentProps, ComponentType, ReactElement, ReactNode } from 'react'
 
 type MenuItems = ComponentProps<typeof One.iOS.Menu>['items']
 type MenuItem = MenuItems[number]
@@ -42,7 +42,7 @@ function isMarkerType(candidate: unknown, type: ComponentType<MarkerProps>): boo
 
 function elementOfType(
   children: ReactNode,
-  type: ComponentType<MarkerProps>,
+  type: ComponentType<MarkerProps>
 ): ReactElement<MarkerProps> | null {
   for (const child of React.Children.toArray(children)) {
     if (React.isValidElement<MarkerProps>(child) && isMarkerType(child.type, type)) {
@@ -113,12 +113,7 @@ export function createOneMenuAdapter(): NativeMenuAdapter {
       const icon = elementOfType(element.props.children, ItemIcon)
       if (!icon) return ''
       const ios = icon.props.ios
-      if (
-        typeof ios === 'object' &&
-        ios &&
-        'name' in ios &&
-        typeof ios.name === 'string'
-      ) {
+      if (typeof ios === 'object' && ios && 'name' in ios && typeof ios.name === 'string') {
         // tamagui menu icons carry free strings; one types them as sf symbol names
         return ios.name as SFSymbolName
       }
@@ -172,9 +167,7 @@ export function createOneMenuAdapter(): NativeMenuAdapter {
           const subTrigger = elementOfType(child.props.children, SubTrigger)
           const subContent = elementOfType(child.props.children, SubContent)
           if (!subTrigger || !subContent) {
-            throw new Error(
-              'Tamagui native submenus require one SubTrigger and SubContent',
-            )
+            throw new Error('Tamagui native submenus require one SubTrigger and SubContent')
           }
           append({
             type: 'submenu',
@@ -191,9 +184,7 @@ export function createOneMenuAdapter(): NativeMenuAdapter {
         if (isMarkerType(child.type, CheckboxItem)) {
           const id = actionId(state, child)
           const current =
-            child.props.value === true ||
-            child.props.value === 'on' ||
-            child.props.checked === true
+            child.props.value === true || child.props.value === 'on' || child.props.checked === true
           const onValueChange = child.props.onValueChange
           const onCheckedChange = child.props.onCheckedChange
           state.handlers.set(id, (value) => {
@@ -288,9 +279,7 @@ export function createOneMenuAdapter(): NativeMenuAdapter {
       }
 
       const triggerLabel =
-        typeof trigger.props.accessibilityLabel === 'string'
-          ? trigger.props.accessibilityLabel
-          : ''
+        typeof trigger.props.accessibilityLabel === 'string' ? trigger.props.accessibilityLabel : ''
       const MenuHost = Platform.OS === 'android' ? One.Android.Menu : One.iOS.Menu
       const ContextMenuHost =
         Platform.OS === 'android' ? One.Android.ContextMenu : One.iOS.ContextMenu

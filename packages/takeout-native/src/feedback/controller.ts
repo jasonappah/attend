@@ -41,7 +41,7 @@ export function initialFeedbackState<Capture>(): FeedbackControllerState<Capture
 
 export function feedbackReducer<Capture>(
   state: FeedbackControllerState<Capture>,
-  event: FeedbackControllerEvent<Capture>,
+  event: FeedbackControllerEvent<Capture>
 ): FeedbackControllerState<Capture> {
   switch (event.type) {
     case 'arm':
@@ -118,7 +118,5 @@ export function isCapturing(mode: FeedbackMode): boolean {
 }
 
 export function canSend<Capture>(state: FeedbackControllerState<Capture>): boolean {
-  return (
-    state.mode === 'composing' && state.capture !== null && state.note.trim().length > 0
-  )
+  return state.mode === 'composing' && state.capture !== null && state.note.trim().length > 0
 }

@@ -53,7 +53,9 @@ export default {
           // updates are disabled in debug builds and until url is set.
           updates: {
             runtimeVersion: '1.0.0',
-            url: process.env.UPDATES_URL || `https://${process.env.VITE_WEB_HOSTNAME || 'localhost:4200'}/api/updates`,
+            url:
+              process.env.UPDATES_URL ||
+              `https://${process.env.VITE_WEB_HOSTNAME || 'localhost:4200'}/api/updates`,
           },
           icon: { source: './assets/icon.png', backgroundColor: '#e6dac1' },
           splash: { source: './assets/logo.png', backgroundColor: '#e6dac1' },

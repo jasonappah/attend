@@ -1,7 +1,7 @@
 import { serverWhere, zql } from 'on-zero'
 
 export const courseSessionPermission = serverWhere('courseSession', (q, auth) =>
-  q.exists('course', (course) => course.where('userId', auth?.id ?? '')),
+  q.exists('course', (course) => course.where('userId', auth?.id ?? ''))
 )
 
 export const sessions = () =>

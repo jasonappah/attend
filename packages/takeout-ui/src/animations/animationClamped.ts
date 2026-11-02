@@ -21,7 +21,7 @@ const springToTime = {
 
 export const animationClamped = (
   animation: TransitionKeys,
-  opacitySpeed = springToTime[animation] || '75ms',
+  opacitySpeed = springToTime[animation] || '75ms'
 ) =>
   ({
     preset: animation,

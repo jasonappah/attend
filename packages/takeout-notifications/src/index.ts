@@ -4,18 +4,14 @@ import {
   presentsInAppNotification,
   systemForegroundPresentation,
 } from './foregroundPolicy'
+import type { NotificationPermissionResponse, NotificationPermissionState } from './permission'
 import {
   notificationPermissionAlerts,
   notificationPermissionDelivers,
   readNotificationPermission,
 } from './permission'
-import { notificationResponseKey, readNotificationResponse } from './response'
-import { NOTIFICATION_ID_DATA_KEY } from './types'
-import type {
-  NotificationPermissionResponse,
-  NotificationPermissionState,
-} from './permission'
 import type { NotificationResponseInput } from './response'
+import { notificationResponseKey, readNotificationResponse } from './response'
 import type {
   NotificationForegroundPolicy,
   NotificationForegroundPresentation,
@@ -26,12 +22,13 @@ import type {
   NotificationResponseIssue,
   NotificationResponseResult,
   NotificationsProviderProps,
+  PushPlatform,
   PushRegistration,
   PushRegistrationMeta,
   PushRegistrationStatus,
-  PushPlatform,
   RegisterDevicePushToken,
 } from './types'
+import { NOTIFICATION_ID_DATA_KEY } from './types'
 
 const NotificationsContext = createContext<NotificationForegroundPolicy | null>(null)
 
@@ -54,11 +51,7 @@ export function NotificationsProvider({
   children,
   foregroundPolicy = DEFAULT_FOREGROUND_POLICY,
 }: NotificationsProviderProps) {
-  return createElement(
-    NotificationsContext.Provider,
-    { value: foregroundPolicy },
-    children,
-  )
+  return createElement(NotificationsContext.Provider, { value: foregroundPolicy }, children)
 }
 
 export function usePushRegistration(): PushRegistration {
@@ -93,18 +86,6 @@ function useNotificationsProvider(): NotificationForegroundPolicy {
   return policy
 }
 
-export {
-  DEFAULT_FOREGROUND_POLICY,
-  NOTIFICATION_ID_DATA_KEY,
-  notificationPermissionAlerts,
-  notificationPermissionDelivers,
-  notificationResponseKey,
-  presentsInAppNotification,
-  readNotificationPermission,
-  readNotificationResponse,
-  systemForegroundPresentation,
-}
-
 export type {
   NotificationForegroundPolicy,
   NotificationForegroundPresentation,
@@ -123,4 +104,15 @@ export type {
   PushRegistrationMeta,
   PushRegistrationStatus,
   RegisterDevicePushToken,
+}
+export {
+  DEFAULT_FOREGROUND_POLICY,
+  NOTIFICATION_ID_DATA_KEY,
+  notificationPermissionAlerts,
+  notificationPermissionDelivers,
+  notificationResponseKey,
+  presentsInAppNotification,
+  readNotificationPermission,
+  readNotificationResponse,
+  systemForegroundPresentation,
 }

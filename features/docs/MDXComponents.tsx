@@ -1,9 +1,9 @@
+import type { Href } from 'one'
+import type { ComponentType, ReactNode } from 'react'
 import { H1, H2, H3, H4, H5, Paragraph, SizableText, Spacer, XStack, YStack } from 'tamagui'
 import { Link } from '~/interface/app/Link'
 import { DocsCodeBlock } from './DocsCodeBlock'
 import { InlineCode } from './InlineCode'
-import type { Href } from 'one'
-import type { ComponentType, ReactNode } from 'react'
 
 // minimal mdx component mapping. semantic + reuses tamagui tokens; covers
 // every element the social docs need today.

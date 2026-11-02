@@ -1,7 +1,7 @@
-import { One, useRouter, useSafeAreaInsets } from 'one'
+import { useRouter, useSafeAreaInsets } from 'one'
 // the insets come from the provider One mounts at its root: this package
 // resolves to One's copy unless the app declares its own.
-import { AdaptPortalContents, Dialog as TamaguiDialog, Sheet, YStack } from 'tamagui'
+import { AdaptPortalContents, Sheet, Dialog as TamaguiDialog, YStack } from 'tamagui'
 import type { FormSheetBodyProps, FormSheetFrameProps } from './formContract'
 
 // the android leg. react-native-screens' formSheet is an ios presentation: on
@@ -87,10 +87,7 @@ export function FormSheetBody({ children }: FormSheetBodyProps) {
   const insets = useSafeAreaInsets()
   return (
     <FormSheetFrame>
-      <Sheet.ScrollView
-        keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={false}
-      >
+      <Sheet.ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
         <YStack pt={8} pb={insets.bottom + 12} px={16} gap={16}>
           {children}
         </YStack>

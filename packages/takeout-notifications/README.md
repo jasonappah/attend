@@ -51,11 +51,11 @@ a particular push service.
 in the foreground. The three values are mutually exclusive, so a user never sees
 both an operating-system banner and a product toast for the same event.
 
-| policy | operating system | product |
-| --- | --- | --- |
-| `system` (default) | banner, list entry, and sound | silent |
-| `inApp` | suppressed | the app presents the event itself |
-| `none` | suppressed | silent |
+| policy             | operating system              | product                           |
+| ------------------ | ----------------------------- | --------------------------------- |
+| `system` (default) | banner, list entry, and sound | silent                            |
+| `inApp`            | suppressed                    | the app presents the event itself |
+| `none`             | suppressed                    | silent                            |
 
 The provider installs the presentation policy, so the app's choice is the one
 the operating system sees. `useNotificationForegroundPolicy()` reports the same
@@ -84,14 +84,14 @@ const permission = useNotificationPermission()
 iOS grants more than one kind of authorization, and they are kept apart because
 an app that treats them alike promises alerts it will not get to show:
 
-| status | delivers | banner and sound |
-| --- | --- | --- |
-| `granted` | yes | yes |
-| `provisional` | yes, quietly to the notification center | no |
-| `ephemeral` | yes, until the session ends | yes |
-| `undetermined` | no, not asked yet | no |
-| `denied` | no | no |
-| `unsupported` | no, the web build | no |
+| status         | delivers                                | banner and sound |
+| -------------- | --------------------------------------- | ---------------- |
+| `granted`      | yes                                     | yes              |
+| `provisional`  | yes, quietly to the notification center | no               |
+| `ephemeral`    | yes, until the session ends             | yes              |
+| `undetermined` | no, not asked yet                       | no               |
+| `denied`       | no                                      | no               |
+| `unsupported`  | no, the web build                       | no               |
 
 `notificationPermissionDelivers(status)` and
 `notificationPermissionAlerts(status)` are the two questions product copy

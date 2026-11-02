@@ -10,14 +10,15 @@ export {
   readFeedbackConfig,
   subscribeToFeedbackConfig,
 } from './config'
-export { canSend, feedbackReducer, initialFeedbackState, isCapturing } from './controller'
+export type * from './contract'
 export type {
   FeedbackControllerEvent,
   FeedbackControllerState,
   FeedbackMode,
 } from './controller'
-export { buildFeedbackReport, describeAnnotation } from './report'
+export { canSend, feedbackReducer, initialFeedbackState, isCapturing } from './controller'
 export { MAX_FEEDBACK_IMAGE_BYTES, MAX_FEEDBACK_REPORT_BODY_BYTES } from './limits'
+export { buildFeedbackReport, describeAnnotation } from './report'
 export {
   buildStroke,
   isClosedStroke,
@@ -26,4 +27,3 @@ export {
   simplifyStroke,
   strokeBounds,
 } from './stroke'
-export type * from './contract'

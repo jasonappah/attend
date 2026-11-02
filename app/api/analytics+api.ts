@@ -1,8 +1,8 @@
+import type { Endpoint } from 'one'
 import {
   parseAppAnalyticsRequest,
   sendAppAnalyticsEvent,
 } from 'takeout-better-auth/analytics/server'
-import type { Endpoint } from 'one'
 
 export const POST: Endpoint = async (request) => {
   const parsed = await parseAppAnalyticsRequest(request)

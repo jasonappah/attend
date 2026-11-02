@@ -2,8 +2,8 @@ import 'takeout-native'
 import '~/features/storage/setupStorage'
 import '~/features/feedback/setupFeedback'
 import * as nativeRegistry from '@tamagui/native-registry'
-import { withFeedback } from 'takeout-native/feedback/overlay'
 import { AppRegistry } from 'react-native'
+import { withFeedback } from 'takeout-native/feedback/overlay'
 import { setNativeStyleEngine } from 'tamagui'
 
 // tamagui's native fast path: compiled views (experimental.nativeFastPath in

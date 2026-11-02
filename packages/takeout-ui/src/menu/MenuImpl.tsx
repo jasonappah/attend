@@ -2,14 +2,14 @@ import { createEmitter, isEqualIdentity, useEmitterValue } from '@o/helpers'
 import { Menu as TamaguiMenu } from '@tamagui/menu'
 import {
   createContext,
+  type MouseEvent,
   memo,
+  type ReactNode,
   use,
   useEffect,
   useMemo,
   useRef,
   useState,
-  type MouseEvent,
-  type ReactNode,
 } from 'react'
 import { prevent, styled, useEvent } from 'tamagui'
 import { useEscapeHandler } from '../keyboard/escape'
@@ -83,19 +83,14 @@ export const GlobalMenuProvider = memo(({ children }: { children: ReactNode }) =
 })
 
 export const MenuTrigger = memo(
-  ({
-    children,
-    items,
-    onOpenChange: onOpenChangeProp,
-    onMouseEnter,
-  }: MenuTriggerProps) => {
+  ({ children, items, onOpenChange: onOpenChangeProp, onMouseEnter }: MenuTriggerProps) => {
     const onOpenChange = useEvent(onOpenChangeProp)
     const menuOpenRef = use(MenuOpenContext)
     const inGroup = use(MenuGroupContext)
 
     const menuState = useMemo(
       () => ({ items, onOpenChange, fromGroup: inGroup }),
-      [items, onOpenChange, inGroup],
+      [items, onOpenChange, inGroup]
     )
 
     const hasEmitted = useRef(false)
@@ -142,7 +137,7 @@ export const MenuTrigger = memo(
         {children}
       </TamaguiMenu.Trigger>
     )
-  },
+  }
 )
 
 const MenuItemFrame = styled(TamaguiMenu.Item, {
@@ -252,9 +247,7 @@ function renderMenuEntries(entries?: MenuEntry[]) {
 
     const { items } = entry
     if (items && items.length > 0) {
-      return (
-        <MenuSubMenu key={`submenu-${entry.text}-${index}`} item={{ ...entry, items }} />
-      )
+      return <MenuSubMenu key={`submenu-${entry.text}-${index}`} item={{ ...entry, items }} />
     }
 
     return <MenuItemRow key={`item-${entry.text}-${index}`} item={entry} />
@@ -273,7 +266,7 @@ const MenuContent = memo(
         </MenuContentFrame>
       </TamaguiMenu.Portal>
     )
-  },
+  }
 )
 
 const MenuGroup = memo(({ children }: { children: ReactNode }) => {

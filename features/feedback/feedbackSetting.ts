@@ -33,7 +33,7 @@ export function useFeedbackSetting() {
   const value = useSyncExternalStore(
     subscribeToFeedbackSetting,
     isFeedbackSettingEnabled,
-    () => true,
+    () => true
   )
   return {
     enabled: value,

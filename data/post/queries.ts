@@ -18,7 +18,7 @@ export const allPosts = (props: {
       c
         .orderBy('createdAt', 'desc')
         .limit(1)
-        .related('user', (u) => u.one()),
+        .related('user', (u) => u.one())
     )
 
   if (props.cursor) q = q.start(props.cursor)
@@ -35,7 +35,7 @@ export const postById = (props: { postId: string }) => {
       c
         .orderBy('createdAt', 'asc')
         .limit(50)
-        .related('user', (u) => u.one()),
+        .related('user', (u) => u.one())
     )
 }
 

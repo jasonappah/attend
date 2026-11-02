@@ -15,7 +15,11 @@ export async function signInGoogle() {
   cancelPending?.()
   const nonce = crypto.randomUUID()
   const callbackURL = `${APP_SCHEME}://?attempt=${nonce}`
-  const result = await authClient.signIn.social({ provider: 'google', callbackURL, disableRedirect: true })
+  const result = await authClient.signIn.social({
+    provider: 'google',
+    callbackURL,
+    disableRedirect: true,
+  })
   if (result.error) throw new Error(result.error.message || 'Google sign-in failed')
   if (!result.data?.url) throw new Error('Google sign-in URL was not returned')
   const expected = await nativeTokenStore.get()
@@ -28,7 +32,8 @@ export async function signInGoogle() {
     if (!token || settled) return
     settled = true
     cleanup()
-    if (!await nativeTokenStore.set(token, expected)) throw new Error('The sign-in was superseded by another account change.')
+    if (!(await nativeTokenStore.set(token, expected)))
+      throw new Error('The sign-in was superseded by another account change.')
     try {
       await reestablishAuthSession(authClient)
     } catch (error) {

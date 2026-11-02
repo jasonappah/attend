@@ -1,6 +1,6 @@
+import { memo } from 'react'
 import { formatDistanceToNow } from 'takeout-ui/display'
 import { Image } from 'takeout-ui/image/Image'
-import { memo } from 'react'
 import { isWeb, Paragraph, View, XStack, YStack } from 'tamagui'
 import { postDetailHref } from '~/features/app/routes'
 import { Link } from '~/interface/app/Link'

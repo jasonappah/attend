@@ -1,8 +1,8 @@
+import type { Endpoint } from 'one'
 import { handleSyncExecutorPushRequest } from 'orez-lite'
 import { authServer } from '~/auth/server/authServer'
 import { getZeroAuthData } from '~/auth/server/getZeroAuthData'
 import { zeroExecutor } from '~/data/zero-server'
-import type { Endpoint } from 'one'
 
 export const POST: Endpoint = async (request) => {
   try {

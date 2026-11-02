@@ -1,6 +1,6 @@
 import { One } from 'one'
 import { View } from 'react-native'
-import { YStack, type GetProps } from 'tamagui'
+import { type GetProps, YStack } from 'tamagui'
 
 export type MaskedFadeProps = GetProps<typeof YStack> & {
   // 0-1 fraction of the height kept fully opaque before the fade to transparent

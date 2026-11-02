@@ -1,11 +1,11 @@
 import { One } from 'one'
+import type { ComponentType, ReactNode } from 'react'
 import { useCallback, useEffect, useState } from 'react'
+import type { GestureResponderEvent } from 'react-native'
 import { View } from 'react-native'
 import { openFeedback, subscribeToFeedbackActivation } from './activation'
 import { FeedbackOverlay } from './FeedbackOverlay'
 import type { FeedbackConfig } from './types'
-import type { ComponentType, ReactNode } from 'react'
-import type { GestureResponderEvent } from 'react-native'
 
 type WrapperProps = { children?: ReactNode }
 
@@ -22,9 +22,7 @@ type WrapperProps = { children?: ReactNode }
 // one passes it here instead of replacing it:
 //
 //   app registry set wrapper component provider with the existing wrapper
-export function withFeedback(
-  Inner?: ComponentType<WrapperProps>,
-): ComponentType<WrapperProps> {
+export function withFeedback(Inner?: ComponentType<WrapperProps>): ComponentType<WrapperProps> {
   return function FeedbackWrapper({ children }: WrapperProps) {
     const [sessionConfig, setSessionConfig] = useState<FeedbackConfig | null>(null)
 
@@ -36,7 +34,7 @@ export function withFeedback(
           // the annotation that is already on screen.
           setSessionConfig((existing) => existing ?? config)
         }),
-      [],
+      []
     )
 
     const activateFromThreeFingers = useCallback(
@@ -48,7 +46,7 @@ export function withFeedback(
         }
         return opened
       },
-      [sessionConfig],
+      [sessionConfig]
     )
 
     const content = Inner ? <Inner>{children}</Inner> : children
@@ -58,16 +56,10 @@ export function withFeedback(
       // low for the sibling overlay. own this context at the same global layer
       // as the overlay; a nested app provider may still refine its own subtree.
       <One.UI.SafeArea.Provider>
-        <View
-          style={{ flex: 1 }}
-          onStartShouldSetResponderCapture={activateFromThreeFingers}
-        >
+        <View style={{ flex: 1 }} onStartShouldSetResponderCapture={activateFromThreeFingers}>
           {content}
           {sessionConfig ? (
-            <FeedbackOverlay
-              config={sessionConfig}
-              onClose={() => setSessionConfig(null)}
-            />
+            <FeedbackOverlay config={sessionConfig} onClose={() => setSessionConfig(null)} />
           ) : null}
         </View>
       </One.UI.SafeArea.Provider>

@@ -1,7 +1,7 @@
 import { serverWhere, zql } from 'on-zero'
 
 export const notificationPreferencePermission = serverWhere('notificationPreference', (q, auth) =>
-  q.cmp('userId', auth?.id ?? ''),
+  q.cmp('userId', auth?.id ?? '')
 )
 
 // one row per workflow the user has actually changed. a workflow with no row

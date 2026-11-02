@@ -14,7 +14,6 @@ the independent Opus review and merge; CI356 owns broader checks.
 
 ## Previous Tamagui 3.1.3 consumer update
 
-
 On 2026-10-22, Nate directed the release coordinator: "Yeah, please cut them
 both and then upgrade them across the other repose" (parent rollout task
 t-mvk3ej0l-iwp0). This continuation upgrades only the published Tamagui family

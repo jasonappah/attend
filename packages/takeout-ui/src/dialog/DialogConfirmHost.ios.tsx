@@ -10,8 +10,7 @@ import { DialogConfirmDialog } from './DialogConfirmContent'
 // queued one presents fresh after the one before it settles.
 export function DialogConfirm() {
   const { state, finish } = useDialogConfirmHost()
-  if (state?.props.extraConfirm)
-    return <DialogConfirmDialog state={state} finish={finish} />
+  if (state?.props.extraConfirm) return <DialogConfirmDialog state={state} finish={finish} />
   const {
     title = 'Are you sure?',
     description = '',

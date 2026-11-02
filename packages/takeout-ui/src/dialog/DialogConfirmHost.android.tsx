@@ -12,8 +12,7 @@ import { DialogConfirmDialog } from './DialogConfirmContent'
 export function DialogConfirm() {
   const { state, finish } = useDialogConfirmHost()
   if (!state) return null
-  if (state.props.extraConfirm)
-    return <DialogConfirmDialog state={state} finish={finish} />
+  if (state.props.extraConfirm) return <DialogConfirmDialog state={state} finish={finish} />
   const {
     title = 'Are you sure?',
     description = '',

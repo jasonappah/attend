@@ -1,6 +1,9 @@
 import {
+  type ComponentProps,
+  type ComponentType,
   createContext,
   memo,
+  type ReactNode,
   useCallback,
   useContext,
   useId,
@@ -8,13 +11,10 @@ import {
   useMemo,
   useRef,
   useState,
-  type ComponentType,
-  type ComponentProps,
-  type ReactNode,
 } from 'react'
 import {
-  Dialog as TamaguiDialog,
   isWeb,
+  Dialog as TamaguiDialog,
   Sheet as TamaguiSheet,
   useDialogContext,
   useMedia,
@@ -78,8 +78,7 @@ const DialogHostScopeContext = createContext<DialogHostScope | null>(null)
 function activeRegistration(registrations: RegisteredDialog[]) {
   return registrations.reduce<RegisteredDialog | null>((best, item) => {
     if (!best) return item
-    if (item.priority !== best.priority)
-      return item.priority > best.priority ? item : best
+    if (item.priority !== best.priority) return item.priority > best.priority ? item : best
     return item.sequence > best.sequence ? item : best
   }, null)
 }
@@ -194,7 +193,7 @@ export const GlobalDialogProvider = memo(function GlobalDialogProvider({
 
   const scope = useMemo(
     () => ({ mount, update, dialogPresentsAsSheet }),
-    [mount, update, dialogPresentsAsSheet],
+    [mount, update, dialogPresentsAsSheet]
   )
   const active = activeRegistration(registrations)
   const activeDialog = active?.kind === 'dialog' ? active : null
@@ -238,11 +237,7 @@ export const GlobalDialogProvider = memo(function GlobalDialogProvider({
   // adapt with no sheet mounted yet and Tamagui reported an adapt nobody
   // consumed (a dev console.error the e2e harness fails on).
   const sheetAdaptWhen =
-    !rendered || renderedDialog?.fullscreen
-      ? false
-      : renderedSheet
-        ? true
-        : dialogPresentsAsSheet
+    !rendered || renderedDialog?.fullscreen ? false : renderedSheet ? true : dialogPresentsAsSheet
 
   // Tamagui's Sheet implements no escape key of its own, so wherever the
   // overlay presents as a sheet it has no keyboard way out unless we supply
@@ -322,7 +317,7 @@ export function useDialogPresentsAsSheet(): boolean {
 export function useDialogHostRegistration(
   registration: Omit<DialogRegistration, 'id'> | Omit<SheetRegistration, 'id'>,
   open: boolean | undefined,
-  owner: string,
+  owner: string
 ) {
   const scope = useContext(DialogHostScopeContext)
   if (!scope) throw new Error(`${owner} must render inside GlobalOverlayProvider`)
@@ -371,7 +366,7 @@ export const HostedDialog = memo(function HostedDialog({
       sheetVariant,
       fullscreen,
     }),
-    [children, layer, onOverlayPress, onOpenChange, sheetVariant, fullscreen],
+    [children, layer, onOverlayPress, onOpenChange, sheetVariant, fullscreen]
   )
   useDialogHostRegistration(registration, open, 'HostedDialog')
   return null

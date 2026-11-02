@@ -57,10 +57,7 @@ export function nativeBearerClient(options: NativeBearerClientOptions) {
         id: 'takeout-native-bearer',
         name: 'native bearer',
         hooks: {
-          async onRequest(context: {
-            headers: Headers
-            credentials?: RequestCredentials
-          }) {
+          async onRequest(context: { headers: Headers; credentials?: RequestCredentials }) {
             context.credentials = 'omit'
 
             if (options.origin) {
@@ -81,7 +78,7 @@ export function nativeBearerClient(options: NativeBearerClientOptions) {
             const requestToken = requestBearerToken(context.request)
             const requestPath = new URL(
               context.request.url.toString(),
-              'https://better-auth.invalid',
+              'https://better-auth.invalid'
             ).pathname
             if (requestPath.endsWith('/sign-out')) {
               await options.tokenStore.remove(requestToken)
@@ -91,10 +88,7 @@ export function nativeBearerClient(options: NativeBearerClientOptions) {
             const token = context.response.headers.get('set-auth-token')
             if (token) await options.tokenStore.set(token, requestToken)
           },
-          async onError(context: {
-            request: { headers: Headers }
-            error: { status: number }
-          }) {
+          async onError(context: { request: { headers: Headers }; error: { status: number } }) {
             if (context.error.status === 401) {
               await options.tokenStore.remove(requestBearerToken(context.request))
             }

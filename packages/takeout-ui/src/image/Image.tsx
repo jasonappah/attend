@@ -1,4 +1,4 @@
-import { Image as TamaguiImage, styled, type GetProps } from 'tamagui'
+import { type GetProps, styled, Image as TamaguiImage } from 'tamagui'
 
 // tamagui's Image already accepts BOTH a string url and a `{ uri }` object as
 // `src` and normalizes them internally (see tamagui's createImage), so a

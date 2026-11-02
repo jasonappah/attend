@@ -1,7 +1,7 @@
-import { Sheet } from 'takeout-ui/sheet/Sheet'
 import { usePathname } from 'one'
 import { memo, useState } from 'react'
-import { Button, Separator, SizableText, useDidFinishSSR, View, XStack, YStack } from 'tamagui'
+import { Sheet } from 'takeout-ui/sheet/Sheet'
+import { Button, SizableText, useDidFinishSSR, View, XStack, YStack } from 'tamagui'
 import { useAuth } from '~/auth/client/authClient'
 import { APP_NAME } from '~/constants'
 import { APP_HOME_HREF } from '~/features/app/routes'
@@ -32,11 +32,7 @@ export const SiteHeaderMenu = memo(() => {
         />
       </View>
 
-      <Sheet
-        open={open}
-        onOpenChange={setOpen}
-        sheetVariant={isDocsPage ? 'large' : 'compact'}
-      >
+      <Sheet open={open} onOpenChange={setOpen} sheetVariant={isDocsPage ? 'large' : 'compact'}>
         <Sheet.Overlay bg="background" opacity="0.5 enter:0 exit:0" transition="quick" />
 
         <Sheet.Container rounded="6">

@@ -1,4 +1,5 @@
 import { useWindowDimensions } from '@tamagui/use-window-dimensions'
+import type { ReactNode, RefObject } from 'react'
 import {
   startTransition,
   useCallback,
@@ -9,12 +10,6 @@ import {
   useRef,
   useState,
 } from 'react'
-import { LayoutAnimationConfig } from 'react-native-reanimated'
-import { ScrollView, View } from 'tamagui'
-import { ListSpacer } from './ListSpacer'
-import { VirtualRow } from './VirtualRow'
-import type { RowMotion } from './virtualListContract'
-import type { ReactNode, RefObject } from 'react'
 import type {
   Insets,
   LayoutChangeEvent,
@@ -24,6 +19,11 @@ import type {
   StyleProp,
   ViewStyle,
 } from 'react-native'
+import { LayoutAnimationConfig } from 'react-native-reanimated'
+import { ScrollView, View } from 'tamagui'
+import { ListSpacer } from './ListSpacer'
+import { VirtualRow } from './VirtualRow'
+import type { RowMotion } from './virtualListContract'
 
 export { VirtualRow } from './VirtualRow'
 
@@ -150,7 +150,7 @@ export function VirtualList<TItem>({
   renderScroll?: (
     props: ScrollViewProps,
     ref: RefObject<VirtualListScrollRef | null>,
-    onContentInsetChange: (insets: Insets) => void,
+    onContentInsetChange: (insets: Insets) => void
   ) => ReactNode
   ref?: RefObject<VirtualListHandle | null>
 }) {
@@ -186,7 +186,7 @@ export function VirtualList<TItem>({
     () => () => {
       if (settleTimerRef.current) clearTimeout(settleTimerRef.current)
     },
-    [],
+    []
   )
   // typed by what it reads: tamagui's View reports a narrower event than react
   // native's LayoutChangeEvent
@@ -197,7 +197,7 @@ export function VirtualList<TItem>({
       fillerOpenRef.current = open
       setFillerOpen(open)
     },
-    [holdLayoutMotion],
+    [holdLayoutMotion]
   )
   const [extraWindowRows, setExtraWindowRows] = useState(0)
   const followingTailRef = useRef(true)
@@ -217,62 +217,48 @@ export function VirtualList<TItem>({
   // page and drops its oldest row as a new one lands, where the count holds.
   // synced in a layout effect, never the render body, so the compiler keeps
   // memoizing.
-  const tailKey =
-    items.length > 0 ? keyExtractor(items[items.length - 1], items.length - 1) : null
+  const tailKey = items.length > 0 ? keyExtractor(items[items.length - 1], items.length - 1) : null
   const tailKeyRef = useRef(tailKey)
   useLayoutEffect(() => {
     tailKeyRef.current = tailKey
   })
   const pinnedTailKeyRef = useRef(tailKey)
 
-  const viewportRows =
-    Math.ceil(windowHeight / estimatedItemHeight) + WINDOW_ROWS_BEYOND_VIEWPORT
+  const viewportRows = Math.ceil(windowHeight / estimatedItemHeight) + WINDOW_ROWS_BEYOND_VIEWPORT
   const expandRows = viewportRows * EXPAND_VIEWPORTS
   const windowRows = Math.min(items.length, viewportRows + extraWindowRows)
   const mountedItems = useMemo(
-    () =>
-      windowRows === 0
-        ? []
-        : atEnd
-          ? items.slice(-windowRows)
-          : items.slice(0, windowRows),
-    [atEnd, items, windowRows],
+    () => (windowRows === 0 ? [] : atEnd ? items.slice(-windowRows) : items.slice(0, windowRows)),
+    [atEnd, items, windowRows]
   )
   const firstMountedIndex = atEnd ? items.length - mountedItems.length : 0
   const spacerHeight = (items.length - mountedItems.length) * estimatedItemHeight
 
-  const scrollToEnd = useCallback(
-    (options?: { animated?: boolean; viewOffset?: number }) => {
-      const scrollView = scrollRef.current
-      if (!scrollView) return
-      const viewOffset = options?.viewOffset ?? 0
-      // an instant pin to the end while a tail scroll runs takes the scroll to
-      // the new end instead of cutting it short
-      const animated =
-        (options?.animated ?? false) ||
-        (viewOffset === 0 && tailScrollInFlightRef.current)
-      if (animated && viewOffset === 0) tailScrollInFlightRef.current = true
-      const contentHeight = contentHeightRef.current
-      const viewportHeight = viewportHeightRef.current
-      if (viewOffset === 0 || contentHeight <= 0 || viewportHeight <= 0) {
-        scrollView.scrollToEnd({ animated })
-        return
-      }
-      scrollView.scrollTo({
-        y: Math.max(
-          0,
-          contentHeight + contentInsetBottomRef.current - viewportHeight - viewOffset,
-        ),
-        animated,
-      })
-    },
-    [],
-  )
+  const scrollToEnd = useCallback((options?: { animated?: boolean; viewOffset?: number }) => {
+    const scrollView = scrollRef.current
+    if (!scrollView) return
+    const viewOffset = options?.viewOffset ?? 0
+    // an instant pin to the end while a tail scroll runs takes the scroll to
+    // the new end instead of cutting it short
+    const animated =
+      (options?.animated ?? false) || (viewOffset === 0 && tailScrollInFlightRef.current)
+    if (animated && viewOffset === 0) tailScrollInFlightRef.current = true
+    const contentHeight = contentHeightRef.current
+    const viewportHeight = viewportHeightRef.current
+    if (viewOffset === 0 || contentHeight <= 0 || viewportHeight <= 0) {
+      scrollView.scrollToEnd({ animated })
+      return
+    }
+    scrollView.scrollTo({
+      y: Math.max(0, contentHeight + contentInsetBottomRef.current - viewportHeight - viewOffset),
+      animated,
+    })
+  }, [])
 
   useImperativeHandle(
     ref,
     () => ({ scrollToEnd, isFollowingTail: () => followingTailRef.current }),
-    [scrollToEnd],
+    [scrollToEnd]
   )
 
   const handleContentInsetChange = useCallback(
@@ -282,7 +268,7 @@ export function VirtualList<TItem>({
       // tail scroll runs; the scroll takes the new end instead of jumping there
       if (atEnd && followTail && followingTailRef.current) scrollToEnd()
     },
-    [atEnd, followTail, scrollToEnd],
+    [atEnd, followTail, scrollToEnd]
   )
 
   // an end-anchored list is at its end before the first paint and before the
@@ -302,7 +288,7 @@ export function VirtualList<TItem>({
       const target = windowRows + rows - viewportRows
       startTransition(() => setExtraWindowRows((current) => Math.max(current, target)))
     },
-    [viewportRows, windowRows],
+    [viewportRows, windowRows]
   )
 
   // how far the reader's lookahead reaches into the spacer. mount at least a
@@ -320,15 +306,7 @@ export function VirtualList<TItem>({
       const rows = Math.max(expandRows, Math.ceil(spacerReach / estimatedItemHeight))
       growWindow(rows)
     },
-    [
-      atEnd,
-      estimatedItemHeight,
-      expandRows,
-      growWindow,
-      items.length,
-      spacerHeight,
-      windowRows,
-    ],
+    [atEnd, estimatedItemHeight, expandRows, growWindow, items.length, spacerHeight, windowRows]
   )
 
   // web only: the spacer came within reach of the visible area. a start-anchored
@@ -346,21 +324,12 @@ export function VirtualList<TItem>({
         onEndReached()
       }
     },
-    [
-      atEnd,
-      estimatedItemHeight,
-      expandRows,
-      growWindow,
-      items.length,
-      onEndReached,
-      windowRows,
-    ],
+    [atEnd, estimatedItemHeight, expandRows, growWindow, items.length, onEndReached, windowRows]
   )
 
   const handleScroll = useCallback(
     (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-      const { contentInset, contentOffset, contentSize, layoutMeasurement } =
-        event.nativeEvent
+      const { contentInset, contentOffset, contentSize, layoutMeasurement } = event.nativeEvent
       contentHeightRef.current = contentSize.height
       scrollOffsetRef.current = contentOffset.y
       contentInsetBottomRef.current = contentInset?.bottom ?? 0
@@ -368,8 +337,7 @@ export function VirtualList<TItem>({
       const distanceFromEnd =
         contentSize.height + contentInsetBottomRef.current - (contentOffset.y + viewport)
       if (distanceFromEnd <= TAIL_SCROLL_ARRIVED_PX) tailScrollInFlightRef.current = false
-      followingTailRef.current =
-        distanceFromEnd <= NEAR_END_PX || tailScrollInFlightRef.current
+      followingTailRef.current = distanceFromEnd <= NEAR_END_PX || tailScrollInFlightRef.current
       const edgeThreshold = viewport * EDGE_REACHED_VIEWPORT_FRACTION
       growToReach(contentOffset.y, viewport, contentSize.height)
 
@@ -400,15 +368,7 @@ export function VirtualList<TItem>({
       }
       onScrollProp?.(event)
     },
-    [
-      atEnd,
-      growToReach,
-      items.length,
-      onEndReached,
-      onScrollProp,
-      onStartReached,
-      windowRows,
-    ],
+    [atEnd, growToReach, items.length, onEndReached, onScrollProp, onStartReached, windowRows]
   )
 
   const handleScrollBeginDrag = useCallback(() => {
@@ -435,7 +395,7 @@ export function VirtualList<TItem>({
         onEndReached()
       }
     },
-    [atEnd, items.length, onEndReached, windowRows],
+    [atEnd, items.length, onEndReached, windowRows]
   )
 
   const handleLayout = useCallback(
@@ -446,7 +406,7 @@ export function VirtualList<TItem>({
       if (atEnd && pinAtEndOnLayout && followingTailRef.current) scrollToEnd()
       reachEndIfShort(contentHeightRef.current, height)
     },
-    [alignContentAtEnd, atEnd, pinAtEndOnLayout, reachEndIfShort, scrollToEnd],
+    [alignContentAtEnd, atEnd, pinAtEndOnLayout, reachEndIfShort, scrollToEnd]
   )
 
   const handleContentSizeChange = useCallback(
@@ -482,7 +442,7 @@ export function VirtualList<TItem>({
       reachEndIfShort,
       scrollToEnd,
       windowHeight,
-    ],
+    ]
   )
 
   const spacer =
@@ -499,9 +459,8 @@ export function VirtualList<TItem>({
     rowMotion && (shortList || layoutMotionSettling) ? rowMotion.layout : undefined
   const enteringMotion = rowMotion && shortList ? rowMotion.entering : undefined
   const rowMotionNow = useMemo(
-    () =>
-      carriesRowMotion ? { layout: layoutMotion, entering: enteringMotion } : undefined,
-    [carriesRowMotion, enteringMotion, layoutMotion],
+    () => (carriesRowMotion ? { layout: layoutMotion, entering: enteringMotion } : undefined),
+    [carriesRowMotion, enteringMotion, layoutMotion]
   )
   const rows = mountedItems.map((item, index) => (
     <VirtualRow
@@ -516,9 +475,7 @@ export function VirtualList<TItem>({
   const scrollProps = {
     style,
     contentContainerStyle: [
-      endAligned
-        ? { minHeight: Math.max(0, alignedViewportHeight - endContentInset) }
-        : null,
+      endAligned ? { minHeight: Math.max(0, alignedViewportHeight - endContentInset) } : null,
       contentContainerStyle,
     ],
     testID,
@@ -553,8 +510,7 @@ export function VirtualList<TItem>({
     ),
   } satisfies ScrollViewProps
 
-  if (renderScroll)
-    return <>{renderScroll(scrollProps, scrollRef, handleContentInsetChange)}</>
+  if (renderScroll) return <>{renderScroll(scrollProps, scrollRef, handleContentInsetChange)}</>
 
   return (
     <ScrollView

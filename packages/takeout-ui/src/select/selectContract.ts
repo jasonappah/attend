@@ -1,6 +1,6 @@
-import type { DialogSheetBreakpoint } from '../dialog/DialogHost'
 import type { ComponentProps, ReactNode } from 'react'
-import type { Select as TamaguiSelect, SelectSize } from 'tamagui'
+import type { SelectSize, Select as TamaguiSelect } from 'tamagui'
+import type { DialogSheetBreakpoint } from '../dialog/DialogHost'
 
 // the props every Select leg implements. structural types live once, in the
 // owning contract, so no leg can drift from the others silently.

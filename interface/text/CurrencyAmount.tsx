@@ -1,6 +1,6 @@
+import type { ComponentProps } from 'react'
 import { formatCents } from 'takeout-ui/display'
 import { SizableText } from 'tamagui'
-import type { ComponentProps } from 'react'
 
 type CurrencyAmountProps = Omit<
   ComponentProps<typeof SizableText>,

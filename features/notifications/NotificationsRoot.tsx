@@ -1,13 +1,13 @@
+import { router } from 'one'
+import { type ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import {
+  type NotificationForegroundPolicy,
+  type NotificationResponseResult,
   NotificationsProvider,
   presentsInAppNotification,
   useNotificationForegroundPolicy,
-  type NotificationForegroundPolicy,
-  type NotificationResponseResult,
 } from 'takeout-notifications'
 import { showToast } from 'takeout-ui/toast/Toast'
-import { router } from 'one'
-import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
 import { notificationById } from '~/data/appNotification/queries'
 import { useQuery } from '~/data/zero-client'
 import { APP_SETTINGS_NOTIFICATIONS_HREF } from '~/features/app/routes'
@@ -117,7 +117,6 @@ function NotificationPresenter() {
             },
           },
         })
-        continue
       }
       // system delivery is a background adapter over this durable row. it is
       // intentionally absent until the delivery outbox exists.

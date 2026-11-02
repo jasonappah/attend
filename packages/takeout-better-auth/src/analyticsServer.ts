@@ -1,8 +1,8 @@
 import {
   APP_ANALYTICS_EVENTS,
+  type AppAnalyticsEvent,
   isAppInstallationId,
   parseAppAnalyticsEvent,
-  type AppAnalyticsEvent,
 } from './analytics'
 
 export type AppAnalyticsServerConfig = {
@@ -16,7 +16,7 @@ export type AppAnalyticsRequestResult =
   | { ok: false; reason: 'invalid' | 'too-large' }
 
 export async function parseAppAnalyticsRequest(
-  request: Request,
+  request: Request
 ): Promise<AppAnalyticsRequestResult> {
   const maxBodyBytes = 512
   const declaredLength = Number(request.headers.get('content-length'))
@@ -50,7 +50,7 @@ export async function parseAppAnalyticsRequest(
 
 export async function sendAppAnalyticsEvent(
   value: AppAnalyticsEvent,
-  config: AppAnalyticsServerConfig,
+  config: AppAnalyticsServerConfig
 ): Promise<'accepted' | 'unconfigured' | 'failed'> {
   const event = parseAppAnalyticsEvent(value)
   if (!event) return 'failed'
@@ -74,11 +74,8 @@ export async function sendAppAnalyticsEvent(
 export async function sendAppSignupEvent(
   installationId: unknown,
   isDemo: boolean,
-  config: AppAnalyticsServerConfig,
+  config: AppAnalyticsServerConfig
 ): Promise<'accepted' | 'unconfigured' | 'failed' | 'skipped'> {
   if (isDemo || !isAppInstallationId(installationId)) return 'skipped'
-  return sendAppAnalyticsEvent(
-    { event: APP_ANALYTICS_EVENTS.signup, installationId },
-    config,
-  )
+  return sendAppAnalyticsEvent({ event: APP_ANALYTICS_EVENTS.signup, installationId }, config)
 }

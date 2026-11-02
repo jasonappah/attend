@@ -1,9 +1,9 @@
-import { formatDistanceToNow } from 'takeout-ui/display'
-import { Input } from 'takeout-ui/forms/Input'
 import { useMutation } from 'on-zero'
 import { One } from 'one'
 import { useState } from 'react'
-import { Paragraph, View, XStack, YStack } from 'tamagui'
+import { formatDistanceToNow } from 'takeout-ui/display'
+import { Input } from 'takeout-ui/forms/Input'
+import { Paragraph, XStack, YStack } from 'tamagui'
 import { useSession } from '~/auth/client/authClient'
 import { zero } from '~/data/zero-client'
 import { randomId } from '~/helpers/randomId'
@@ -20,7 +20,7 @@ export function CommentSection({ postId, comments }: Props) {
   const [text, setText] = useState('')
   const { data: session } = useSession()
   const [addComment] = useMutation((props: Parameters<typeof zero.mutate.comment.insert>[0]) =>
-    zero.mutate.comment.insert(props),
+    zero.mutate.comment.insert(props)
   )
 
   const onSubmit = () => {

@@ -82,9 +82,7 @@ export type FeedbackImage = {
 // with a note and an annotation. it is called at exactly one moment — the
 // instant an inspect tap or a draw stroke completes — and never on a timer,
 // on launch, or in the background.
-export type FeedbackImageCapture = (
-  surface: FeedbackSurface,
-) => Promise<FeedbackImage | null>
+export type FeedbackImageCapture = (surface: FeedbackSurface) => Promise<FeedbackImage | null>
 
 // who is reporting, as the app knows itself. this identity is descriptive and
 // never authorizes or routes a report; the host transport owns that decision.
@@ -109,9 +107,7 @@ export type FeedbackReport = {
   capturedAt: string
 }
 
-export type FeedbackSubmitResult =
-  | { ok: true; id?: string }
-  | { ok: false; message: string }
+export type FeedbackSubmitResult = { ok: true; id?: string } | { ok: false; message: string }
 
 export type FeedbackSubmit = (report: FeedbackReport) => Promise<FeedbackSubmitResult>
 
@@ -139,8 +135,5 @@ export type FeedbackConfig = {
   captureImage?: FeedbackImageCapture
   // injected enrichment for an inspect tap. a host that already resolves its
   // own elements returns one here; returning null keeps the honest bare point.
-  resolveTarget?: (
-    point: FeedbackPoint,
-    surface: FeedbackSurface,
-  ) => Promise<FeedbackTarget | null>
+  resolveTarget?: (point: FeedbackPoint, surface: FeedbackSurface) => Promise<FeedbackTarget | null>
 }

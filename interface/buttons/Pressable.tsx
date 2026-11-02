@@ -1,4 +1,4 @@
-import { styled, View, type GetProps } from 'tamagui'
+import { type GetProps, styled, View } from 'tamagui'
 
 const PressableFrame = styled(View, {
   hitSlop: 10,

@@ -10,7 +10,6 @@
 
 import * as React from 'react'
 import { Component } from 'react'
-import { Animated, PanResponder, View } from 'react-native'
 import type {
   GestureResponderEvent,
   LayoutChangeEvent,
@@ -19,6 +18,7 @@ import type {
   StyleProp,
   ViewStyle,
 } from 'react-native'
+import { Animated, PanResponder, View } from 'react-native'
 
 // react-native's Animated.Value keeps the latest scalar on a private `_value`
 // field. there's no public sync getter (everything is push-based via
@@ -69,16 +69,8 @@ export interface SwipeableProps {
   onSwipeableWillClose?: (direction: 'left' | 'right') => void
   onSwipeableOpenStartDrag?: (direction: 'left' | 'right') => void
   onSwipeableCloseStartDrag?: (direction: 'left' | 'right') => void
-  renderLeftActions?: (
-    progress: any,
-    dragX: any,
-    swipeable: RnxSwipeable,
-  ) => React.ReactNode
-  renderRightActions?: (
-    progress: any,
-    dragX: any,
-    swipeable: RnxSwipeable,
-  ) => React.ReactNode
+  renderLeftActions?: (progress: any, dragX: any, swipeable: RnxSwipeable) => React.ReactNode
+  renderRightActions?: (progress: any, dragX: any, swipeable: RnxSwipeable) => React.ReactNode
   useNativeAnimations?: boolean
   animationOptions?: Record<string, unknown>
   containerStyle?: StyleProp<ViewStyle>
@@ -130,10 +122,7 @@ export class RnxSwipeable extends Component<SwipeableProps, SwipeableState> {
     }
 
     this.panResponder = PanResponder.create({
-      onMoveShouldSetPanResponder: (
-        _e: GestureResponderEvent,
-        gs: PanResponderGestureState,
-      ) => {
+      onMoveShouldSetPanResponder: (_e: GestureResponderEvent, gs: PanResponderGestureState) => {
         // claim responder when horizontal drag exceeds threshold
         return Math.abs(gs.dx) > DRAG_THRESHOLD && Math.abs(gs.dx) > Math.abs(gs.dy)
       },
@@ -157,9 +146,7 @@ export class RnxSwipeable extends Component<SwipeableProps, SwipeableState> {
     // compute from action children base widths (not layout which changes with reveal)
     const actions = this.props.renderRightActions
     if (!actions) return 0
-    const children = this.getActionChildren(
-      actions(this.rightProgress, this.translateX, this),
-    )
+    const children = this.getActionChildren(actions(this.rightProgress, this.translateX, this))
     const total = children.reduce((sum, child) => sum + this.getActionWidth(child), 0)
     return total || this.state.rightActionWidth || 144
   }
@@ -186,9 +173,7 @@ export class RnxSwipeable extends Component<SwipeableProps, SwipeableState> {
     const reveal = Math.abs(value)
     this.translateX.setValue(value)
     this.actionsWidth.setValue(reveal)
-    this.rightProgress.setValue(
-      this.rightWidth > 0 ? Math.min(1, reveal / this.rightWidth) : 0,
-    )
+    this.rightProgress.setValue(this.rightWidth > 0 ? Math.min(1, reveal / this.rightWidth) : 0)
     if (this.state.revealWidth !== reveal) this.setState({ revealWidth: reveal })
     this.updateActionVisibility(value, this.state.rowState)
   }
@@ -217,7 +202,7 @@ export class RnxSwipeable extends Component<SwipeableProps, SwipeableState> {
     this.lastDragDx = 0
     this.updateActionVisibility(
       this.state.revealWidth > 0 ? -this.state.revealWidth : 0,
-      this.state.rowState,
+      this.state.rowState
     )
   }
 
@@ -255,8 +240,7 @@ export class RnxSwipeable extends Component<SwipeableProps, SwipeableState> {
     const projectedReveal = reveal + -vx * 0.15
 
     // 1. DELETE: if Delete is visually filling the row — pure position, no velocity
-    const deleteVisible =
-      reveal >= this.commitStart || this.state.revealWidth >= this.commitStart
+    const deleteVisible = reveal >= this.commitStart || this.state.revealWidth >= this.commitStart
 
     let toValue = 0
     if (deleteVisible) {
@@ -276,20 +260,10 @@ export class RnxSwipeable extends Component<SwipeableProps, SwipeableState> {
       // else: snap closed
     }
 
-    this.animateRow(
-      Math.min(0, startX),
-      toValue,
-      vx / friction,
-      deleteVisible && toValue < 0,
-    )
+    this.animateRow(Math.min(0, startX), toValue, vx / friction, deleteVisible && toValue < 0)
   }
 
-  private animateRow(
-    fromValue: number,
-    toValue: number,
-    velocityX?: number,
-    committed = false,
-  ) {
+  private animateRow(fromValue: number, toValue: number, velocityX?: number, committed = false) {
     this.setReveal(fromValue)
     this.setState({ rowState: Math.sign(toValue) })
     this.updateActionVisibility(fromValue, Math.sign(toValue))
@@ -319,9 +293,7 @@ export class RnxSwipeable extends Component<SwipeableProps, SwipeableState> {
     const lid = this.translateX.addListener(({ value }: any) => {
       const reveal = Math.abs(value)
       this.actionsWidth.setValue(reveal)
-      this.rightProgress.setValue(
-        this.rightWidth > 0 ? Math.min(1, reveal / this.rightWidth) : 0,
-      )
+      this.rightProgress.setValue(this.rightWidth > 0 ? Math.min(1, reveal / this.rightWidth) : 0)
       if (this.state.revealWidth !== reveal) this.setState({ revealWidth: reveal })
       this.updateActionVisibility(value, this.state.rowState)
     })
@@ -363,7 +335,7 @@ export class RnxSwipeable extends Component<SwipeableProps, SwipeableState> {
     const { renderRightActions } = this.props
     if (!renderRightActions) return null
     const children = this.getActionChildren(
-      renderRightActions(this.rightProgress, this.translateX, this),
+      renderRightActions(this.rightProgress, this.translateX, this)
     )
     if (children.length === 0) return null
     const last = children[children.length - 1]
@@ -488,15 +460,11 @@ export class RnxSwipeable extends Component<SwipeableProps, SwipeableState> {
   render() {
     const { children, renderRightActions } = this.props
     const actionChildren = renderRightActions
-      ? this.getActionChildren(
-          renderRightActions(this.rightProgress, this.translateX, this),
-        )
+      ? this.getActionChildren(renderRightActions(this.rightProgress, this.translateX, this))
       : []
     const baseWidths = actionChildren.map((child) => this.getActionWidth(child))
     const naturalWidth =
-      baseWidths.reduce((sum, width) => sum + width, 0) ||
-      this.state.rightActionWidth ||
-      144
+      baseWidths.reduce((sum, width) => sum + width, 0) || this.state.rightActionWidth || 144
     const commitStart = Math.max(naturalWidth, this.state.rowWidth * COMMIT_START_RATIO)
     const commitEnd = Math.max(commitStart + 1, this.state.rowWidth * COMMIT_END_RATIO)
     const revealWidth = this.state.revealWidth
@@ -508,12 +476,11 @@ export class RnxSwipeable extends Component<SwipeableProps, SwipeableState> {
       if (inCommitZone) {
         // commit zone: last action fills row, others shrink to 0
         const baseWidth = baseWidths[index] ?? 72
-        const ratio =
-          naturalWidth > 0 ? baseWidth / naturalWidth : 1 / actionChildren.length
+        const ratio = naturalWidth > 0 ? baseWidth / naturalWidth : 1 / actionChildren.length
         const preCommitWidth = commitStart * ratio
         const t = Math.min(
           1,
-          Math.max(0, (revealWidth - commitStart) / Math.max(1, commitEnd - commitStart)),
+          Math.max(0, (revealWidth - commitStart) / Math.max(1, commitEnd - commitStart))
         )
         const width =
           index === actionChildren.length - 1
@@ -536,9 +503,7 @@ export class RnxSwipeable extends Component<SwipeableProps, SwipeableState> {
         >
           {React.cloneElement(child, {
             style: [
-              ...(Array.isArray(child.props.style)
-                ? child.props.style
-                : [child.props.style]),
+              ...(Array.isArray(child.props.style) ? child.props.style : [child.props.style]),
               { width: '100%', height: '100%' },
             ],
           })}

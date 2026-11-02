@@ -1,7 +1,7 @@
-import { formatDistanceToNow } from 'takeout-ui/display'
-import { Image } from 'takeout-ui/image/Image'
 import { useMutation } from 'on-zero'
 import { useLocalSearchParams, useRouter } from 'one'
+import { formatDistanceToNow } from 'takeout-ui/display'
+import { Image } from 'takeout-ui/image/Image'
 import { Button, H4, Paragraph, View, XStack, YStack } from 'tamagui'
 import { useSession } from '~/auth/client/authClient'
 import { postById } from '~/data/post/queries'
@@ -15,7 +15,7 @@ export default function PostDetail() {
   const router = useRouter()
   const { data: session } = useSession()
   const [deletePost] = useMutation((props: Parameters<typeof zero.mutate.post.delete>[0]) =>
-    zero.mutate.post.delete(props),
+    zero.mutate.post.delete(props)
   )
 
   const [post] = useQuery(postById, { postId: postId || '' }, { enabled: !!postId })

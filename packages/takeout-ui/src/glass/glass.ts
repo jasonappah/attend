@@ -1,6 +1,6 @@
-import { isDarkThemeName } from '../theme/useIsDarkTheme'
 import type { ReactNode } from 'react'
 import type { StyleProp, ViewStyle } from 'react-native'
+import { isDarkThemeName } from '../theme/useIsDarkTheme'
 
 // the kit's glass on web, where the platform has no material of its own: a
 // translucent fill of the theme's lightest steps over backdrop blur, an inset
@@ -23,8 +23,7 @@ export const GLASS = {
   },
 } as const
 
-export const glassFor = (themeName: string) =>
-  GLASS[isDarkThemeName(themeName) ? 'dark' : 'light']
+export const glassFor = (themeName: string) => GLASS[isDarkThemeName(themeName) ? 'dark' : 'light']
 
 // floating glass lifts off what it floats over.
 export const GLASS_LIFT = '0 4px 14px shadow-2'

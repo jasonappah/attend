@@ -1,5 +1,5 @@
-import { View, useThemeName } from 'tamagui'
-import { glassFor, type GlassViewProps } from './glass'
+import { useThemeName, View } from 'tamagui'
+import { type GlassViewProps, glassFor } from './glass'
 
 // web leg: the kit's css glass (glass.ts). ios draws system liquid glass and
 // android a system blur (GlassViewImpl.ios.tsx, GlassViewImpl.android.tsx), from the same props.

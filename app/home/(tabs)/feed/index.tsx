@@ -35,7 +35,7 @@ export default function FeedPage() {
         <PostCard post={item} index={index} />
       </YStack>
     ),
-    [],
+    []
   )
 
   const empty = (

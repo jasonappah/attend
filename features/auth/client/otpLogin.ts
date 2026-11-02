@@ -31,7 +31,7 @@ function standardizeBetterAuthError(error: unknown): { code: string; message: st
 export function validateLoginOtpCode(
   method: 'email',
   to: string,
-  timeoutAfterMs = 8000,
+  timeoutAfterMs = 8000
 ): Promise<Result> {
   return Promise.race([
     validateLoginOtpCodeInfinite(method, to),

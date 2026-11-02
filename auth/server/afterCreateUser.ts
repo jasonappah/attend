@@ -9,7 +9,7 @@ import { captureSignupAnalytics } from '~/features/analytics/appAnalytics.server
 // comment. Auth and public data share the same application SQLite database.
 export async function afterCreateUser(
   user: { id: string; email: string; name?: string | null; image?: string | null },
-  installationId: string | null,
+  installationId: string | null
 ) {
   const usernameFromEmail = user.email
     ? user.email
@@ -28,7 +28,7 @@ export async function afterCreateUser(
         image: user.image ?? null,
         joinedAt: Date.now(),
       })
-      .onConflictDoNothing(),
+      .onConflictDoNothing()
   )
   await captureSignupAnalytics(installationId, user.id === DEMO_USER_ID)
 }

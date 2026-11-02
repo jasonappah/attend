@@ -19,7 +19,7 @@ export const zeroBindings = createZeroServerBindings({
   validateMutation: () => {
     if (process.env.DEMO_READ_ONLY) {
       throw new Error(
-        'this is a read-only public demo — fork it to your own account to make changes',
+        'this is a read-only public demo — fork it to your own account to make changes'
       )
     }
   },
@@ -41,7 +41,7 @@ export const zeroApplicationDatabase = createSQLiteApplicationDatabase({
         async queryAst(ast, format, queryName) {
           return executor.queryAst(ast, format, queryName)
         },
-      }),
+      })
     ),
   query: (sql, params) => transactionProvider((executor) => executor.query(sql, params)),
 })

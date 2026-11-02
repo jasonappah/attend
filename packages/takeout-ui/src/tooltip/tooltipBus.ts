@@ -5,12 +5,9 @@
 // through to a full page reload.
 
 import { createEmitter, isEqualIdentity } from '@o/helpers'
-import type { ComponentProps } from 'react'
 import type React from 'react'
-import type {
-  Tooltip as TamaguiTooltip,
-  TooltipProps as TamaguiTooltipProps,
-} from 'tamagui'
+import type { ComponentProps } from 'react'
+import type { Tooltip as TamaguiTooltip, TooltipProps as TamaguiTooltipProps } from 'tamagui'
 
 export type TooltipProps = TamaguiTooltipProps & {
   disableAllTooltips?: boolean
@@ -20,11 +17,9 @@ export type TooltipProps = TamaguiTooltipProps & {
   contentProps?: ComponentProps<typeof TamaguiTooltip.Content>
 }
 
-export const globalTooltip = createEmitter<TooltipProps | null | false>(
-  'global-tooltip',
-  null,
-  { comparator: isEqualIdentity },
-)
+export const globalTooltip = createEmitter<TooltipProps | null | false>('global-tooltip', null, {
+  comparator: isEqualIdentity,
+})
 
 /**
  * which trigger element owns the live tooltip.

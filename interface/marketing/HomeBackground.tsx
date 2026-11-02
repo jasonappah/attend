@@ -67,8 +67,7 @@ export function HomeBackground() {
           t={-300}
           l={-200}
           style={{
-            background:
-              'radial-gradient(circle, rgba(100, 100, 100, 0.08) 0%, transparent 70%)',
+            background: 'radial-gradient(circle, rgba(100, 100, 100, 0.08) 0%, transparent 70%)',
           }}
         />
         <GradientOrb
@@ -88,8 +87,7 @@ export function HomeBackground() {
           l="40%"
           opacity={0.25}
           style={{
-            background:
-              'radial-gradient(circle, rgba(230, 218, 193, 0.04) 0%, transparent 70%)',
+            background: 'radial-gradient(circle, rgba(230, 218, 193, 0.04) 0%, transparent 70%)',
           }}
         />
       </YStack>

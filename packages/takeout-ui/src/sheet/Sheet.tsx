@@ -1,6 +1,6 @@
-import { memo, useMemo, type ReactNode } from 'react'
+import { memo, type ReactNode, useMemo } from 'react'
 import { Sheet as TamaguiSheet, withStaticProperties } from 'tamagui'
-import { useDialogHostRegistration, type SheetVariant } from '../dialog/DialogHost'
+import { type SheetVariant, useDialogHostRegistration } from '../dialog/DialogHost'
 
 export type SheetProps = {
   children: ReactNode
@@ -23,7 +23,7 @@ const SheetRegistration = memo(function SheetRegistration({
       onOpenChange,
       sheetVariant,
     }),
-    [children, onOpenChange, sheetVariant],
+    [children, onOpenChange, sheetVariant]
   )
   useDialogHostRegistration(registration, open, 'Sheet')
   return null

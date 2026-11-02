@@ -6,7 +6,7 @@ import {
 import { SERVER_URL } from '~/constants'
 
 const installationStorage = createStorageValue<AppAnalyticsInstallationState>(
-  'app-analytics-installation-id',
+  'app-analytics-installation-id'
 )
 
 export const appAnalytics = createAppAnalyticsClient({

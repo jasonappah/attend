@@ -1,7 +1,7 @@
 import { memo } from 'react'
 import { Path, Svg } from 'react-native-svg'
-import { useIconProps } from './useIconProps'
 import type { IconProps } from './types'
+import { useIconProps } from './useIconProps'
 
 // the bare close glyph: two strokes on the 24 grid, the same geometry the
 // template's lucide X draws, so the package default close and the app close

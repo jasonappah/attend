@@ -1,9 +1,7 @@
 import { compiledMDX, extractFrontmatter } from './serverShared'
 import type { CompiledMDX } from './types'
 
-let runtimePromise:
-  | Promise<typeof import('../vendor/satteri-wasm/runtime.js')>
-  | undefined
+let runtimePromise: Promise<typeof import('../vendor/satteri-wasm/runtime.js')> | undefined
 
 export { extractFrontmatter }
 

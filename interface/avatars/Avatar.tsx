@@ -1,6 +1,6 @@
-import { Image } from 'takeout-ui/image/Image'
 import { useState } from 'react'
-import { View, Paragraph, type ColorTokens } from 'tamagui'
+import { Image } from 'takeout-ui/image/Image'
+import { type ColorTokens, Paragraph, View } from 'tamagui'
 
 interface AvatarProps {
   image?: string | null

@@ -17,7 +17,7 @@ const worker = spawn(
     '--var',
     'BETTER_AUTH_SECRET:local-auth-probe-secret',
   ],
-  { stdio: ['ignore', 'pipe', 'pipe'] },
+  { stdio: ['ignore', 'pipe', 'pipe'] }
 )
 
 let output = ''

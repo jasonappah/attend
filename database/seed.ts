@@ -1,4 +1,3 @@
-import type * as schema from './schema'
 /**
  * @agent-rule
  * demo/world seed data — plain rows keyed by table name, in insert order
@@ -24,6 +23,7 @@ import type * as schema from './schema'
  */
 import type { SeedData } from '@o/database'
 import { DEMO_USER_ID } from '../auth/demoIdentity.ts'
+import type * as schema from './schema'
 
 const MINUTE = 60_000
 const HOUR = 3_600_000
@@ -36,36 +36,64 @@ const today = new Date(now)
 const todayKey = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`
 
 export default {
-  room: demo ? [
-    {
-      id: 'seed-attend-room', buildingCode: 'DEMO', roomNumber: '1.100',
-      latitude: 32.985, longitude: -96.75, level: 2, concept3dMapId: 0,
-      concept3dShape: null, concept3dCategoryName: 'Classrooms', concept3dLocationId: 0,
-      concept3dCategoryId: 0, concept3dRoomId: 0, createdAt: now, updatedAt: null,
-    },
-  ] : [],
-  course: demo ? [
-    {
-      id: 'seed-attend-course', userId: DEMO_USER_ID, calendarId: null,
-      roomId: 'seed-attend-room', calendarEventName: 'Introduction to Computer Science',
-      courseName: 'Introduction to Computer Science', calendarEventId: 'seed-attend-event',
-      calendarEventLastModified: now, createdAt: now, updatedAt: null,
-    },
-  ] : [],
-  courseSession: demo ? [
-    {
-      id: `seed-attend-session-${todayKey}`, courseId: 'seed-attend-course', attendance: null,
-      startTime: new Date(new Date(now).setHours(10, 0, 0, 0)).getTime(),
-      endTime: new Date(new Date(now).setHours(11, 0, 0, 0)).getTime(),
-      createdAt: now, updatedAt: null,
-    },
-    {
-      id: 'seed-attend-session-previous', courseId: 'seed-attend-course', attendance: 'present',
-      startTime: new Date(new Date(now - 7 * DAY).setHours(10, 0, 0, 0)).getTime(),
-      endTime: new Date(new Date(now - 7 * DAY).setHours(11, 0, 0, 0)).getTime(),
-      createdAt: now, updatedAt: null,
-    },
-  ] : [],
+  room: demo
+    ? [
+        {
+          id: 'seed-attend-room',
+          buildingCode: 'DEMO',
+          roomNumber: '1.100',
+          latitude: 32.985,
+          longitude: -96.75,
+          level: 2,
+          concept3dMapId: 0,
+          concept3dShape: null,
+          concept3dCategoryName: 'Classrooms',
+          concept3dLocationId: 0,
+          concept3dCategoryId: 0,
+          concept3dRoomId: 0,
+          createdAt: now,
+          updatedAt: null,
+        },
+      ]
+    : [],
+  course: demo
+    ? [
+        {
+          id: 'seed-attend-course',
+          userId: DEMO_USER_ID,
+          calendarId: null,
+          roomId: 'seed-attend-room',
+          calendarEventName: 'Introduction to Computer Science',
+          courseName: 'Introduction to Computer Science',
+          calendarEventId: 'seed-attend-event',
+          calendarEventLastModified: now,
+          createdAt: now,
+          updatedAt: null,
+        },
+      ]
+    : [],
+  courseSession: demo
+    ? [
+        {
+          id: `seed-attend-session-${todayKey}`,
+          courseId: 'seed-attend-course',
+          attendance: null,
+          startTime: new Date(new Date(now).setHours(10, 0, 0, 0)).getTime(),
+          endTime: new Date(new Date(now).setHours(11, 0, 0, 0)).getTime(),
+          createdAt: now,
+          updatedAt: null,
+        },
+        {
+          id: 'seed-attend-session-previous',
+          courseId: 'seed-attend-course',
+          attendance: 'present',
+          startTime: new Date(new Date(now - 7 * DAY).setHours(10, 0, 0, 0)).getTime(),
+          endTime: new Date(new Date(now - 7 * DAY).setHours(11, 0, 0, 0)).getTime(),
+          createdAt: now,
+          updatedAt: null,
+        },
+      ]
+    : [],
   userPublic: [
     {
       id: 'seed-user-maya',

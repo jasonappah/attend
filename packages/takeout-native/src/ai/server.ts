@@ -65,7 +65,7 @@ async function call<Result>(path: string, body: object): Promise<Result> {
   if (!url || !token) {
     throw new AppAiError(
       'disabled',
-      'app ai is not configured: set APP_AI_URL and APP_AI_TOKEN on the deployment',
+      'app ai is not configured: set APP_AI_URL and APP_AI_TOKEN on the deployment'
     )
   }
   const response = await fetch(`${url.replace(/\/+$/, '')}/${path}`, {

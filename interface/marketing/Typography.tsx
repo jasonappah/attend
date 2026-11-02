@@ -3,7 +3,7 @@ import { styled, Text as TamaguiText } from 'tamagui'
 export const Strong = styled(TamaguiText, {
   render: 'strong',
   fontWeight: '600',
-  })
+})
 
 export const Span = styled(TamaguiText, {
   render: 'span',

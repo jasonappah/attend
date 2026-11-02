@@ -1,4 +1,4 @@
-import { memo, type ComponentProps } from 'react'
+import { type ComponentProps, memo } from 'react'
 import {
   Circle,
   Defs,
@@ -170,11 +170,7 @@ export const TakeoutLogoIcon = memo(({ size = 24 }: { size?: number }) => {
       </Defs>
       <G id="takeout-custom" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
         <G id="Group-2-Copy" transform="translate(6.000000, 1.000000)">
-          <Polygon
-            id="Path"
-            fill="#D8D8D8"
-            points="0 31 59 49.5 59 127 7.58921162 108.75"
-          />
+          <Polygon id="Path" fill="#D8D8D8" points="0 31 59 49.5 59 127 7.58921162 108.75" />
           <G id="Group" transform="translate(0.000000, 31.000000)" fillRule="nonzero">
             <Polygon
               id="Path"

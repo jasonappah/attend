@@ -22,7 +22,7 @@ export const mutate = mutations(
     // so a client can't insert a comment under another user's id.
     insert: async (
       ctx,
-      comment: { id: string; postId: string; content: string; createdAt: number },
+      comment: { id: string; postId: string; content: string; createdAt: number }
     ) => {
       const { tx, environment } = ctx
       const auth = ensureLoggedIn()
@@ -41,7 +41,7 @@ export const mutate = mutations(
       const commenter = await tx.run(zql.userPublic.where('id', auth.id).one())
       const notificationId = `postComment:${comment.id}`
       const existingNotification = await tx.run(
-        zql.appNotification.where('id', notificationId).one(),
+        zql.appNotification.where('id', notificationId).one()
       )
       if (existingNotification) return
       await tx.mutate.appNotification.insert({
@@ -67,5 +67,5 @@ export const mutate = mutations(
       await tx.mutate.comment.delete({ id: args.id })
     },
   },
-  { crud: false },
+  { crud: false }
 )

@@ -1,7 +1,7 @@
+import type { ReactNode } from 'react'
 import { Separator, SizableText, XStack, YStack } from 'tamagui'
 import { Link } from '~/interface/app/Link'
 import { docsRoutes, findDocAdjacent } from './docsRoutes'
-import type { ReactNode } from 'react'
 
 export function DocsLayout({
   slug,

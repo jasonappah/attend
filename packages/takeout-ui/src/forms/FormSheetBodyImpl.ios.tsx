@@ -27,12 +27,7 @@ import type { FormSheetBodyProps, FormSheetFrameProps } from './formContract'
 // `paddingBottom` is for a body that scrolls itself (a screen Form) and so
 // needs the home indicator clearance on the frame; a body that scrolls here
 // gets it in the content inset instead.
-export function FormSheetFrame({
-  children,
-  paddingBottom,
-  fill,
-  glass,
-}: FormSheetFrameProps) {
+export function FormSheetFrame({ children, paddingBottom, fill, glass }: FormSheetFrameProps) {
   const { height } = useWindowDimensions()
   const { top } = useSafeAreaInsets()
 
@@ -49,11 +44,7 @@ export function FormSheetFrame({
       }
     >
       {glass ? null : (
-        <One.UI.Blur
-          intensity={100}
-          tint="systemMaterial"
-          style={StyleSheet.absoluteFill}
-        />
+        <One.UI.Blur intensity={100} tint="systemMaterial" style={StyleSheet.absoluteFill} />
       )}
       <One.UI.SafeArea.Provider>
         <One.UI.SafeArea.View edges={['left', 'right']} style={{ flex: 1 }}>

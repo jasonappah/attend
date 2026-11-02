@@ -1,9 +1,9 @@
-import { VirtualList } from 'takeout-ui/lists/VirtualList'
 import { useSafeAreaInsets } from 'one'
+import type { ComponentProps } from 'react'
 import { Platform } from 'react-native'
+import { VirtualList } from 'takeout-ui/lists/VirtualList'
 import { useTheme } from 'tamagui'
 import { useNativeTabInsetsOwned } from './nativeTabInsets'
-import type { ComponentProps } from 'react'
 
 type PageVirtualListProps<Item> = Omit<
   ComponentProps<typeof VirtualList<Item>>,

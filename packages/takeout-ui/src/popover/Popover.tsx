@@ -1,7 +1,9 @@
 import { createEmitter } from '@o/helpers'
 import {
+  type ComponentProps,
   createContext,
   memo,
+  type ReactNode,
   useCallback,
   useContext,
   useEffect,
@@ -10,19 +12,17 @@ import {
   useMemo,
   useRef,
   useState,
-  type ComponentProps,
-  type ReactNode,
 } from 'react'
 import {
   AnimatePresence,
+  type GetProps,
   isWeb,
-  Popover as TamaguiPopover,
+  type PopoverProps,
   styled,
+  Popover as TamaguiPopover,
+  type Popover as TamaguiPopoverInstance,
   View,
   withStaticProperties,
-  type GetProps,
-  type PopoverProps,
-  type Popover as TamaguiPopoverInstance,
 } from 'tamagui'
 import { animationClamped } from '../animations/animationClamped'
 import { useHardwareBackHandler } from '../keyboard/hardwareBack'
@@ -36,7 +36,7 @@ export const popoverEmitter = createEmitter<{
   { state: 'closed', name: '' },
   {
     silent: true,
-  },
+  }
 )
 
 // the owner's own label for a popover, published on `popoverEmitter` so app
@@ -212,7 +212,7 @@ export const GlobalPopoverProvider = memo(function GlobalPopoverProvider({
       applyAnchor(descriptor)
       publishOpenState(descriptor)
     },
-    [applyAnchor, publishOpenState],
+    [applyAnchor, publishOpenState]
   )
 
   const update = useCallback(
@@ -223,7 +223,7 @@ export const GlobalPopoverProvider = memo(function GlobalPopoverProvider({
       applyAnchor(descriptor)
       publishOpenState(descriptor)
     },
-    [applyAnchor, publishOpenState],
+    [applyAnchor, publishOpenState]
   )
 
   const close = useCallback((id: string) => {
@@ -244,7 +244,7 @@ export const GlobalPopoverProvider = memo(function GlobalPopoverProvider({
 
   const scope = useMemo(
     () => ({ activate, update, close, closeActive }),
-    [activate, close, closeActive, update],
+    [activate, close, closeActive, update]
   )
 
   // focus moving into an iframe never reaches the popover's outside-press
@@ -336,7 +336,7 @@ function PopoverComponent({
 
   const descriptor = useCallback(
     (): PopoverDescriptor => ({ ...descriptorRef.current, ...contentRef.current }),
-    [],
+    []
   )
 
   const activate = useCallback(() => {

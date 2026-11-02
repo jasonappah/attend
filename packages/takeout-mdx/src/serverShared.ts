@@ -30,9 +30,7 @@ export function extractFrontmatter(source: string): Frontmatter {
 
 function isHastRoot(value: unknown): value is HastRoot {
   if (!value || typeof value !== 'object') return false
-  return (
-    Reflect.get(value, 'type') === 'root' && Array.isArray(Reflect.get(value, 'children'))
-  )
+  return Reflect.get(value, 'type') === 'root' && Array.isArray(Reflect.get(value, 'children'))
 }
 
 export function compiledMDX(source: string, hast: unknown): CompiledMDX {

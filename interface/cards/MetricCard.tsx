@@ -1,6 +1,6 @@
+import type { ReactElement, ReactNode } from 'react'
 import { Card, H2, Paragraph, SizableText, XStack, YStack } from 'tamagui'
 import { Sparkline } from '~/interface/charts/Sparkline'
-import type { ReactElement, ReactNode } from 'react'
 
 // dashboard/stats card: icon-in-tinted-badge, label, big value, delta vs
 // previous period, and an optional sparkline. use this on any screen that

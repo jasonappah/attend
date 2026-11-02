@@ -30,14 +30,14 @@ export function rustSyncAppSchema(value: unknown): RustSyncAppSchema {
     }
     if (rawTable.name !== clientName) {
       throw new Error(
-        `Rust sync requires matching client and database table names: ${clientName} != ${String(rawTable.name)}`,
+        `Rust sync requires matching client and database table names: ${clientName} != ${String(rawTable.name)}`
       )
     }
     if (!Array.isArray(rawTable.primaryKey) || rawTable.primaryKey.length === 0) {
       throw new Error(`generated Zero table ${clientName} has no primary key`)
     }
     const primaryKey = rawTable.primaryKey.filter(
-      (column): column is string => typeof column === 'string',
+      (column): column is string => typeof column === 'string'
     )
     if (primaryKey.length !== rawTable.primaryKey.length) {
       throw new Error(`generated Zero table ${clientName} has an invalid primary key`)
@@ -52,15 +52,12 @@ export function rustSyncAppSchema(value: unknown): RustSyncAppSchema {
       }
       if (!SUPPORTED_COLUMN_TYPES.has(rawColumn.type)) {
         throw new Error(
-          `Rust sync does not support ${clientName}.${columnName} type ${rawColumn.type}`,
+          `Rust sync does not support ${clientName}.${columnName} type ${rawColumn.type}`
         )
       }
-      if (
-        typeof rawColumn.serverName === 'string' &&
-        rawColumn.serverName !== columnName
-      ) {
+      if (typeof rawColumn.serverName === 'string' && rawColumn.serverName !== columnName) {
         throw new Error(
-          `Rust sync requires matching client and database column names: ${clientName}.${columnName} != ${rawColumn.serverName}`,
+          `Rust sync requires matching client and database column names: ${clientName}.${columnName} != ${rawColumn.serverName}`
         )
       }
       columns[columnName] = { type: rawColumn.type }
@@ -119,7 +116,7 @@ export function cloudflareRustSyncHostSource(
   allowedOrigins: readonly string[],
   queryTransformVersion: number,
   queryModuleSpecifier: string,
-  schemaModuleSpecifier: string,
+  schemaModuleSpecifier: string
 ): string {
   const mutateUrl = `/api/zero/push?${new URLSearchParams({
     schema: `${appId}_0`,

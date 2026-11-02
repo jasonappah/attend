@@ -23,10 +23,7 @@ const STOPS = [
 export function FeedbackHalo({ width, height }: { width: number; height: number }) {
   const dark = useColorScheme() === 'dark'
   return (
-    <View
-      pointerEvents="none"
-      style={{ position: 'absolute', width, height, left: 0, top: 0 }}
-    >
+    <View pointerEvents="none" style={{ position: 'absolute', width, height, left: 0, top: 0 }}>
       <One.UI.Mask
         style={StyleSheet.absoluteFill}
         maskElement={

@@ -1,6 +1,6 @@
-import { resolveSizing, type ComponentSize } from '@tamagui/core'
-import { Input as TamaguiInput, styled } from 'tamagui'
+import { type ComponentSize, resolveSizing } from '@tamagui/core'
 import type { GetProps } from 'tamagui'
+import { styled, Input as TamaguiInput } from 'tamagui'
 
 // the one focus treatment for every text field: a soft ring drawn with the
 // css outline so it never shifts layout, plus a slightly stronger border. the

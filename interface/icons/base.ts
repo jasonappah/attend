@@ -1,3 +1,4 @@
+import type { Icon } from 'takeout-ui/icons/types'
 import { Bell } from './lucide/Bell'
 import { ChevronLeft } from './lucide/ChevronLeft'
 import { ChevronRight } from './lucide/ChevronRight'
@@ -15,7 +16,6 @@ import { Settings } from './lucide/Settings'
 import { Upload } from './lucide/Upload'
 import { User } from './lucide/User'
 import { X } from './lucide/X'
-import type { Icon } from 'takeout-ui/icons/types'
 
 // every icon this app names, drawn the same way on every platform. a platform
 // file beside this one overrides the entries that should be native there; see

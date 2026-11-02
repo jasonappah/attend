@@ -1,10 +1,6 @@
 import { createStorageValue } from '@o/helpers'
 import { emailOTPClient } from 'better-auth/client/plugins'
-import {
-  createAppAuthClient,
-  nativeBearerTokenStore,
-  platformClient,
-} from 'takeout-better-auth'
+import { createAppAuthClient, nativeBearerTokenStore, platformClient } from 'takeout-better-auth'
 import { APP_ANALYTICS_INSTALLATION_HEADER } from 'takeout-better-auth/analytics'
 import { APP_SCHEME, DEMO_EMAIL, DEMO_NAME, DEMO_PASSWORD, SERVER_URL } from '~/constants'
 import { appAnalytics } from '~/features/analytics/appAnalytics'

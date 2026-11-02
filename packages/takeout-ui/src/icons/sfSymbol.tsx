@@ -21,7 +21,7 @@ export type { SfSymbolFontWeight, SfSymbolIcon, SfSymbolName } from './types'
 // One's own font binding, rather than as props.
 export function sfSymbol(
   systemName: SfSymbolName,
-  options: { weight?: SfSymbolFontWeight } = {},
+  options: { weight?: SfSymbolFontWeight } = {}
 ): SfSymbolIcon {
   function SfSymbol({ size, color }: { size?: number; color?: string }) {
     // callers pass tamagui tokens the way they always have for lucide, so the

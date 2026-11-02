@@ -1,7 +1,4 @@
-import type {
-  NotificationForegroundPolicy,
-  NotificationForegroundPresentation,
-} from './types'
+import type { NotificationForegroundPolicy, NotificationForegroundPresentation } from './types'
 
 // `system` keeps the platform's own foreground presentation, which is what an
 // app gets when it says nothing about presentation at all.
@@ -25,7 +22,7 @@ const SUPPRESSED_PRESENTATION: NotificationForegroundPresentation = {
 // given policy. `inApp` and `none` both suppress it, so the product owns the
 // only transient presentation the user can see.
 export function systemForegroundPresentation(
-  policy: NotificationForegroundPolicy,
+  policy: NotificationForegroundPolicy
 ): NotificationForegroundPresentation {
   return policy === 'system' ? SYSTEM_PRESENTATION : SUPPRESSED_PRESENTATION
 }

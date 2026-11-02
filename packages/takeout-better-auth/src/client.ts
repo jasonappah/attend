@@ -1,11 +1,11 @@
-import { createAuthClient } from 'better-auth/react'
-import { useEffect } from 'react'
-import { isAuthSessionLocallyCleared, refreshAuthSession } from './sessionStore'
 import type {
   BetterAuthClientOptions,
   InferSessionFromClient,
   InferUserFromClient,
 } from 'better-auth/client'
+import { createAuthClient } from 'better-auth/react'
+import { useEffect } from 'react'
+import { isAuthSessionLocallyCleared, refreshAuthSession } from './sessionStore'
 
 export type AppAuthState = 'loading' | 'logged-in' | 'logged-out'
 
@@ -26,25 +26,25 @@ export interface AppAuthClient<Options extends BetterAuthClientOptions> {
 }
 
 function isCreatedAuthClient<const Options extends BetterAuthClientOptions>(
-  value: Options | BetterAuthReactClient<Options>,
+  value: Options | BetterAuthReactClient<Options>
 ): value is BetterAuthReactClient<Options> {
   return typeof Reflect.get(value, 'useSession') === 'function'
 }
 
-export function createAppAuthClient<
-  const Options extends BetterAuthClientOptions,
->(options: Options): AppAuthClient<Options>
+export function createAppAuthClient<const Options extends BetterAuthClientOptions>(
+  options: Options
+): AppAuthClient<Options>
 // this package ships as a deployed preview-dep artifact that runs against
 // project source the platform never redeploys. project files created before
 // the options signature pass their own already-created better-auth client, so
 // that call shape is permanent public api — removing it breaks the preview
 // boot (and with it design capture) of every pre-existing project.
-export function createAppAuthClient<
-  const Options extends BetterAuthClientOptions,
->(authClient: BetterAuthReactClient<Options>): AppAuthClient<Options>
-export function createAppAuthClient<
-  const Options extends BetterAuthClientOptions,
->(input: Options | BetterAuthReactClient<Options>): AppAuthClient<Options> {
+export function createAppAuthClient<const Options extends BetterAuthClientOptions>(
+  authClient: BetterAuthReactClient<Options>
+): AppAuthClient<Options>
+export function createAppAuthClient<const Options extends BetterAuthClientOptions>(
+  input: Options | BetterAuthReactClient<Options>
+): AppAuthClient<Options> {
   const authClient = isCreatedAuthClient(input) ? input : createAuthClient(input)
 
   // a session check that never got an answer is not a sign-out. Better Auth

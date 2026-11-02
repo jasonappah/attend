@@ -1,19 +1,19 @@
 import { Paragraph, ScrollView, Switch, ToggleGroup, XStack, YStack } from 'tamagui'
 import { Button } from '../buttons/Button'
 import { CaretRightIcon } from '../icons/phosphor/CaretRightIcon'
-import { Input } from './Input'
-import { FieldLabel, LabeledField } from './LabeledField'
-import { TextArea } from './TextArea'
 import type {
   FieldProps,
   FormProps,
-  SectionProps,
   NavigationRowProps,
+  SectionProps,
   SegmentedFieldProps,
   SubmitButtonProps,
   ToggleFieldProps,
   ValueFieldProps,
 } from './formContract'
+import { Input } from './Input'
+import { FieldLabel, LabeledField } from './LabeledField'
+import { TextArea } from './TextArea'
 
 // the web leg. this is the treatment the apps already hand-rolled: a centred
 // column of cards, each card a stack of labelled inputs. it is lifted from
@@ -240,13 +240,7 @@ export function ToggleField({ label, value, onValueChange, testID }: ToggleField
   )
 }
 
-export function SubmitButton({
-  label,
-  onPress,
-  disabled,
-  destructive,
-  testID,
-}: SubmitButtonProps) {
+export function SubmitButton({ label, onPress, disabled, destructive, testID }: SubmitButtonProps) {
   // the kit's app button: the primary action is its accent fill, a
   // destructive one the red theme's control
   return (

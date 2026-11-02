@@ -1,4 +1,5 @@
 ---
+
 name: Plans
 description: Active work, proposals, and research notes for this project.
 ---

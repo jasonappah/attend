@@ -5,8 +5,9 @@
 // (refresh, deep link) seats the feed and renders this same file raw over it.
 // one component, identical header, buttons, spacing, and backdrop in every
 // context. native resolves make.native.tsx instead: the system form sheet.
-import { Dialog } from 'takeout-ui/dialog/Dialog'
+
 import { closeIntercept, useLocalSearchParams, useRouter } from 'one'
+import { Dialog } from 'takeout-ui/dialog/Dialog'
 import { getPatternEntry, savePatternEntry } from '~/features/patterns/patternEntries'
 import { Button } from '~/interface/buttons/Button'
 import { PatternEntryFields, usePatternEntryForm } from '~/interface/patterns/PatternEntryForm'

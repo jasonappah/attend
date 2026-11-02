@@ -1,6 +1,6 @@
+import { One, router } from 'one'
 import { notificationPermissionAlerts, useNotificationPermission } from 'takeout-notifications'
 import { formatDistanceToNow } from 'takeout-ui/display'
-import { One, router } from 'one'
 import {
   notificationDestinationHref,
   readNotificationDestination,

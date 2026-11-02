@@ -1,6 +1,6 @@
-import { sfSymbol } from 'takeout-ui/icons/sfSymbol'
 import { Children, createContext, isValidElement, use } from 'react'
-import { SizableText, View, XStack, YStack, styled } from 'tamagui'
+import { sfSymbol } from 'takeout-ui/icons/sfSymbol'
+import { SizableText, styled, View, XStack, YStack } from 'tamagui'
 import { Icons } from '~/interface/icons'
 import type { RecordListProps, RecordRowProps } from './recordListContract'
 

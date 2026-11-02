@@ -1,31 +1,31 @@
 import {
+  type ComponentProps,
   createContext,
   memo,
+  type ReactNode,
   use,
   useCallback,
   useEffect,
   useRef,
   useState,
-  type ComponentProps,
-  type ReactNode,
 } from 'react'
 import {
   AnimatePresence,
   isWeb,
-  SizableText,
-  styled,
-  Tabs as TamaguiTabs,
-  Text,
-  withStaticProperties,
-  XStack,
-  YStack,
   type RadiusTokens,
+  SizableText,
   type SizableTextProps,
   type SpaceTokens,
+  styled,
   type TabLayout,
   type TabsTabProps,
+  Tabs as TamaguiTabs,
+  Text,
   type ViewProps,
+  withStaticProperties,
+  XStack,
   type XStackProps,
+  YStack,
 } from 'tamagui'
 import { animationClamped } from '../animations/animationClamped'
 import type { IconComponent } from '../icons/types'
@@ -135,20 +135,13 @@ function TabsComponent({
           {...(alwaysVisibleContent ? fitProps : { flex: 1 })}
           {...rest}
         >
-          <YStack
-            {...(alwaysVisibleContent ? fitProps : { h: '100%' })}
-            {...tabsContainerProps}
-          >
+          <YStack {...(alwaysVisibleContent ? fitProps : { h: '100%' })} {...tabsContainerProps}>
             <YStack
               z={isUnderline ? undefined : 100}
               mb={isUnderline || !children ? 0 : size === 'small' ? 7 : 18}
             >
               <XStack m={insetTabs}>
-                <XStack
-                  flex={1}
-                  position="relative"
-                  onMouseLeave={() => setIntentIndicator(null)}
-                >
+                <XStack flex={1} position="relative" onMouseLeave={() => setIntentIndicator(null)}>
                   <AnimatePresence initial={false}>
                     {intentAt && (
                       <TabIndicator
@@ -355,11 +348,7 @@ function AlwaysVisibleTabsContent({
 
 type TabsContentProps = ComponentProps<typeof TamaguiTabs.Content>
 
-const TabsContent = memo(function TabsContent({
-  value,
-  children,
-  ...props
-}: TabsContentProps) {
+const TabsContent = memo(function TabsContent({ value, children, ...props }: TabsContentProps) {
   const selected = use(TabsSelectedContext)
   const alwaysVisible = use(TabsAlwaysVisibleContext)
   const isActive = selected === value

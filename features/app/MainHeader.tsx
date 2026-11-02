@@ -249,5 +249,5 @@ const MainHeaderMenuOverlay = memo(
         </YStack>
       </YStack>
     )
-  },
+  }
 )

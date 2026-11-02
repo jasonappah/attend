@@ -12,9 +12,9 @@
  */
 import { usePathname } from 'one'
 import { useEffect, useRef, useSyncExternalStore } from 'react'
-import { APP_TABS, type ComposeIconName } from './tabs'
 import type { SfSymbolName } from 'takeout-ui/icons/types'
 import type { MobileTabBarAction } from 'takeout-ui/tabs/MobileTabBar'
+import { APP_TABS, type ComposeIconName } from './tabs'
 
 // the web circle's fields (label, href, optional onPress, icon) come from
 // takeout-ui's MobileTabBar; native adds one glyph per platform, with no
@@ -69,11 +69,11 @@ export function useFocusedTabAction(): (AppTabAction & { testID: string }) | nul
   useSyncExternalStore(
     subscribe,
     () => version,
-    () => version,
+    () => version
   )
   const pathname = usePathname()
   const tab = APP_TABS.find(
-    (entry) => pathname === entry.href || pathname.startsWith(`${entry.href}/`),
+    (entry) => pathname === entry.href || pathname.startsWith(`${entry.href}/`)
   )
   const action = tab ? actions.get(tab.name) : undefined
   return tab && action ? { ...action, testID: `${tab.name}-primary-action` } : null

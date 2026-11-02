@@ -5,8 +5,9 @@
  * add a workflow by adding a `NOTIFICATION_WORKFLOWS` entry and one arm of
  * `composeNotification`; nothing else needs to change.
  */
-import { storeNotificationDestination } from './destinations'
+
 import type { StoredNotificationDestination } from './destinations'
+import { storeNotificationDestination } from './destinations'
 
 export type NotificationWorkflowId = 'postComment'
 

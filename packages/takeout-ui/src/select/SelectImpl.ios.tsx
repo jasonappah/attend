@@ -1,7 +1,7 @@
 import { One } from 'one'
 import { useMemo } from 'react'
-import { useSelectValue } from './useSelectValue'
 import type { SelectProps } from './selectContract'
+import { useSelectValue } from './useSelectValue'
 
 // the ios leg: a Form row with the label leading and a menu picker trailing,
 // which is the row ios uses for a choice from a closed set. the parent must
@@ -14,14 +14,7 @@ import type { SelectProps } from './selectContract'
 // a value that matches no item means nothing is chosen yet. a swiftui picker
 // needs a tagged row for every selection it can hold, so that value gets a
 // leading `None` row until the user picks a real one.
-export function Select({
-  items,
-  label,
-  value,
-  defaultValue,
-  onValueChange,
-  testID,
-}: SelectProps) {
+export function Select({ items, label, value, defaultValue, onValueChange, testID }: SelectProps) {
   const [selection, setSelection] = useSelectValue({
     items,
     value,

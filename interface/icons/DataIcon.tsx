@@ -1,3 +1,4 @@
+import type { ComponentProps } from 'react'
 import { Activity } from './lucide/Activity'
 import { Car } from './lucide/Car'
 import { Film } from './lucide/Film'
@@ -11,7 +12,6 @@ import { ShoppingCart } from './lucide/ShoppingCart'
 import { Utensils } from './lucide/Utensils'
 import { Wallet } from './lucide/Wallet'
 import { Zap } from './lucide/Zap'
-import type { ComponentProps } from 'react'
 
 const dataIcons = {
   activity: Activity,

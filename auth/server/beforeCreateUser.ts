@@ -6,10 +6,7 @@ import { server } from '~/env'
 let ALLOWED_SIGNUP_EMAILS: Set<string> | null = null
 
 async function sha256Hex(input: string): Promise<string> {
-  const digest = await crypto.subtle.digest(
-    'SHA-256',
-    new TextEncoder().encode(input),
-  )
+  const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(input))
   return Array.from(new Uint8Array(digest))
     .map((b) => b.toString(16).padStart(2, '0'))
     .join('')
@@ -19,7 +16,10 @@ async function getAllowedSignupEmails(): Promise<Set<string>> {
   if (ALLOWED_SIGNUP_EMAILS) return ALLOWED_SIGNUP_EMAILS
 
   const raw = server.ALLOWED_SIGNUP_EMAILS ?? ''
-  const emails = raw.split(',').map((email) => email.trim().toLowerCase()).filter(Boolean)
+  const emails = raw
+    .split(',')
+    .map((email) => email.trim().toLowerCase())
+    .filter(Boolean)
 
   ALLOWED_SIGNUP_EMAILS = new Set(await Promise.all(emails.map(sha256Hex)))
   return ALLOWED_SIGNUP_EMAILS

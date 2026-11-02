@@ -72,38 +72,38 @@ visible change.
 
 The package includes overlays, forms, navigation, and icons:
 
-| import | what it owns |
-| --- | --- |
-| `takeout-ui/overlay` | `GlobalOverlayProvider`, one mounted host for every overlay below |
-| `takeout-ui/dialog/Dialog` | adaptive `Dialog`: a bottom sheet on phones and mobile web, a centered dialog on wide screens, with header, scrolling body, footer, actions, close, and sizes |
-| `takeout-ui/dialog/confirm` | queued `dialogConfirm` and `ensureConfirmed`; the overlay provider mounts the host |
-| `takeout-ui/toast/Toast` | `ToastProvider`, `showToast`, and `hideToast`, with native OS presentation on mobile |
-| `takeout-ui/dialog/DialogHost` | `HostedDialog` plus the registration host that adapts a dialog to the app's sheet presentation at its configured breakpoint |
-| `takeout-ui/sheet/Sheet` | the sheet registration and its `Frame`/`Overlay`/`ScrollView` parts |
-| `takeout-ui/sheet/routeSheetOptions` | `formSheetOptions()`, the one declaration a layout spreads to present a route as a sheet on every platform |
-| `takeout-ui/sheet/RouteSheet` | the web presentation `<Presentations web={{ sheet: RouteSheet }}>` mounts for those routes |
-| `takeout-ui/forms/FormSheetBody` | `FormSheetFrame` and `FormSheetBody`, the sheet body each platform presents in its own sheet |
-| `takeout-ui/popover/Popover` | one global popover root and the trigger that registers into it |
-| `takeout-ui/tooltip/Tooltip` | `Tooltip` and `GlobalTooltipProvider`; the bus is exported from `takeout-ui/tooltip/tooltipBus` and `wrapWithTooltip` from `takeout-ui/tooltip/tooltipHelpers` |
-| `takeout-ui/overlay/overlayOpenBus` | who currently holds an overlay open, so tooltips and app chrome can react |
-| `takeout-ui/keyboard/escape` | the escape key stack every dismissible layer registers into; a no-op off web |
-| `takeout-ui/forms/Input` | `Input`, the text field with the kit's one focus ring and `size="xs" | "sm" | "md" | "lg" | "xl"` |
-| `takeout-ui/forms/TextArea` | `TextArea`, the multi-line field with the same border, focus ring, and sizes |
-| `takeout-ui/buttons/Button` | `Button`, the app button every template re-exports as `interface/buttons/Button`: `accent`, `subtle`, and `glass` (a capsule, or a circle when square, floating on the kit's glass), plus `ButtonGroup`, glass buttons that share one capsule the way a toolbar groups its items |
-| `takeout-ui/glass/GlassView` | `GlassView`, the kit's glass: the system material on iOS, a blur under the theme's wash on Android, and a translucent fill over backdrop blur with a lit rim on web |
-| `takeout-ui/select/Select` | a data-driven `Select` that adapts into a sheet on phones |
-| `takeout-ui/tabs/Tabs` | styled `Tabs` with an animated indicator, plus `SimpleTab` |
-| `takeout-ui/tabs/MobileTabBar` | the phone-width web tab bar drawn as the iOS 27 UITabBar: a glass pill of tabs and an optional trailing action circle |
-| `takeout-ui/lists/VirtualList` | `VirtualList` for long or unbounded lists (a feed anchored at the start, a chat or log anchored at the end) and `VirtualRow`: native VirtualView empties off-screen rows, the browser skips them with content-visibility, and only a window of rows near the anchor mounts |
-| `takeout-ui/image/Image` | `Image`, one image primitive taking a web-aligned `src`: Tamagui `Image` on web, `One.UI.Image` through `createImage` on native, where a root-relative `src` resolves against the app server (`getURL()`) |
-| `takeout-ui/lists/SwipeableRow` | `SwipeableRow`, trailing swipe actions on a list row: react-native-gesture-handler's ReanimatedSwipeable on native, the row alone on web |
-| `takeout-ui/provider/AppProvider` | `AppProvider`, the one root an app mounts: native roots, the Tamagui theme (system light or dark, or a pinned `defaultTheme`), the global overlay host, web route sheets and the toast host. `AppThemeProvider` is the theme alone |
-| `takeout-ui/keyboard/KeyboardLayoutFrame` | `KeyboardAvoidingFrame`, `KeyboardStickyFrame`, `dismissKeyboard`: react-native-keyboard-controller on native, plain containers and a focus blur on web |
-| `takeout-ui/platform/PlatformSpecificRootProvider` | the app root native needs (gesture handler root, keyboard provider, teleport portal host); a passthrough on web |
-| `takeout-ui/menu/Menu` | `GlobalMenuProvider` and `Menu.Trigger`, one menu built from an entry array |
-| `takeout-ui/icons/phosphor/*` | the kit's own chrome: the carets and check `Select`, `Menu` and `Form` draw themselves with, not an icon set for an app |
-| `takeout-ui/icons/types` | `IconProps` and `IconComponent`, the one icon prop contract both kits use |
-| `takeout-ui/icons/getIconSize` | resolves an icon `size` token to the number an svg paints with |
+| import                                             | what it owns                                                                                                                                                                                                                                                                     |
+| -------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `takeout-ui/overlay`                               | `GlobalOverlayProvider`, one mounted host for every overlay below                                                                                                                                                                                                                |
+| `takeout-ui/dialog/Dialog`                         | adaptive `Dialog`: a bottom sheet on phones and mobile web, a centered dialog on wide screens, with header, scrolling body, footer, actions, close, and sizes                                                                                                                    |
+| `takeout-ui/dialog/confirm`                        | queued `dialogConfirm` and `ensureConfirmed`; the overlay provider mounts the host                                                                                                                                                                                               |
+| `takeout-ui/toast/Toast`                           | `ToastProvider`, `showToast`, and `hideToast`, with native OS presentation on mobile                                                                                                                                                                                             |
+| `takeout-ui/dialog/DialogHost`                     | `HostedDialog` plus the registration host that adapts a dialog to the app's sheet presentation at its configured breakpoint                                                                                                                                                      |
+| `takeout-ui/sheet/Sheet`                           | the sheet registration and its `Frame`/`Overlay`/`ScrollView` parts                                                                                                                                                                                                              |
+| `takeout-ui/sheet/routeSheetOptions`               | `formSheetOptions()`, the one declaration a layout spreads to present a route as a sheet on every platform                                                                                                                                                                       |
+| `takeout-ui/sheet/RouteSheet`                      | the web presentation `<Presentations web={{ sheet: RouteSheet }}>` mounts for those routes                                                                                                                                                                                       |
+| `takeout-ui/forms/FormSheetBody`                   | `FormSheetFrame` and `FormSheetBody`, the sheet body each platform presents in its own sheet                                                                                                                                                                                     |
+| `takeout-ui/popover/Popover`                       | one global popover root and the trigger that registers into it                                                                                                                                                                                                                   |
+| `takeout-ui/tooltip/Tooltip`                       | `Tooltip` and `GlobalTooltipProvider`; the bus is exported from `takeout-ui/tooltip/tooltipBus` and `wrapWithTooltip` from `takeout-ui/tooltip/tooltipHelpers`                                                                                                                   |
+| `takeout-ui/overlay/overlayOpenBus`                | who currently holds an overlay open, so tooltips and app chrome can react                                                                                                                                                                                                        |
+| `takeout-ui/keyboard/escape`                       | the escape key stack every dismissible layer registers into; a no-op off web                                                                                                                                                                                                     |
+| `takeout-ui/forms/Input`                           | `Input`, the text field with the kit's one focus ring and `size="xs"                                                                                                                                                                                                             | "sm" | "md" | "lg" | "xl"` |
+| `takeout-ui/forms/TextArea`                        | `TextArea`, the multi-line field with the same border, focus ring, and sizes                                                                                                                                                                                                     |
+| `takeout-ui/buttons/Button`                        | `Button`, the app button every template re-exports as `interface/buttons/Button`: `accent`, `subtle`, and `glass` (a capsule, or a circle when square, floating on the kit's glass), plus `ButtonGroup`, glass buttons that share one capsule the way a toolbar groups its items |
+| `takeout-ui/glass/GlassView`                       | `GlassView`, the kit's glass: the system material on iOS, a blur under the theme's wash on Android, and a translucent fill over backdrop blur with a lit rim on web                                                                                                              |
+| `takeout-ui/select/Select`                         | a data-driven `Select` that adapts into a sheet on phones                                                                                                                                                                                                                        |
+| `takeout-ui/tabs/Tabs`                             | styled `Tabs` with an animated indicator, plus `SimpleTab`                                                                                                                                                                                                                       |
+| `takeout-ui/tabs/MobileTabBar`                     | the phone-width web tab bar drawn as the iOS 27 UITabBar: a glass pill of tabs and an optional trailing action circle                                                                                                                                                            |
+| `takeout-ui/lists/VirtualList`                     | `VirtualList` for long or unbounded lists (a feed anchored at the start, a chat or log anchored at the end) and `VirtualRow`: native VirtualView empties off-screen rows, the browser skips them with content-visibility, and only a window of rows near the anchor mounts       |
+| `takeout-ui/image/Image`                           | `Image`, one image primitive taking a web-aligned `src`: Tamagui `Image` on web, `One.UI.Image` through `createImage` on native, where a root-relative `src` resolves against the app server (`getURL()`)                                                                        |
+| `takeout-ui/lists/SwipeableRow`                    | `SwipeableRow`, trailing swipe actions on a list row: react-native-gesture-handler's ReanimatedSwipeable on native, the row alone on web                                                                                                                                         |
+| `takeout-ui/provider/AppProvider`                  | `AppProvider`, the one root an app mounts: native roots, the Tamagui theme (system light or dark, or a pinned `defaultTheme`), the global overlay host, web route sheets and the toast host. `AppThemeProvider` is the theme alone                                               |
+| `takeout-ui/keyboard/KeyboardLayoutFrame`          | `KeyboardAvoidingFrame`, `KeyboardStickyFrame`, `dismissKeyboard`: react-native-keyboard-controller on native, plain containers and a focus blur on web                                                                                                                          |
+| `takeout-ui/platform/PlatformSpecificRootProvider` | the app root native needs (gesture handler root, keyboard provider, teleport portal host); a passthrough on web                                                                                                                                                                  |
+| `takeout-ui/menu/Menu`                             | `GlobalMenuProvider` and `Menu.Trigger`, one menu built from an entry array                                                                                                                                                                                                      |
+| `takeout-ui/icons/phosphor/*`                      | the kit's own chrome: the carets and check `Select`, `Menu` and `Form` draw themselves with, not an icon set for an app                                                                                                                                                          |
+| `takeout-ui/icons/types`                           | `IconProps` and `IconComponent`, the one icon prop contract both kits use                                                                                                                                                                                                        |
+| `takeout-ui/icons/getIconSize`                     | resolves an icon `size` token to the number an svg paints with                                                                                                                                                                                                                   |
 
 ## import paths
 
@@ -122,7 +122,7 @@ import the parts where they are used:
 ```tsx
 import { GlobalOverlayProvider } from 'takeout-ui/overlay'
 
-<GlobalOverlayProvider dialogSheetBreakpoint="max-md">
+;<GlobalOverlayProvider dialogSheetBreakpoint="max-md">
   <AppRoutes />
 </GlobalOverlayProvider>
 ```
@@ -130,14 +130,16 @@ import { GlobalOverlayProvider } from 'takeout-ui/overlay'
 ```tsx
 import { Dialog } from 'takeout-ui/dialog/Dialog'
 
-<Dialog open={open} onOpenChange={setOpen} minH={360}>
+;<Dialog open={open} onOpenChange={setOpen} minH={360}>
   <Dialog.Header title="Edit collection" description="Update the saved details." />
   <Dialog.Body>{fields}</Dialog.Body>
   <Dialog.Footer>
     <Dialog.Close asChild>
       <Button>Cancel</Button>
     </Dialog.Close>
-    <Dialog.Action tone="confirm" onPress={save}>Save</Dialog.Action>
+    <Dialog.Action tone="confirm" onPress={save}>
+      Save
+    </Dialog.Action>
   </Dialog.Footer>
 </Dialog>
 ```
@@ -228,7 +230,7 @@ the only usable presentation on a phone; pass
 ```tsx
 import { Select } from 'takeout-ui/select/Select'
 
-<Select
+;<Select
   items={[
     { id: 'draft', name: 'Draft' },
     { id: 'ready', name: 'Ready', icon: <CheckIcon size={14} /> },
@@ -249,7 +251,7 @@ between tabs and Enter selects, because `activationMode` is `manual`.
 ```tsx
 import { Tabs } from 'takeout-ui/tabs/Tabs'
 
-<Tabs
+;<Tabs
   tabs={[
     { label: 'Overview', value: 'overview' },
     { label: 'Files', value: 'files', Icon: FolderIcon },
@@ -284,9 +286,15 @@ where desktop navigation takes over.
 ```tsx
 import { MobileTabBar } from 'takeout-ui/tabs/MobileTabBar'
 
-<MobileTabBar
+;<MobileTabBar
   tabs={[{ name: 'feed', label: 'Feed', href: '/home/feed', icon: HomeIcon }]}
-  action={{ label: 'Create', href: '/home/feed', onPress: openComposer, icon: PlusIcon, testID: 'feed-primary-action' }}
+  action={{
+    label: 'Create',
+    href: '/home/feed',
+    onPress: openComposer,
+    icon: PlusIcon,
+    testID: 'feed-primary-action',
+  }}
   onLayout={(event) => setTabBarHeight(event.nativeEvent.layout.height)}
 />
 ```

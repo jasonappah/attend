@@ -1,5 +1,5 @@
-import { NOTIFICATION_ID_DATA_KEY } from './types'
 import type { NotificationResponseResult } from './types'
+import { NOTIFICATION_ID_DATA_KEY } from './types'
 
 // the fields a platform notification response contributes. taking the payload
 // rather than the platform object keeps this readable and testable without a
@@ -18,7 +18,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 // invalid payload the app can report rather than a tap that silently does
 // nothing.
 export function readNotificationResponse(
-  input: NotificationResponseInput,
+  input: NotificationResponseInput
 ): NotificationResponseResult {
   const data = isRecord(input.data) ? input.data : {}
   const notificationId = data[NOTIFICATION_ID_DATA_KEY]
@@ -35,9 +35,7 @@ export function readNotificationResponse(
 // one response is identified by the event it belongs to plus the action the
 // user took, so a tap and a category action on the same event stay distinct.
 // an invalid payload has no product identity, so it is never deduplicated.
-export function notificationResponseKey(
-  result: NotificationResponseResult,
-): string | null {
+export function notificationResponseKey(result: NotificationResponseResult): string | null {
   if (result.status !== 'ok') return null
   return `${result.notificationId} ${result.actionIdentifier}`
 }

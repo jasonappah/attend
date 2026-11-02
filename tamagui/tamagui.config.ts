@@ -1,5 +1,5 @@
-import { defaultConfig, settings as v6Settings, toV6Themes } from '@tamagui/config/v6'
 import { defaultConfig as takeoutConfig } from '@tamagui/config/v5'
+import { defaultConfig, toV6Themes, settings as v6Settings } from '@tamagui/config/v6'
 import { animationsRoot } from 'takeout-ui/animations/animationsRoot'
 import { createTamagui } from 'tamagui'
 import { fonts } from './fonts'

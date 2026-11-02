@@ -1,9 +1,9 @@
+import type { Endpoint } from 'one'
 import { S3mini } from 's3mini'
 import { authServer } from '~/auth/server/authServer'
 import { getZeroAuthData } from '~/auth/server/getZeroAuthData'
 import { server } from '~/env'
 import { randomId } from '~/helpers/randomId'
-import type { Endpoint } from 'one'
 
 const FOLDER = 'uploads'
 
@@ -11,7 +11,7 @@ type R2Bucket = {
   put: (
     key: string,
     value: Uint8Array | ArrayBuffer | string,
-    options?: { httpMetadata?: { contentType?: string } },
+    options?: { httpMetadata?: { contentType?: string } }
   ) => Promise<unknown>
 }
 
@@ -35,7 +35,7 @@ function s3() {
 async function putUploadObject(
   key: string,
   bytes: Uint8Array,
-  contentType?: string,
+  contentType?: string
 ): Promise<void> {
   const r2 = cloudflareFilesBucket()
   if (r2) {
@@ -77,9 +77,6 @@ export const POST: Endpoint = async (req) => {
     return Response.json({ ok: true, key, url })
   } catch (err) {
     console.error('[upload] failed', err)
-    return Response.json(
-      { error: 'upload failed', details: String(err) },
-      { status: 500 },
-    )
+    return Response.json({ error: 'upload failed', details: String(err) }, { status: 500 })
   }
 }

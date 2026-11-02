@@ -22,7 +22,7 @@ function sqliteValue(value: unknown): unknown {
 
 export async function migrateApplicationDatabase(
   transactionProvider: SQLiteTransactionProvider,
-  options: MigrationOptions = {},
+  options: MigrationOptions = {}
 ) {
   const migrationsDir = join(import.meta.dirname, 'migrations')
   const migrationNames = (await readdir(migrationsDir, { withFileTypes: true }))
@@ -33,28 +33,26 @@ export async function migrateApplicationDatabase(
     migrationNames.map(async (name) => ({
       name,
       sql: await readFile(join(migrationsDir, name, 'migration.sql'), 'utf8'),
-    })),
+    }))
   )
   // every project with a database ships database/seed.ts, even when its rows
   // are empty, so this import is unconditional. guarding it on existsSync made
   // the file optional in a way typescript cannot follow: a project that dropped
   // it failed `check:templates` with an unresolvable import instead of being
   // the clean no-op the guard promised.
-  const seed: SeedRows | undefined = options.seed
-    ? (await import('./seed.ts')).default
-    : undefined
+  const seed: SeedRows | undefined = options.seed ? (await import('./seed.ts')).default : undefined
 
   await transactionProvider(async (executor) => {
     await executor.exec(
       `CREATE TABLE IF NOT EXISTS "_app_migrations" (
          name TEXT PRIMARY KEY,
          "appliedAt" INTEGER NOT NULL
-       )`,
+       )`
     )
     const applied = new Set(
       (await executor.query<{ name: string }>('SELECT name FROM "_app_migrations"')).map(
-        (row) => row.name,
-      ),
+        (row) => row.name
+      )
     )
 
     for (const migration of migrations) {
@@ -71,7 +69,7 @@ export async function migrateApplicationDatabase(
           if (!trimmed.startsWith('-- migrate-if-')) continue
           const match =
             /^-- migrate-if-column-(exists|missing) ([A-Za-z_][A-Za-z0-9_]*)\.([A-Za-z_][A-Za-z0-9_]*)$/.exec(
-              trimmed,
+              trimmed
             )
           if (!match) throw new Error(`unparsable migration directive: ${trimmed}`)
           guard = { column: match[3], missing: match[1] === 'missing', table: match[2] }
@@ -84,7 +82,7 @@ export async function migrateApplicationDatabase(
         if (!sql) continue
         if (guard) {
           const columns = await executor.query<{ name: string }>(
-            `PRAGMA table_info(${quoteIdentifier(guard.table)})`,
+            `PRAGMA table_info(${quoteIdentifier(guard.table)})`
           )
           const hasColumn = columns.some((column) => column.name === guard.column)
           if (guard.missing ? hasColumn : !hasColumn) continue
@@ -94,11 +92,11 @@ export async function migrateApplicationDatabase(
         // skip when the column is present, matching the platform runner.
         const added =
           /^ALTER TABLE\s+[`"]?([A-Za-z_][A-Za-z0-9_]*)[`"]?\s+ADD\s+(?:COLUMN\s+)?[`"]?([A-Za-z_][A-Za-z0-9_]*)[`"]?/i.exec(
-            sql,
+            sql
           )
         if (added) {
           const columns = await executor.query<{ name: string }>(
-            `PRAGMA table_info(${quoteIdentifier(added[1])})`,
+            `PRAGMA table_info(${quoteIdentifier(added[1])})`
           )
           if (columns.some((column) => column.name === added[2])) continue
         }
@@ -106,10 +104,10 @@ export async function migrateApplicationDatabase(
       }
       // anonymous placeholders: node:sqlite binds positional args only to
       // `?`, and `?N` throws "column index out of range" under `one dev`.
-      await executor.exec(
-        'INSERT INTO "_app_migrations" (name, "appliedAt") VALUES (?, ?)',
-        [migration.name, Date.now()],
-      )
+      await executor.exec('INSERT INTO "_app_migrations" (name, "appliedAt") VALUES (?, ?)', [
+        migration.name,
+        Date.now(),
+      ])
     }
 
     if (!seed) return
@@ -120,10 +118,8 @@ export async function migrateApplicationDatabase(
         await executor.exec(
           `INSERT INTO ${quoteIdentifier(table)} (${columns
             .map(quoteIdentifier)
-            .join(
-              ', ',
-            )}) VALUES (${columns.map(() => '?').join(', ')}) ON CONFLICT DO NOTHING`,
-          columns.map((column) => sqliteValue(row[column])),
+            .join(', ')}) VALUES (${columns.map(() => '?').join(', ')}) ON CONFLICT DO NOTHING`,
+          columns.map((column) => sqliteValue(row[column]))
         )
       }
     }

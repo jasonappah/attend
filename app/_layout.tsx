@@ -1,12 +1,12 @@
+import { Slot, Stack, usePathname, useUserScheme } from 'one'
 import { AppAnalyticsProvider } from 'takeout-better-auth/analytics/react'
 import { AppProvider } from 'takeout-ui/provider/AppProvider'
-import { Slot, Stack, usePathname, useUserScheme } from 'one'
 import { isWeb, useTheme } from 'tamagui'
 import { APP_NAME, DOMAIN } from '~/constants'
 import { appAnalytics } from '~/features/analytics/appAnalytics'
+import { TRPCProvider } from '~/features/app/trpc-client'
 import { LINK_UNDERLINE_RESET, SAFE_AREA_VARS } from '~/interface/webRootCss'
 import { config } from '~/tamagui/tamagui.config'
-import { TRPCProvider } from '~/features/app/trpc-client'
 
 const webRootCss = `body { margin: 0; }
 ${SAFE_AREA_VARS}
@@ -19,8 +19,7 @@ const websiteMetadata: Record<string, { title: string; description: string }> = 
   },
   '/privacy-policy': {
     title: 'Privacy Policy',
-    description:
-      'Learn how Attend handles your personal data and protects your privacy.',
+    description: 'Learn how Attend handles your personal data and protects your privacy.',
   },
   '/terms-of-service': {
     title: 'Terms of Service',
@@ -68,7 +67,9 @@ function AppShell() {
   return (
     <AppAnalyticsProvider client={appAnalytics}>
       <AppProvider config={config}>
-        <TRPCProvider><AppRoutes /></TRPCProvider>
+        <TRPCProvider>
+          <AppRoutes />
+        </TRPCProvider>
       </AppProvider>
     </AppAnalyticsProvider>
   )
@@ -78,8 +79,7 @@ export default function Layout() {
   const pathname = usePathname()
   const { value: scheme } = useUserScheme()
   const metadata = websiteMetadata[pathname]
-  const pageTitle =
-    metadata && pathname !== '/' ? `${metadata.title} | ${APP_NAME}` : APP_NAME
+  const pageTitle = metadata && pathname !== '/' ? `${metadata.title} | ${APP_NAME}` : APP_NAME
   const pageUrl = `https://${DOMAIN}${pathname}`
   const imageUrl = `https://${DOMAIN}/${pathname === '/' ? 'take-og.png' : 'og.jpg'}`
   const contents = <AppShell />
@@ -106,22 +106,13 @@ export default function Layout() {
               <meta property="og:locale" content="en_US" />
               <meta property="og:site_name" content={APP_NAME} />
               <meta property="og:image" content={imageUrl} />
-              <meta
-                property="og:image:width"
-                content={pathname === '/' ? '1694' : '816'}
-              />
-              <meta
-                property="og:image:height"
-                content={pathname === '/' ? '837' : '383'}
-              />
+              <meta property="og:image:width" content={pathname === '/' ? '1694' : '816'} />
+              <meta property="og:image:height" content={pathname === '/' ? '837' : '383'} />
               <meta name="twitter:card" content="summary_large_image" />
               <meta name="twitter:title" content={pageTitle} />
               <meta name="twitter:description" content={metadata.description} />
               <meta name="twitter:image" content={imageUrl} />
-              <meta
-                name="theme-color"
-                content={scheme === 'dark' ? '#050505' : '#ffffff'}
-              />
+              <meta name="theme-color" content={scheme === 'dark' ? '#050505' : '#ffffff'} />
             </>
           )}
           <link rel="icon" href="/favicon.png" type="image/png" />

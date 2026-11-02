@@ -6,8 +6,7 @@ export const APP_ANALYTICS_EVENTS = {
 
 export const APP_ANALYTICS_INSTALLATION_HEADER = 'x-app-installation-id'
 
-export type AppAnalyticsEventName =
-  (typeof APP_ANALYTICS_EVENTS)[keyof typeof APP_ANALYTICS_EVENTS]
+export type AppAnalyticsEventName = (typeof APP_ANALYTICS_EVENTS)[keyof typeof APP_ANALYTICS_EVENTS]
 
 export type AppAnalyticsEvent = {
   event: AppAnalyticsEventName
@@ -21,8 +20,7 @@ export type ProjectProductionStats = {
   newSignupsToday: number | null
 }
 
-const ANALYTICS_EVENT_NAMES: readonly AppAnalyticsEventName[] =
-  Object.values(APP_ANALYTICS_EVENTS)
+const ANALYTICS_EVENT_NAMES: readonly AppAnalyticsEventName[] = Object.values(APP_ANALYTICS_EVENTS)
 const INSTALLATION_ID_RE =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
 

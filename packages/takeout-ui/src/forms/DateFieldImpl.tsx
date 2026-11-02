@@ -1,7 +1,7 @@
 import { dateOnlyKey } from '../display/dateOnly'
+import type { DateFieldProps } from './formContract'
 import { Input } from './Input'
 import { LabeledField } from './LabeledField'
-import type { DateFieldProps } from './formContract'
 
 // the web leg. the browser's own calendar-day picker, which is also what the
 // key format already is: `<input type="date">` reads and writes `YYYY-MM-DD`,

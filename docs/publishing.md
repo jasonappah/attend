@@ -4,15 +4,15 @@ Attend is deployed to Cloudflare Workers at `https://attend.jasonaa.me`.
 
 ## Production resources
 
-| Resource | Value |
-|---|---|
-| Account | JasonAA (`1b64a8c4eff655773684dc27044290ac`) |
-| App worker | `attend` → `https://attend.jasonaa.workers.dev` |
-| Sync worker | `attend-sync` → `https://attend-sync.jasonaa.workers.dev` |
-| R2 bucket | `attend-files` (public) |
-| Public files URL | `https://attend-static.jasonaa.me` |
-| Production origin | `https://attend.jasonaa.me` |
-| DNS | `attend.jasonaa.me` → CNAME `attend.jasonaa.workers.dev` (proxied) |
+| Resource          | Value                                                              |
+| ----------------- | ------------------------------------------------------------------ |
+| Account           | JasonAA (`1b64a8c4eff655773684dc27044290ac`)                       |
+| App worker        | `attend` → `https://attend.jasonaa.workers.dev`                    |
+| Sync worker       | `attend-sync` → `https://attend-sync.jasonaa.workers.dev`          |
+| R2 bucket         | `attend-files` (public)                                            |
+| Public files URL  | `https://attend-static.jasonaa.me`                                 |
+| Production origin | `https://attend.jasonaa.me`                                        |
+| DNS               | `attend.jasonaa.me` → CNAME `attend.jasonaa.workers.dev` (proxied) |
 
 ## Build & deploy
 
@@ -20,14 +20,14 @@ The deploy script lives at `scripts/deploy-cloudflare.ts`. It bundles the One ap
 
 Required environment variables (also set as GitHub Actions secrets for CI):
 
-| Variable | Value |
-|---|---|
-| `ATTEND_CF_WORKER_NAME` | `attend` |
-| `ATTEND_CF_BUCKET_NAME` | `attend-files` |
-| `ATTEND_CF_FILES_URL` | `https://attend-static.jasonaa.me` |
-| `ONE_SERVER_URL` | `https://attend.jasonaa.me` |
-| `CLOUDFLARE_ACCOUNT_ID` | `1b64a8c4eff655773684dc27044290ac` |
-| `CLOUDFLARE_API_TOKEN` | (CI token with Workers Scripts, Workers Routes, R2 Storage, Zone read) |
+| Variable                | Value                                                                  |
+| ----------------------- | ---------------------------------------------------------------------- |
+| `ATTEND_CF_WORKER_NAME` | `attend`                                                               |
+| `ATTEND_CF_BUCKET_NAME` | `attend-files`                                                         |
+| `ATTEND_CF_FILES_URL`   | `https://attend-static.jasonaa.me`                                     |
+| `ONE_SERVER_URL`        | `https://attend.jasonaa.me`                                            |
+| `CLOUDFLARE_ACCOUNT_ID` | `1b64a8c4eff655773684dc27044290ac`                                     |
+| `CLOUDFLARE_API_TOKEN`  | (CI token with Workers Scripts, Workers Routes, R2 Storage, Zone read) |
 
 Build:
 

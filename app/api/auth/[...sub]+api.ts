@@ -1,7 +1,7 @@
-import { APP_ANALYTICS_INSTALLATION_HEADER } from 'takeout-better-auth/analytics'
-import { authServer } from '~/auth/server/authServer'
-import { DEMO_EMAIL } from '~/auth/demoIdentity'
 import type { Endpoint } from 'one'
+import { APP_ANALYTICS_INSTALLATION_HEADER } from 'takeout-better-auth/analytics'
+import { DEMO_EMAIL } from '~/auth/demoIdentity'
+import { authServer } from '~/auth/server/authServer'
 
 function isLoopback(hostname: string) {
   return (
@@ -38,13 +38,26 @@ const handler: Endpoint = async (request) => {
   // The demo password is intentionally known to the client. Never allow that
   // shared identity to become a sign-in path on a production deployment.
   const path = new URL(request.url).pathname
-  if (process.env.NODE_ENV !== 'development' && request.method === 'POST' &&
-      (path.startsWith('/api/auth/sign-in/') || path.startsWith('/api/auth/sign-up/'))) {
+  if (
+    process.env.NODE_ENV !== 'development' &&
+    request.method === 'POST' &&
+    (path.startsWith('/api/auth/sign-in/') || path.startsWith('/api/auth/sign-up/'))
+  ) {
     const contentType = request.headers.get('content-type') ?? ''
     const body = contentType.includes('application/json')
-      ? await request.clone().json().catch(() => null) as { email?: unknown } | null
+      ? ((await request
+          .clone()
+          .json()
+          .catch(() => null)) as { email?: unknown } | null)
       : contentType.includes('form')
-        ? { email: ((await request.clone().formData().catch(() => null)) as unknown as { get(name: string): unknown } | null)?.get('email') }
+        ? {
+            email: (
+              (await request
+                .clone()
+                .formData()
+                .catch(() => null)) as unknown as { get(name: string): unknown } | null
+            )?.get('email'),
+          }
         : null
     if (typeof body?.email === 'string' && body.email.toLowerCase() === DEMO_EMAIL.toLowerCase()) {
       return new Response('Demo login is available only in development.', { status: 403 })
@@ -55,7 +68,9 @@ const handler: Endpoint = async (request) => {
   if (!corsHeaders) return response
 
   const headers = new Headers(response.headers)
-  corsHeaders.forEach((value, name) => headers.set(name, value))
+  corsHeaders.forEach((value, name) => {
+    headers.set(name, value)
+  })
   return new Response(response.body, {
     status: response.status,
     statusText: response.statusText,

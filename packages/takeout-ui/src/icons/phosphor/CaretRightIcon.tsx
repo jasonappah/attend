@@ -1,7 +1,7 @@
 import { memo } from 'react'
 import { Path, Svg } from 'react-native-svg'
-import { useIconProps } from '../useIconProps'
 import type { IconProps } from '../types'
+import { useIconProps } from '../useIconProps'
 
 export const CaretRightIcon = memo((props: IconProps) => {
   const { width, height, fill, ...svgProps } = useIconProps(props)

@@ -42,9 +42,7 @@ export function refreshAuthSession(authClient: BetterAuthSessionStoreClient): vo
   authClient.$store.notify('$sessionSignal')
 }
 
-export function isAuthSessionLocallyCleared(
-  authClient: BetterAuthSessionStoreClient,
-): boolean {
+export function isAuthSessionLocallyCleared(authClient: BetterAuthSessionStoreClient): boolean {
   return locallyClearedSessionClients.has(authClient)
 }
 
@@ -87,7 +85,7 @@ function fenceAuthSession(authClient: BetterAuthWritableSessionStoreClient) {
 
 export async function reestablishAuthSession(
   authClient: BetterAuthWritableSessionStoreClient,
-  options?: ReestablishAuthSessionOptions,
+  options?: ReestablishAuthSessionOptions
 ): Promise<void> {
   const { generation, refetch, sessionAtom } = fenceAuthSession(authClient)
   await refetch
@@ -100,16 +98,13 @@ export async function reestablishAuthSession(
   }
   const confirmed = fenced.state
   const data = confirmed.data
-  const session =
-    typeof data === 'object' && data !== null ? Reflect.get(data, 'session') : null
+  const session = typeof data === 'object' && data !== null ? Reflect.get(data, 'session') : null
   if (typeof session !== 'object' || session === null) {
     const message =
       typeof confirmed.error === 'object' && confirmed.error !== null
         ? Reflect.get(confirmed.error, 'message')
         : null
-    throw new Error(
-      typeof message === 'string' ? message : 'Could not confirm auth session',
-    )
+    throw new Error(typeof message === 'string' ? message : 'Could not confirm auth session')
   }
   if (
     options?.expectedSessionToken !== undefined &&

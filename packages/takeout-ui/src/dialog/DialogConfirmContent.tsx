@@ -1,7 +1,7 @@
-import { useState, type ReactNode } from 'react'
+import { type ReactNode, useState } from 'react'
 import { Input, Label, YStack } from 'tamagui'
-import { Dialog } from './Dialog'
 import type { DialogConfirmProps, PendingConfirm } from './confirmQueue'
+import { Dialog } from './Dialog'
 
 // shared form chrome also lets an application insert its own prompt fields.
 export function DialogConfirmContent({

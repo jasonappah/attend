@@ -1,6 +1,6 @@
+import type { ReactNode } from 'react'
 import { H4, Paragraph, YStack } from 'tamagui'
 import { Button } from '~/interface/buttons/Button'
-import type { ReactNode } from 'react'
 
 type EmptyStateAction =
   | {

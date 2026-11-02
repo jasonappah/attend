@@ -26,10 +26,7 @@ export type DecisionScoreQuestion = {
   criteria: Array<string>
 }
 
-export type DecisionQuestion =
-  | DecisionNoulQuestion
-  | DecisionChoiceQuestion
-  | DecisionScoreQuestion
+export type DecisionQuestion = DecisionNoulQuestion | DecisionChoiceQuestion | DecisionScoreQuestion
 
 export type DecisionQuestions = Record<string, DecisionQuestion>
 
@@ -50,10 +47,7 @@ export type DecisionScoreAnswer = {
   probabilities: Record<string, number>
 }
 
-export type DecisionAnswer =
-  | DecisionNoulAnswer
-  | DecisionChoiceAnswer
-  | DecisionScoreAnswer
+export type DecisionAnswer = DecisionNoulAnswer | DecisionChoiceAnswer | DecisionScoreAnswer
 
 export type DecisionAnswers = Record<string, DecisionAnswer>
 
@@ -194,16 +188,13 @@ export function parseDecideRequest(value: unknown): Parsed<DecideRequest> {
   if (typeof state !== 'string' && !isRecord(state) && !Array.isArray(state)) {
     return { ok: false, message: 'state must be a string, an object, or an array' }
   }
-  if (
-    new TextEncoder().encode(JSON.stringify(state)).byteLength > APP_AI_LIMITS.stateBytes
-  ) {
+  if (new TextEncoder().encode(JSON.stringify(state)).byteLength > APP_AI_LIMITS.stateBytes) {
     return {
       ok: false,
       message: `state must serialize to at most ${APP_AI_LIMITS.stateBytes} bytes`,
     }
   }
-  if (!isRecord(value.questions))
-    return { ok: false, message: 'questions must be an object' }
+  if (!isRecord(value.questions)) return { ok: false, message: 'questions must be an object' }
   const entries = Object.entries(value.questions)
   if (entries.length === 0 || entries.length > APP_AI_LIMITS.questions) {
     return {
@@ -242,10 +233,7 @@ export function parseTextRequest(value: unknown): Parsed<TextRequest> {
       message: `prompt must be a string up to ${APP_AI_LIMITS.promptChars} characters`,
     }
   }
-  if (
-    value.system !== undefined &&
-    !boundedString(value.system, APP_AI_LIMITS.systemChars)
-  ) {
+  if (value.system !== undefined && !boundedString(value.system, APP_AI_LIMITS.systemChars)) {
     return {
       ok: false,
       message: `system must be a string up to ${APP_AI_LIMITS.systemChars} characters`,
@@ -284,9 +272,7 @@ export function parseImageRequest(value: unknown): Parsed<ImageRequest> {
       message: `prompt must be a string up to ${APP_AI_LIMITS.imagePromptChars} characters`,
     }
   }
-  const aspectRatio = IMAGE_ASPECT_RATIOS.find(
-    (ratio) => ratio === (value.aspectRatio ?? 'square'),
-  )
+  const aspectRatio = IMAGE_ASPECT_RATIOS.find((ratio) => ratio === (value.aspectRatio ?? 'square'))
   if (!aspectRatio) {
     return {
       ok: false,

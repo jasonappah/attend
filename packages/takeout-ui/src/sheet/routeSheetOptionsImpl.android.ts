@@ -16,9 +16,7 @@ export type {
 // the ios system sheet and the web route sheet; the android sheet is the
 // Tamagui one with the same 50/92 detents, so there is no stack option here for
 // them to reach.
-export function formSheetOptions(
-  _settings: RouteSheetSettings = {},
-): RouteSheetAndroidOptions {
+export function formSheetOptions(_settings: RouteSheetSettings = {}): RouteSheetAndroidOptions {
   return {
     presentation: 'transparentModal',
     contentStyle: { backgroundColor: 'transparent' },

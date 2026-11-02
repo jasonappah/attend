@@ -24,7 +24,7 @@ export const mutate = mutations(
         foregroundToastEnabled: boolean
         systemPushEnabled: boolean
         updatedAt: number
-      },
+      }
     ) => {
       const auth = ensureLoggedIn()
       if (!notificationWorkflow(props.workflow)) {
@@ -33,5 +33,5 @@ export const mutate = mutations(
       await ctx.tx.mutate.notificationPreference.upsert({ ...props, userId: auth.id })
     },
   },
-  { crud: false },
+  { crud: false }
 )

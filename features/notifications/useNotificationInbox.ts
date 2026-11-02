@@ -3,8 +3,8 @@ import { useCallback } from 'react'
 import { newestUnreadNotification, recentNotifications } from '~/data/appNotification/queries'
 import { notificationPreferences } from '~/data/notificationPreference/queries'
 import { useQuery, zero } from '~/data/zero-client'
-import { NOTIFICATION_WORKFLOW_ORDER, NOTIFICATION_WORKFLOWS } from './workflows'
 import type { NotificationWorkflowId } from './workflows'
+import { NOTIFICATION_WORKFLOW_ORDER, NOTIFICATION_WORKFLOWS } from './workflows'
 
 // the unread indicator asks only whether one unread row exists.
 export function useHasUnreadNotifications(): boolean {
@@ -21,11 +21,11 @@ export function useNotificationList() {
 export function useNotificationReadActions() {
   const [markRead] = useMutation(
     (props: Parameters<typeof zero.mutate.appNotification.markRead>[0]) =>
-      zero.mutate.appNotification.markRead(props),
+      zero.mutate.appNotification.markRead(props)
   )
   const [markAllRead] = useMutation(
     (props: Parameters<typeof zero.mutate.appNotification.markAllRead>[0]) =>
-      zero.mutate.appNotification.markAllRead(props),
+      zero.mutate.appNotification.markAllRead(props)
   )
 
   return {
@@ -52,7 +52,7 @@ export function useNotificationPreferences(): {
   const [rows] = useQuery(notificationPreferences, {})
   const [upsert] = useMutation(
     (props: Parameters<typeof zero.mutate.notificationPreference.upsert>[0]) =>
-      zero.mutate.notificationPreference.upsert(props),
+      zero.mutate.notificationPreference.upsert(props)
   )
 
   const preferences = NOTIFICATION_WORKFLOW_ORDER.map((workflow) => {
@@ -70,7 +70,7 @@ export function useNotificationPreferences(): {
     (next: NotificationWorkflowPreference) => {
       upsert({ ...next, updatedAt: Date.now() })
     },
-    [upsert],
+    [upsert]
   )
 
   return { preferences, setPreference }

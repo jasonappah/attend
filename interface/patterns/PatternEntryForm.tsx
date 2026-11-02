@@ -1,8 +1,9 @@
 // the feed entry form: fields and the validity rule, shared by the web
 // dialog and the native sheet. each host owns its own chrome and close;
 // this owns the fields and nothing else.
-import { Field, Form, Section } from 'takeout-ui/forms/Form'
+
 import { useEffect, useState } from 'react'
+import { Field, Form, Section } from 'takeout-ui/forms/Form'
 
 export type PatternEntryFormState = {
   title: string

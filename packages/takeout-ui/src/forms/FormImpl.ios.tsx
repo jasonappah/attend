@@ -1,15 +1,15 @@
 import { One } from 'one'
+import type { ComponentProps } from 'react'
 import type {
   FieldProps,
   FormProps,
-  SectionProps,
   NavigationRowProps,
+  SectionProps,
   SegmentedFieldProps,
   SubmitButtonProps,
   ToggleFieldProps,
   ValueFieldProps,
 } from './formContract'
-import type { ComponentProps } from 'react'
 
 type TextFieldProps = ComponentProps<typeof One.iOS.TextField>
 type KeyboardType = TextFieldProps['keyboardType']
@@ -66,10 +66,7 @@ const AUTOCAPITALIZE_TO_ONE: Record<
 // the way SwiftUI does, so each member maps to its camelCase twin. numeric has
 // no SwiftUI twin of its own and reaches numberPad, which is the same keyboard
 // the expo leg showed for it, measured in its KeyboardTypeModifier.
-const KEYBOARD_TYPE_TO_ONE: Record<
-  NonNullable<FieldProps['keyboardType']>,
-  KeyboardType
-> = {
+const KEYBOARD_TYPE_TO_ONE: Record<NonNullable<FieldProps['keyboardType']>, KeyboardType> = {
   default: 'default',
   'email-address': 'emailAddress',
   numeric: 'numberPad',
@@ -204,23 +201,10 @@ export function ToggleField({ label, value, onValueChange, testID }: ToggleField
   // SwiftUI's Toggle owns the whole row, label included, so the label is a prop
   // rather than a sibling view. laying one out by hand beside it would be the
   // lookalike this pattern exists to delete.
-  return (
-    <One.iOS.Toggle
-      isOn={value}
-      onIsOnChange={onValueChange}
-      label={label}
-      testID={testID}
-    />
-  )
+  return <One.iOS.Toggle isOn={value} onIsOnChange={onValueChange} label={label} testID={testID} />
 }
 
-export function SubmitButton({
-  label,
-  onPress,
-  disabled,
-  destructive,
-  testID,
-}: SubmitButtonProps) {
+export function SubmitButton({ label, onPress, disabled, destructive, testID }: SubmitButtonProps) {
   // One's Button takes disabled and the destructive role as props, which is
   // SwiftUI's own `.disabled(_:)` and `role: .destructive` rather than an
   // invented treatment.

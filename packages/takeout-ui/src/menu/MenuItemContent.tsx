@@ -89,5 +89,5 @@ export const MenuItemContent = memo(
     }
 
     return content
-  },
+  }
 )

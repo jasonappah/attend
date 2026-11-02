@@ -1,7 +1,6 @@
-import { SizableText, YStack } from 'tamagui'
-import { H1 } from 'tamagui'
-import { MarketingPage } from './MarketingPage'
 import type { ReactNode } from 'react'
+import { H1, SizableText, YStack } from 'tamagui'
+import { MarketingPage } from './MarketingPage'
 
 type LegalPageProps = {
   title: string

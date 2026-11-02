@@ -1,9 +1,4 @@
-import type {
-  FeedbackAnnotation,
-  FeedbackConfig,
-  FeedbackImage,
-  FeedbackReport,
-} from './types'
+import type { FeedbackAnnotation, FeedbackConfig, FeedbackImage, FeedbackReport } from './types'
 
 // assembles the one payload a report is made of. the fields are fixed here so
 // every host sends the same shape, and so what is not in it is fixed too: no

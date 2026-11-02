@@ -1,4 +1,5 @@
 import { One, useSafeAreaInsets } from 'one'
+import type { ReactNode, RefObject } from 'react'
 import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react'
 import {
   Animated,
@@ -14,7 +15,7 @@ import {
   useWindowDimensions,
   View,
 } from 'react-native'
-import Svg, { Circle as SvgCircle, Polyline } from 'react-native-svg'
+import Svg, { Polyline, Circle as SvgCircle } from 'react-native-svg'
 import { canSend, feedbackReducer, initialFeedbackState } from './controller'
 import { FeedbackGlass } from './FeedbackGlass'
 import { FeedbackHalo } from './FeedbackHalo'
@@ -29,7 +30,6 @@ import type {
   FeedbackStroke,
   FeedbackSurface,
 } from './types'
-import type { ReactNode, RefObject } from 'react'
 
 // what the controller carries between "the user pointed at something" and
 // "the user sent it". the image is taken once, at annotation time, and simply
@@ -67,7 +67,7 @@ export function FeedbackOverlay({
   const [state, dispatch] = useReducer(
     feedbackReducer<FeedbackCapture>,
     null,
-    initialFeedbackState<FeedbackCapture>,
+    initialFeedbackState<FeedbackCapture>
   )
   const [strokes, setStrokes] = useState<FeedbackStroke[]>([])
   const [livePoints, setLivePoints] = useState<FeedbackPoint[]>([])
@@ -89,11 +89,11 @@ export function FeedbackOverlay({
   useEffect(() => {
     const show = Keyboard.addListener(
       Platform.OS === 'ios' ? 'keyboardWillChangeFrame' : 'keyboardDidShow',
-      (event) => setKeyboardHeight(Math.max(0, height - event.endCoordinates.screenY)),
+      (event) => setKeyboardHeight(Math.max(0, height - event.endCoordinates.screenY))
     )
     const hide = Keyboard.addListener(
       Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide',
-      () => setKeyboardHeight(0),
+      () => setKeyboardHeight(0)
     )
     return () => {
       show.remove()
@@ -133,7 +133,7 @@ export function FeedbackOverlay({
         captureInFlightRef.current = false
       }
     },
-    [config, surface],
+    [config, surface]
   )
 
   const takeInspectPoint = useCallback(
@@ -150,7 +150,7 @@ export function FeedbackOverlay({
         }
       })
     },
-    [completeCapture, config, surface],
+    [completeCapture, config, surface]
   )
 
   const finishDrawing = useCallback(() => {
@@ -184,7 +184,7 @@ export function FeedbackOverlay({
           if (stroke) setStrokes((existing) => [...existing, stroke])
         },
       }),
-    [surface],
+    [surface]
   )
 
   // dragging the dock itself, never its buttons: the responder only takes over
@@ -197,16 +197,10 @@ export function FeedbackOverlay({
         onPanResponderMove: (_event, gesture) => dragY.setValue(gesture.dy),
         onPanResponderRelease: (_event, gesture) => {
           const towardsTop =
-            gesture.vy < -SNAP_VELOCITY ||
-            (gesture.vy <= SNAP_VELOCITY && gesture.dy < -height / 4)
+            gesture.vy < -SNAP_VELOCITY || (gesture.vy <= SNAP_VELOCITY && gesture.dy < -height / 4)
           const towardsBottom =
-            gesture.vy > SNAP_VELOCITY ||
-            (gesture.vy >= -SNAP_VELOCITY && gesture.dy > height / 4)
-          const next: DockEdge = towardsTop
-            ? 'top'
-            : towardsBottom
-              ? 'bottom'
-              : edgeRef.current
+            gesture.vy > SNAP_VELOCITY || (gesture.vy >= -SNAP_VELOCITY && gesture.dy > height / 4)
+          const next: DockEdge = towardsTop ? 'top' : towardsBottom ? 'bottom' : edgeRef.current
           if (next !== edgeRef.current) {
             setEdge(next)
             One.Haptics.impact('light')
@@ -218,7 +212,7 @@ export function FeedbackOverlay({
           }).start()
         },
       }),
-    [dragY, height],
+    [dragY, height]
   )
 
   const send = useCallback(() => {
@@ -307,14 +301,8 @@ export function FeedbackOverlay({
 
       {/* ink — finished strokes plus the one under the finger, and the inspect
           point once it is taken, so the user can see what they are sending. */}
-      {(strokes.length > 0 || livePoints.length > 0 || state.capture) &&
-      state.mode !== 'idle' ? (
-        <Svg
-          pointerEvents="none"
-          style={StyleSheet.absoluteFill}
-          width={width}
-          height={height}
-        >
+      {(strokes.length > 0 || livePoints.length > 0 || state.capture) && state.mode !== 'idle' ? (
+        <Svg pointerEvents="none" style={StyleSheet.absoluteFill} width={width} height={height}>
           {strokes.map((stroke, index) => (
             <Polyline
               key={`stroke-${index}`}
@@ -505,9 +493,7 @@ function Action({
       ]}
     >
       {icon}
-      {iconOnly ? null : (
-        <Text style={[styles.actionText, { color: textColor }]}>{label}</Text>
-      )}
+      {iconOnly ? null : <Text style={[styles.actionText, { color: textColor }]}>{label}</Text>}
     </Pressable>
   )
 }

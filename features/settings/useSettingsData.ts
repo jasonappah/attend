@@ -1,4 +1,7 @@
+import type { Href } from 'one'
 import { openFeedback } from 'takeout-native/feedback'
+import type { NavigationRowProps } from 'takeout-ui/forms/formContract'
+import type { Icon } from 'takeout-ui/icons/types'
 import {
   APP_SETTINGS_EDIT_PROFILE_HREF,
   APP_SETTINGS_NOTIFICATIONS_HREF,
@@ -7,9 +10,6 @@ import { useLogout } from '~/features/auth/useLogout'
 import { useFeedbackSetting } from '~/features/feedback/feedbackSetting'
 import { useHasUnreadNotifications } from '~/features/notifications/useNotificationInbox'
 import { Icons } from '~/interface/icons'
-import type { NavigationRowProps } from 'takeout-ui/forms/formContract'
-import type { Icon } from 'takeout-ui/icons/types'
-import type { Href } from 'one'
 
 export type SettingItem = {
   id: string

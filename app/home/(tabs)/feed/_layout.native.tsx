@@ -1,9 +1,10 @@
 // the native feed layout. one never fires intercepting routes on native,
 // so `make` is declared here as the system form sheet; the trigger pushes
 // one href on every platform and only this declaration differs.
-import { formSheetOptions } from 'takeout-ui/sheet/routeSheetOptions'
+
 import { Stack } from 'one'
 import { Platform } from 'react-native'
+import { formSheetOptions } from 'takeout-ui/sheet/routeSheetOptions'
 
 export const unstable_settings = { initialRouteName: 'index' }
 

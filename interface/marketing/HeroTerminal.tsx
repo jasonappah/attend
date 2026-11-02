@@ -1,5 +1,5 @@
 import { memo, useEffect, useRef, useState } from 'react'
-import { Paragraph, styled, XStack, YStack, type TamaguiElement } from 'tamagui'
+import { Paragraph, styled, type TamaguiElement, XStack, YStack } from 'tamagui'
 
 const TerminalContainer = styled(YStack, {
   bg: '#0d0d0d',
@@ -171,10 +171,7 @@ export function HeroTerminal() {
 
             transitionTimeout = setTimeout(() => {
               if (cancelled) return
-              setHistory((prev) => [
-                ...prev,
-                { command: step.command, output: step.output },
-              ])
+              setHistory((prev) => [...prev, { command: step.command, output: step.output }])
               setTypedCommand('')
               setShowOutput(false)
               setOutputLines([])
@@ -243,13 +240,7 @@ export function HeroTerminal() {
                 {typedCommand}
               </Paragraph>
               {!showOutput && (
-                <YStack
-                  className="terminal-cursor"
-                  width={8}
-                  height={16}
-                  bg="#e5e5e5"
-                  ml={4}
-                />
+                <YStack className="terminal-cursor" width={8} height={16} bg="#e5e5e5" ml={4} />
               )}
             </XStack>
           </YStack>

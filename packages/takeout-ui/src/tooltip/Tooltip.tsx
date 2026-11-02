@@ -7,16 +7,17 @@
 // its 16 importers.
 
 import { useEmitterSelector, useEmitterValue } from '@o/helpers'
+import type React from 'react'
 import {
   Children,
   cloneElement,
+  type FocusEvent,
   isValidElement,
+  type MouseEvent,
   memo,
+  type ReactNode,
   useEffect,
   useLayoutEffect,
-  type FocusEvent,
-  type MouseEvent,
-  type ReactNode,
 } from 'react'
 import { isWeb, Paragraph, Tooltip as TamaguiTooltip, View } from 'tamagui'
 import { useHardwareBackHandler } from '../keyboard/hardwareBack'
@@ -27,11 +28,10 @@ import {
   closeGlobalTooltipDeferred,
   globalTooltip,
   openGlobalTooltip,
-  tooltipOwner,
   type TooltipProps,
   type TooltipTriggerElement,
+  tooltipOwner,
 } from './tooltipBus'
-import type React from 'react'
 
 export type { TooltipProps } from './tooltipBus'
 
@@ -72,10 +72,7 @@ export const Tooltip: React.FC<TooltipProps> = memo((props) => {
 
   // hover, keyboard focus, and a touch long press each claim the tooltip for
   // their trigger; leave, blur, and a tap on the trigger each give it back
-  const claim = (event: {
-    currentTarget: TooltipTriggerElement
-    defaultPrevented?: boolean
-  }) => {
+  const claim = (event: { currentTarget: TooltipTriggerElement; defaultPrevented?: boolean }) => {
     if (event.defaultPrevented || disabled || disableAllTooltips) return
     tooltipOwner.current = event.currentTarget
     openGlobalTooltip(props)
@@ -114,8 +111,7 @@ export const Tooltip: React.FC<TooltipProps> = memo((props) => {
           onlyChild.props.onBlur?.(event)
           if (event.defaultPrevented) return
           // focus moving within the trigger keeps it
-          if (event.relatedTarget && event.currentTarget.contains?.(event.relatedTarget))
-            return
+          if (event.relatedTarget && event.currentTarget.contains?.(event.relatedTarget)) return
           release(event.currentTarget)
         },
         // the touch trigger: hover and focus never fire from a finger, so on
@@ -198,7 +194,7 @@ export const GlobalTooltipProvider = memo(
         (event) => {
           if (event.key === 'Escape') closeOpenTooltips()
         },
-        { capture: true, signal: controller.signal },
+        { capture: true, signal: controller.signal }
       )
       return () => {
         controller.abort()
@@ -207,18 +203,9 @@ export const GlobalTooltipProvider = memo(
 
     const props = useEmitterValue(globalTooltip)
     const overlayOpen = useEmitterValue(overlayOpenEmitter)
-    const popoverOpen = useEmitterSelector(
-      popoverEmitter,
-      (popover) => popover?.state === 'open',
-    )
+    const popoverOpen = useEmitterSelector(popoverEmitter, (popover) => popover?.state === 'open')
 
-    const {
-      label,
-      children,
-      contentProps,
-      disabled: disabledProp,
-      ...tooltipProps
-    } = props || {}
+    const { label, children, contentProps, disabled: disabledProp, ...tooltipProps } = props || {}
 
     const floatingUiOpen = overlayOpen || popoverOpen
 
@@ -290,5 +277,5 @@ export const GlobalTooltipProvider = memo(
         </TooltipContent>
       </TamaguiTooltip>
     )
-  },
+  }
 )

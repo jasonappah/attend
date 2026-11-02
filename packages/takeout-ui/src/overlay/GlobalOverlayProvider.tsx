@@ -1,9 +1,9 @@
 import { memo, type ReactNode } from 'react'
 import { DialogConfirm } from '../dialog/confirm'
 import {
-  GlobalDialogProvider,
   type DialogSheetBreakpoint,
   type DialogSheetContent,
+  GlobalDialogProvider,
 } from '../dialog/DialogHost'
 import { GlobalPopoverProvider, type PopoverContentProps } from '../popover/Popover'
 import { GlobalTooltipProvider } from '../tooltip/Tooltip'
@@ -32,11 +32,7 @@ export const GlobalOverlayProvider = memo(function GlobalOverlayProvider({
           sheetBreakpoint={dialogSheetBreakpoint}
           sheetContent={dialogSheetContent}
           sheetInset={
-            dialogSheetInset === true
-              ? 12
-              : dialogSheetInset === false
-                ? 0
-                : dialogSheetInset
+            dialogSheetInset === true ? 12 : dialogSheetInset === false ? 0 : dialogSheetInset
           }
         >
           {children}

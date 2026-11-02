@@ -4,11 +4,11 @@
 // reason forms/Form.tsx gives: the exports map never names a file with a
 // platform sibling.
 export {
-  dialogConfirm,
+  type DialogConfirmProps,
   DialogConfirmUnavailableError,
+  dialogConfirm,
   ensureConfirmed,
   isDialogConfirmOpen,
-  type DialogConfirmProps,
 } from './confirmQueue'
 export { DialogConfirmContent } from './DialogConfirmContent'
 export * from './DialogConfirmHost'

@@ -1,18 +1,11 @@
 import { useSafeAreaInsets } from 'one'
-import {
-  SizableText,
-  Theme,
-  XStack,
-  YStack,
-  isWeb,
-  type ThemeName,
-} from 'tamagui'
-import { Toast, toast, useToastItem, useToasts, type ToastT } from 'tamagui/toast'
-import { Button } from '../buttons/Button'
-import { TOAST_RADIUS } from './toastGlass'
-import { ToastSurface } from './ToastSurface'
-import type { Icon } from '../icons/types'
 import type { ReactElement, ReactNode } from 'react'
+import { isWeb, SizableText, Theme, type ThemeName, XStack, YStack } from 'tamagui'
+import { Toast, type ToastT, toast, useToastItem, useToasts } from 'tamagui/toast'
+import { Button } from '../buttons/Button'
+import type { Icon } from '../icons/types'
+import { ToastSurface } from './ToastSurface'
+import { TOAST_RADIUS } from './toastGlass'
 
 export type ToastType = 'error' | 'warn' | 'warning' | 'info' | 'success'
 
@@ -76,7 +69,7 @@ export const showToast = (
     id,
     onDismiss,
     onAutoClose,
-  }: ToastOptions = {},
+  }: ToastOptions = {}
 ) => {
   const fn = mapTypeToToastMethod(type)
   const data: Record<string, unknown> = {}
@@ -157,11 +150,7 @@ export const ToastProvider = ({
                   <ToastSurface
                     tinted={Boolean(currentToast.type && toastThemes[currentToast.type])}
                   >
-                    <ToastContent
-                      toast={currentToast}
-                      index={index}
-                      renderClose={renderClose}
-                    />
+                    <ToastContent toast={currentToast} index={index} renderClose={renderClose} />
                   </ToastSurface>
                 </Toast.Item>
               </Theme>
@@ -206,8 +195,7 @@ function ToastContent({
   const { expanded } = useToasts()
   const buried = !expanded && index > 0
 
-  const title =
-    typeof currentToast.title === 'function' ? currentToast.title() : currentToast.title
+  const title = typeof currentToast.title === 'function' ? currentToast.title() : currentToast.title
   const description =
     typeof currentToast.description === 'function'
       ? currentToast.description()
@@ -223,14 +211,7 @@ function ToastContent({
 
   return (
     <>
-      <XStack
-        gap={11}
-        items="center"
-        px={13}
-        py="2-5"
-        opacity={buried ? 0 : 1}
-        transition="quick"
-      >
+      <XStack gap={11} items="center" px={13} py="2-5" opacity={buried ? 0 : 1} transition="quick">
         <Toast.Icon />
         <YStack flex={1}>
           {title ? (
@@ -266,11 +247,7 @@ function ToastContent({
                 </Button>
               ) : null}
               {currentToast.cancel ? (
-                <Button
-                  glass
-                  size="sm"
-                  onPress={(event) => pressAction(cancelHandler, event)}
-                >
+                <Button glass size="sm" onPress={(event) => pressAction(cancelHandler, event)}>
                   {currentToast.cancel.label}
                 </Button>
               ) : null}

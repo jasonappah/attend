@@ -15,7 +15,7 @@ import { router, Tabs } from 'one'
 import { Platform } from 'react-native'
 import { useTheme } from 'tamagui'
 import { useFocusedTabAction } from '~/features/app/tabAction'
-import { APP_TABS, INITIAL_TAB_NAME, type AppTab } from '~/features/app/tabs'
+import { APP_TABS, type AppTab, INITIAL_TAB_NAME } from '~/features/app/tabs'
 import { NativeTabInsetsProvider } from '~/interface/layout/nativeTabInsets'
 
 export default function TabsLayout() {

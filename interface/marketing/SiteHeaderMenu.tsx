@@ -1,6 +1,6 @@
-import { Sheet } from 'takeout-ui/sheet/Sheet'
 import { usePathname, useUserScheme } from 'one'
 import { memo, useState } from 'react'
+import { Sheet } from 'takeout-ui/sheet/Sheet'
 import { Separator, SizableText, useDidFinishSSR, View, XStack, YStack } from 'tamagui'
 import { useAuth } from '~/auth/client/authClient'
 import { APP_HOME_HREF } from '~/features/app/routes'
@@ -33,17 +33,10 @@ export const SiteHeaderMenu = memo(() => {
         />
       </View>
 
-      <Sheet
-        open={open}
-        onOpenChange={setOpen}
-        sheetVariant={isDocsPage ? 'large' : 'compact'}
-      >
+      <Sheet open={open} onOpenChange={setOpen} sheetVariant={isDocsPage ? 'large' : 'compact'}>
         <Sheet.Overlay bg="background" opacity="0.5 enter:0 exit:0" transition="quick" />
 
-        <Sheet.Container
-          rounded="6"
-          theme={value === 'dark' ? 'dark_takeout' : 'light_takeout'}
-        >
+        <Sheet.Container rounded="6" theme={value === 'dark' ? 'dark_takeout' : 'light_takeout'}>
           <Sheet.Background bg="color-2" boxShadow="0 0 30px shadow-4" />
           <YStack flex={1} gap={7} p={18}>
             <XStack justify="space-between" items="center" pb={12}>

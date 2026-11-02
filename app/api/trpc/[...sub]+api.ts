@@ -5,7 +5,9 @@ import { calendarRouter } from '~/features/calendar/trpc'
 
 export default async function handler(req: Request) {
   return fetchRequestHandler({
-    endpoint: '/api/trpc', req, router: calendarRouter,
+    endpoint: '/api/trpc',
+    req,
+    router: calendarRouter,
     createContext: async () => ({ userId: (await getZeroAuthData(authServer, req))?.id ?? null }),
   })
 }

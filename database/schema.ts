@@ -9,7 +9,15 @@
  * slug) has one id-to-label catalog exported from its `data/<table>/` module,
  * which the seed, the pickers, and every screen share.
  */
-import { index, integer, primaryKey, real, sqliteTable, text, uniqueIndex } from 'drizzle-orm/sqlite-core'
+import {
+  index,
+  integer,
+  primaryKey,
+  real,
+  sqliteTable,
+  text,
+  uniqueIndex,
+} from 'drizzle-orm/sqlite-core'
 
 // ─── private tables (auth — NOT synced to zero) ───
 
@@ -84,7 +92,7 @@ export const userPublic = sqliteTable(
     image: text('image'),
     joinedAt: integer('joinedAt').notNull(),
   },
-  (table) => [index('userPublic_username_idx').on(table.username)],
+  (table) => [index('userPublic_username_idx').on(table.username)]
 )
 
 export const post = sqliteTable(
@@ -102,7 +110,7 @@ export const post = sqliteTable(
   (table) => [
     index('post_userId_idx').on(table.userId),
     index('post_createdAt_id_idx').on(table.createdAt, table.id),
-  ],
+  ]
 )
 
 export const comment = sqliteTable(
@@ -118,7 +126,7 @@ export const comment = sqliteTable(
     index('comment_postId_idx').on(table.postId),
     index('comment_postId_createdAt_idx').on(table.postId, table.createdAt),
     index('comment_userId_idx').on(table.userId),
-  ],
+  ]
 )
 
 // one durable row per notification event. the inbox is the authority: a
@@ -144,10 +152,10 @@ export const appNotification = sqliteTable(
     index('appNotification_userId_readAt_createdAt_idx').on(
       table.userId,
       table.readAt,
-      table.createdAt,
+      table.createdAt
     ),
     index('appNotification_userId_createdAt_id_idx').on(table.userId, table.createdAt, table.id),
-  ],
+  ]
 )
 
 // per-user, per-workflow presentation preferences. a missing row means the
@@ -163,7 +171,7 @@ export const notificationPreference = sqliteTable(
     systemPushEnabled: integer('systemPushEnabled', { mode: 'boolean' }).notNull().default(true),
     updatedAt: integer('updatedAt').notNull(),
   },
-  (table) => [primaryKey({ columns: [table.userId, table.workflow] })],
+  (table) => [primaryKey({ columns: [table.userId, table.workflow] })]
 )
 
 // Attend's synced records use epoch milliseconds, like the rest of Takeout.
@@ -193,14 +201,16 @@ export const room = sqliteTable(
     createdAt: integer('createdAt').notNull(),
     updatedAt: integer('updatedAt'),
   },
-  (table) => [uniqueIndex('room_building_room_idx').on(table.buildingCode, table.roomNumber)],
+  (table) => [uniqueIndex('room_building_room_idx').on(table.buildingCode, table.roomNumber)]
 )
 
 export const course = sqliteTable('course', {
   id: text('id').primaryKey(),
   userId: text('userId').notNull(),
   calendarId: text('calendarId').references(() => calendar.id, { onDelete: 'set null' }),
-  roomId: text('roomId').notNull().references(() => room.id),
+  roomId: text('roomId')
+    .notNull()
+    .references(() => room.id),
   calendarEventName: text('calendarEventName').notNull(),
   courseName: text('courseName').notNull(),
   calendarEventId: text('calendarEventId').notNull().unique(),
@@ -213,12 +223,20 @@ export const courseSession = sqliteTable(
   'courseSession',
   {
     id: text('id').primaryKey(),
-    courseId: text('courseId').notNull().references(() => course.id),
+    courseId: text('courseId')
+      .notNull()
+      .references(() => course.id),
     attendance: text('attendance', { enum: ['present', 'absent'] }),
     startTime: integer('startTime').notNull(),
     endTime: integer('endTime').notNull(),
     createdAt: integer('createdAt').notNull(),
     updatedAt: integer('updatedAt'),
   },
-  (table) => [uniqueIndex('courseSession_course_times_idx').on(table.courseId, table.endTime, table.startTime)],
+  (table) => [
+    uniqueIndex('courseSession_course_times_idx').on(
+      table.courseId,
+      table.endTime,
+      table.startTime
+    ),
+  ]
 )

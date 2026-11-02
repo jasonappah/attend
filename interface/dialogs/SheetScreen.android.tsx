@@ -1,10 +1,10 @@
 import { useRouter, useSafeAreaInsets } from 'one'
+import type { ReactNode } from 'react'
 import { useState } from 'react'
+import type { NativeScrollEvent, NativeSyntheticEvent } from 'react-native'
 import { ScrollView, Separator, SizableText, XStack, YStack } from 'tamagui'
 import { Pressable } from '~/interface/buttons/Pressable'
 import { Icons } from '~/interface/icons'
-import type { ReactNode } from 'react'
-import type { NativeScrollEvent, NativeSyntheticEvent } from 'react-native'
 
 // a route presented as a sheet. on android the sheet is an M3 full-screen
 // dialog: a full-screen surface with a 64dp top app bar carrying the close,

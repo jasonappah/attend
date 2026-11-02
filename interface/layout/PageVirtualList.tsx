@@ -1,6 +1,6 @@
+import type { ComponentProps } from 'react'
 import { VirtualList } from 'takeout-ui/lists/VirtualList'
 import { useBottomTabBarHeight } from './bottomTabBarHeight'
-import type { ComponentProps } from 'react'
 
 type PageVirtualListProps<Item> = Omit<
   ComponentProps<typeof VirtualList<Item>>,

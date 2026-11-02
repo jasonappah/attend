@@ -1,9 +1,7 @@
 import type { Endpoint } from 'one'
 
 type R2Bucket = {
-  get: (
-    key: string,
-  ) => Promise<{
+  get: (key: string) => Promise<{
     arrayBuffer: () => Promise<ArrayBuffer>
   } | null>
 }

@@ -34,9 +34,7 @@ export function KeyboardAvoidingFrame({
 
 export function KeyboardStickyFrame({ children, bottomInset }: KeyboardStickyFrameProps) {
   return (
-    <KeyboardStickyView offset={{ closed: 0, opened: bottomInset }}>
-      {children}
-    </KeyboardStickyView>
+    <KeyboardStickyView offset={{ closed: 0, opened: bottomInset }}>{children}</KeyboardStickyView>
   )
 }
 

@@ -6,8 +6,8 @@ import { LabeledField } from '../forms/LabeledField'
 import { CaretDownIcon } from '../icons/phosphor/CaretDownIcon'
 import { CaretUpIcon } from '../icons/phosphor/CaretUpIcon'
 import { CheckIcon } from '../icons/phosphor/CheckIcon'
-import { emptySelectionLabel, useSelectValue } from './useSelectValue'
 import type { SelectProps } from './selectContract'
+import { emptySelectionLabel, useSelectValue } from './useSelectValue'
 
 // a spacer that lifts sheet content above the home indicator. it mounts only
 // inside the adapted touch sheet, where the app safe-area provider is present.
@@ -55,16 +55,12 @@ export function Select({
           </TamaguiSelect.ItemIndicator>
         </TamaguiSelect.Item>
       )),
-    [items],
+    [items]
   )
 
   return (
     <LabeledField label={label}>
-      <TamaguiSelect
-        value={selected ? id : ''}
-        onValueChange={setId}
-        disablePreventBodyScroll
-      >
+      <TamaguiSelect value={selected ? id : ''} onValueChange={setId} disablePreventBodyScroll>
         <TamaguiSelect.Trigger
           testID={testID}
           aria-label={ariaLabel ?? label}
@@ -79,9 +75,7 @@ export function Select({
         >
           <XStack gap={7} flex={1} items="center">
             {selected?.icon}
-            <TamaguiSelect.Value
-              placeholder={selected?.name || emptySelectionLabel(label)}
-            />
+            <TamaguiSelect.Value placeholder={selected?.name || emptySelectionLabel(label)} />
             <TamaguiSelect.Icon ml="auto">
               <CaretDownIcon size={14} color="color" />
             </TamaguiSelect.Icon>
@@ -98,11 +92,7 @@ export function Select({
                   <SheetBottomInset />
                 </Sheet.ScrollView>
               </Sheet.Container>
-              <Sheet.Overlay
-                bg="shadow-color"
-                transition="lazy"
-                opacity="enter:0 exit:0"
-              />
+              <Sheet.Overlay bg="shadow-color" transition="lazy" opacity="enter:0 exit:0" />
             </Sheet>
           </Adapt>
         )}

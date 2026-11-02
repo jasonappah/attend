@@ -7,9 +7,9 @@
  * put a SizableText/Paragraph/View inside, or use `<Link asChild>` with a
  * tamagui child carrying `render="a"` when the link itself must be styled.
  */
-import { Link as OneLink, type Href, type LinkProps as OneLinkProps } from 'one'
-import { isWeb } from 'tamagui'
+import { type Href, Link as OneLink, type LinkProps as OneLinkProps } from 'one'
 import type { CSSProperties } from 'react'
+import { isWeb } from 'tamagui'
 
 export type LinkProps = Omit<OneLinkProps<Href>, 'style'> & {
   style?: OneLinkProps<Href>['style'] | CSSProperties

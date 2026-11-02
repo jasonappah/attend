@@ -5,10 +5,10 @@ import { DOMAIN } from '~/constants'
 import { APP_SETTINGS_EDIT_PROFILE_HREF } from '~/features/app/routes'
 import {
   LogoAndVersion,
-  SettingToggle,
   SettingsWebChrome,
+  SettingToggle,
 } from '~/features/settings/SettingsWebChrome'
-import { useSettingsData, type SettingItem } from '~/features/settings/useSettingsData'
+import { type SettingItem, useSettingsData } from '~/features/settings/useSettingsData'
 import { Link } from '~/interface/app/Link'
 import { UnreadDot } from '~/interface/app/UnreadDot'
 import { Icons } from '~/interface/icons'

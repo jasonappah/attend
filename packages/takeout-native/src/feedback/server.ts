@@ -17,10 +17,7 @@ function jsonError(message: string, status: number): Response {
 
 async function readBoundedBody(request: Request): Promise<BoundedBodyResult> {
   const declaredLength = Number(request.headers.get('content-length'))
-  if (
-    Number.isFinite(declaredLength) &&
-    declaredLength > MAX_FEEDBACK_REPORT_BODY_BYTES
-  ) {
+  if (Number.isFinite(declaredLength) && declaredLength > MAX_FEEDBACK_REPORT_BODY_BYTES) {
     return { ok: false, status: 413, message: 'feedback report is too large' }
   }
   if (!request.body) {
@@ -53,7 +50,7 @@ async function readBoundedBody(request: Request): Promise<BoundedBodyResult> {
 // headers are intentionally not forwarded.
 export async function forwardFeedback(
   request: Request,
-  config: FeedbackForwardConfig,
+  config: FeedbackForwardConfig
 ): Promise<Response> {
   if (!config.endpoint || !config.token) {
     return jsonError('feedback is not configured for this deployment', 503)
@@ -86,9 +83,7 @@ export async function forwardFeedback(
     const upstreamContentType = upstream.headers.get('content-type')
     return new Response(body || null, {
       status: upstream.status,
-      ...(upstreamContentType
-        ? { headers: { 'content-type': upstreamContentType } }
-        : {}),
+      ...(upstreamContentType ? { headers: { 'content-type': upstreamContentType } } : {}),
     })
   } catch {
     return jsonError('could not reach the feedback service', 502)

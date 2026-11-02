@@ -4,8 +4,9 @@
  * and resolve it in `notificationDestinationHref`; a row whose kind is not in
  * this union opens the notification list instead of navigating anywhere.
  */
-import { APP_PROFILE_HREF, postDetailHref } from '~/features/app/routes'
+
 import type { Href } from 'one'
+import { APP_PROFILE_HREF, postDetailHref } from '~/features/app/routes'
 
 export type NotificationDestination =
   | { kind: 'post'; id: string }
@@ -22,7 +23,7 @@ export type StoredNotificationDestination = Readonly<{
 }>
 
 export function storeNotificationDestination(
-  destination: NotificationDestination,
+  destination: NotificationDestination
 ): StoredNotificationDestination {
   return {
     destinationKind: destination.kind,
@@ -34,7 +35,7 @@ export function storeNotificationDestination(
 // or a kind whose target id is missing, resolves to null so the notification
 // opens in place rather than sending the user somewhere unrelated.
 export function readNotificationDestination(
-  stored: StoredNotificationDestination,
+  stored: StoredNotificationDestination
 ): NotificationDestination | null {
   const id = stored.destinationId
   switch (stored.destinationKind) {

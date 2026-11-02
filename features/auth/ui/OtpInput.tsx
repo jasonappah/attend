@@ -1,11 +1,11 @@
 import { memo, useEffect, useRef, useState } from 'react'
 import {
+  type InputProps,
   Input as TamaguiInput,
   useWindowDimensions,
   View,
   XStack,
   YStack,
-  type InputProps,
 } from 'tamagui'
 import { Button } from '~/interface/buttons/Button'
 import { Icons } from '~/interface/icons'

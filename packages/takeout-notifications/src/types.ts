@@ -8,7 +8,7 @@ export type PushRegistrationMeta = Readonly<{
 
 export type RegisterDevicePushToken = (
   token: string,
-  meta: PushRegistrationMeta,
+  meta: PushRegistrationMeta
 ) => void | Promise<void>
 
 export type PushRegistrationStatus =
@@ -104,9 +104,7 @@ export type NotificationResponseIssue = Readonly<{
   data: Readonly<Record<string, unknown>>
 }>
 
-export type NotificationResponseResult =
-  | NotificationResponseEvent
-  | NotificationResponseIssue
+export type NotificationResponseResult = NotificationResponseEvent | NotificationResponseIssue
 
 export type NotificationResponseHandler = (result: NotificationResponseResult) => void
 

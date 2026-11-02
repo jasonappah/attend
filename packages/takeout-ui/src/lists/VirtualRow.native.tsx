@@ -1,8 +1,8 @@
 import { memo, useCallback, useState } from 'react'
-import { unstable_VirtualView as VirtualView, View } from 'react-native'
+import type { LayoutChangeEvent } from 'react-native'
+import { View, unstable_VirtualView as VirtualView } from 'react-native'
 import Animated from 'react-native-reanimated'
 import type { VirtualRowProps } from './virtualListContract'
-import type { LayoutChangeEvent } from 'react-native'
 
 // a scroll-container row that native VirtualView empties once it leaves the
 // container's prerender window. VirtualView drops its children while hidden, so
@@ -21,7 +21,7 @@ export const VirtualRow = memo(function VirtualRow({
   }, [])
   const hiddenStyle = useCallback(
     (targetRect: { height: number }) => ({ height: measuredHeight ?? targetRect.height }),
-    [measuredHeight],
+    [measuredHeight]
   )
 
   const row = (

@@ -1,10 +1,10 @@
+import { useMutation } from 'on-zero'
+import { One } from 'one'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Dialog } from 'takeout-ui/dialog/Dialog'
 import { TextArea } from 'takeout-ui/forms/TextArea'
 import { Image } from 'takeout-ui/image/Image'
 import { dismissKeyboard } from 'takeout-ui/keyboard/KeyboardLayoutFrame'
-import { useMutation } from 'on-zero'
-import { One } from 'one'
-import { useCallback, useEffect, useRef, useState } from 'react'
 import { Circle, isWeb, SizableText, Spinner, useWindowDimensions, YStack } from 'tamagui'
 import { useSession } from '~/auth/client/authClient'
 import { zero } from '~/data/zero-client'
@@ -39,7 +39,7 @@ export function CreatePostDialog({ open, onOpenChange }: Props) {
   const [error, setError] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [createPost] = useMutation((props: Parameters<typeof zero.mutate.post.insert>[0]) =>
-    zero.mutate.post.insert(props),
+    zero.mutate.post.insert(props)
   )
 
   const resetPickedImage = useCallback(() => {

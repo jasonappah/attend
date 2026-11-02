@@ -1,14 +1,14 @@
 import {
-  Button as TamaguiButton,
   createStyledHOC,
-  styled,
-  XStack,
-  YStack,
   type GetProps,
+  styled,
+  Button as TamaguiButton,
+  XStack,
   type XStackProps,
+  YStack,
 } from 'tamagui'
-import { GLASS_LIFT } from '../glass/glass'
 import { GlassView } from '../glass/GlassView'
+import { GLASS_LIFT } from '../glass/glass'
 
 // the app button every template builds on. a bare button is the theme's
 // control; `accent` is the primary action, `subtle` a quiet fill, and `glass`
@@ -98,7 +98,7 @@ export const Button = createStyledHOC(
       {props.children}
     </ButtonFrame>
   ),
-  { disableTheme: true },
+  { disableTheme: true }
 )
 
 export type ButtonProps = GetProps<typeof Button>

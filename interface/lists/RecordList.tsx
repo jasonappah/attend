@@ -1,5 +1,5 @@
 import { Path, Svg } from 'react-native-svg'
-import { Paragraph, SizableText, useTheme, View, XStack, YStack, styled } from 'tamagui'
+import { Paragraph, SizableText, styled, useTheme, View, XStack, YStack } from 'tamagui'
 import { Icons } from '~/interface/icons'
 import type { RecordListProps, RecordRowProps } from './recordListContract'
 

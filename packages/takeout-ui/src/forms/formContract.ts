@@ -1,6 +1,6 @@
+import type { ReactNode } from 'react'
 import type { DateOnlyKey } from '../display/dateOnly'
 import type { IconComponent, SfSymbolName } from '../icons/types'
-import type { ReactNode } from 'react'
 
 // the props both legs implement. structural types live once, in the owning
 // contract, so neither leg can drift from the other silently.

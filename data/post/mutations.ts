@@ -29,7 +29,7 @@ export const mutate = mutations(
         imageHeight?: number | null
         caption?: string | null
         createdAt: number
-      },
+      }
     ) => {
       const auth = ensureLoggedIn()
       await ctx.tx.mutate.post.insert({ ...post, commentCount: 0, userId: auth.id })
@@ -44,7 +44,7 @@ export const mutate = mutations(
         imageWidth?: number | null
         imageHeight?: number | null
         caption?: string | null
-      },
+      }
     ) => {
       await ctx.can(permissions, post.id)
       await ctx.tx.mutate.post.update(post)
@@ -55,5 +55,5 @@ export const mutate = mutations(
       await ctx.tx.mutate.post.delete({ id: args.id })
     },
   },
-  { crud: false },
+  { crud: false }
 )

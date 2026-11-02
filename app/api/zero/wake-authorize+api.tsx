@@ -1,6 +1,6 @@
+import type { Endpoint } from 'one'
 import { authServer } from '~/auth/server/authServer'
 import { getZeroAuthData } from '~/auth/server/getZeroAuthData'
-import type { Endpoint } from 'one'
 
 // authorizes a wake channel for an authenticated session. mirrors
 // /api/zero/rust-auth so the sync host's authorizeWake path (and any local

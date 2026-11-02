@@ -1,13 +1,12 @@
 // application storage and sync use the same Durable Object namespace.
-import { AsyncLocalStorage } from 'node:async_hooks'
+
 import { WorkerEntrypoint } from 'cloudflare:workers'
-import {
-  createApplicationSqlClient,
-  ZeroDO,
-  projectOrezFeedBody,
-} from 'orez-lite/cloudflare'
+import { AsyncLocalStorage } from 'node:async_hooks'
 import { orezAppSchema, runCloudflareMigrations } from 'orez:cloudflare-migrations'
+import { createApplicationSqlClient, projectOrezFeedBody, ZeroDO } from 'orez-lite/cloudflare'
+
 export { ZeroDO as ZeroSqlDO }
+
 const signals = new AsyncLocalStorage()
 let schemaReady = false
 async function ensureSchema() {
@@ -32,15 +31,15 @@ export class OrezDataFeed extends WorkerEntrypoint {
       const forward = new Request(request)
       forward.headers.set('x-soot-do-instance', 'singleton')
       const response = await this.env.ZERO_SQL_DO.get(
-        this.env.ZERO_SQL_DO.idFromName('singleton'),
+        this.env.ZERO_SQL_DO.idFromName('singleton')
       ).fetch(forward)
       if (!response.ok) return response
       return Response.json(
         projectOrezFeedBody(
           orezAppSchema,
           await response.json(),
-          url.pathname === '/snapshot' ? url.searchParams.get('table') : null,
-        ),
+          url.pathname === '/snapshot' ? url.searchParams.get('table') : null
+        )
       )
     })
   }

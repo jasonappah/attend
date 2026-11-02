@@ -3,8 +3,8 @@ import { Modal, useWindowDimensions, View } from 'react-native'
 import { ScrollView, SizableText, XStack, YStack } from 'tamagui'
 import { CaretDownIcon } from '../icons/phosphor/CaretDownIcon'
 import { CaretUpIcon } from '../icons/phosphor/CaretUpIcon'
-import { emptySelectionLabel, useSelectValue } from './useSelectValue'
 import type { SelectProps } from './selectContract'
+import { emptySelectionLabel, useSelectValue } from './useSelectValue'
 
 // the android leg: an M3 exposed dropdown menu. the metrics below are the M3
 // roles, not kit inventions: a 56dp outlined field with a floated label, a
@@ -29,9 +29,7 @@ type Anchor = { x: number; y: number; width: number; height: number }
 // to the renderer's element, which carries no measure, so the seam is typed
 // structurally and probed with a guard.
 type MeasuredView = {
-  measureInWindow: (
-    callback: (x: number, y: number, width: number, height: number) => void,
-  ) => void
+  measureInWindow: (callback: (x: number, y: number, width: number, height: number) => void) => void
 }
 
 function isMeasuredView(node: unknown): node is MeasuredView {
@@ -79,10 +77,7 @@ export function Select({
   // the menu drops below the field and flips above it when the room below is
   // short and the room above is longer, which is the M3 menu placement.
   const menuHeight = anchor
-    ? Math.min(
-        items.length * MENU_ROW_HEIGHT + MENU_VERTICAL_PADDING * 2,
-        MENU_MAX_HEIGHT,
-      )
+    ? Math.min(items.length * MENU_ROW_HEIGHT + MENU_VERTICAL_PADDING * 2, MENU_MAX_HEIGHT)
     : 0
   const spaceBelow = anchor ? windowHeight - (anchor.y + anchor.height + MENU_GAP) : 0
   const above = !!anchor && spaceBelow < menuHeight && anchor.y > spaceBelow
@@ -145,12 +140,7 @@ export function Select({
 
       <Modal visible={open} transparent animationType="none" onRequestClose={closeMenu}>
         <View style={{ flex: 1 }}>
-          <YStack
-            position="absolute"
-            inset={0}
-            onPress={closeMenu}
-            aria-label="Dismiss"
-          />
+          <YStack position="absolute" inset={0} onPress={closeMenu} aria-label="Dismiss" />
           {anchor ? (
             <YStack
               position="absolute"
@@ -164,10 +154,7 @@ export function Select({
               boxShadow="0 4px 12px shadow-color"
               overflow="hidden"
             >
-              <ScrollView
-                keyboardShouldPersistTaps="handled"
-                showsVerticalScrollIndicator={false}
-              >
+              <ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
                 {items.map((item) => (
                   <XStack
                     key={item.id}

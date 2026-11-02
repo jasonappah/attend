@@ -1,10 +1,10 @@
-import { FormSheetFrame } from 'takeout-ui/forms/FormSheetBody'
 import { useRouter } from 'one'
+import type { ReactNode } from 'react'
+import { FormSheetFrame } from 'takeout-ui/forms/FormSheetBody'
 import { ScrollView, SizableText, XStack, YStack } from 'tamagui'
 import { Button } from '~/interface/buttons/Button'
 import { Pressable } from '~/interface/buttons/Pressable'
 import { Icons } from '~/interface/icons'
-import type { ReactNode } from 'react'
 
 // a route presented as a sheet. the web leg: the flat large title with its
 // close, the scrolling body, and the one primary action pinned below it. ios

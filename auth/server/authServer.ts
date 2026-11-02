@@ -5,7 +5,7 @@ import { bearer, emailOTP } from 'better-auth/plugins'
 import { trustedAppOrigins } from 'takeout-better-auth'
 import { APP_ANALYTICS_INSTALLATION_HEADER } from 'takeout-better-auth/analytics'
 import { APP_SCHEME } from '~/constants'
-import { server, ports } from '~/env'
+import { ports, server } from '~/env'
 import { afterCreateUser } from './afterCreateUser'
 import { authDatabase } from './authDb'
 import { beforeCreateUser } from './beforeCreateUser'
@@ -39,9 +39,15 @@ export const authServer = betterAuth({
     enabled: true,
     autoSignIn: false,
   },
-  socialProviders: process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET
-    ? { google: { clientId: process.env.GOOGLE_CLIENT_ID, clientSecret: process.env.GOOGLE_CLIENT_SECRET } }
-    : {},
+  socialProviders:
+    process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET
+      ? {
+          google: {
+            clientId: process.env.GOOGLE_CLIENT_ID,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+          },
+        }
+      : {},
 
   trustedOrigins: trustedAppOrigins([
     `http://localhost:${ports.web}`,
@@ -58,7 +64,7 @@ export const authServer = betterAuth({
         async after(user, context) {
           await afterCreateUser(
             user,
-            context?.headers?.get(APP_ANALYTICS_INSTALLATION_HEADER) ?? null,
+            context?.headers?.get(APP_ANALYTICS_INSTALLATION_HEADER) ?? null
           )
         },
       },
@@ -85,7 +91,7 @@ export const authServer = betterAuth({
           console.info(`${'='.repeat(60)}\n`)
         } else {
           console.warn(
-            `[auth/otp] sendVerificationOTP fired for ${email} but no email transport is wired — OTP not delivered. configure RESEND_API_KEY (or another provider) and wire the send here.`,
+            `[auth/otp] sendVerificationOTP fired for ${email} but no email transport is wired — OTP not delivered. configure RESEND_API_KEY (or another provider) and wire the send here.`
           )
         }
         storeOTP(email, otp)

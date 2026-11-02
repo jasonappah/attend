@@ -5,12 +5,12 @@
  * aligned with the actual child route nodes.
  */
 import { Redirect, Slot, Stack } from 'one'
+import type { ReactNode } from 'react'
 import { isWeb, useTheme, YStack } from 'tamagui'
 import { useAuth } from '~/auth/client/authClient'
 import { ProvideZero } from '~/data/zero-client'
 import { APP_TABS_ROUTE_NAME } from '~/features/app/routes'
 import { NotificationsRoot } from '~/features/notifications/NotificationsRoot'
-import type { ReactNode } from 'react'
 
 // a deep link to a pushed screen or a sheet seats the tabs under it
 export const unstable_settings = { initialRouteName: APP_TABS_ROUTE_NAME }

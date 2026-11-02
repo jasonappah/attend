@@ -7,11 +7,7 @@ export const SiteFooter = () => {
       <YStack mx="auto" width="100%" maxW={840} px={16} gap={16}>
         <XStack gap={16} flexWrap="wrap" justify="center" items="center">
           <Link href="/privacy-policy">
-            <SizableText
-              fontFamily="takeout-body"
-              size="3"
-              color="color-9 hover:color-11"
-            >
+            <SizableText fontFamily="takeout-body" size="3" color="color-9 hover:color-11">
               Privacy Policy
             </SizableText>
           </Link>
@@ -19,11 +15,7 @@ export const SiteFooter = () => {
             •
           </SizableText>
           <Link href="/terms-of-service">
-            <SizableText
-              fontFamily="takeout-body"
-              size="3"
-              color="color-9 hover:color-11"
-            >
+            <SizableText fontFamily="takeout-body" size="3" color="color-9 hover:color-11">
               Terms of Service
             </SizableText>
           </Link>

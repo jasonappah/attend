@@ -1,21 +1,21 @@
-import { useEffect, useRef, type ComponentProps, type ReactNode } from 'react'
+import { type ComponentProps, type ReactNode, useEffect, useRef } from 'react'
 import {
-  Dialog as TamaguiDialog,
+  isWeb,
   ScrollView,
   Separator,
-  Theme,
-  VisuallyHidden,
-  XStack,
-  YStack,
-  isWeb,
   styled,
+  Dialog as TamaguiDialog,
+  type TamaguiElement,
+  Theme,
   useAdaptIsActive,
   useDialogContext,
+  View,
+  VisuallyHidden,
   withStaticProperties,
-  type TamaguiElement,
+  XStack,
+  YStack,
   type YStackProps,
 } from 'tamagui'
-import { View } from 'tamagui'
 import { Button, type ButtonProps } from '../buttons/Button'
 import { XIcon } from '../icons/XIcon'
 import { blurNonEmptyTextField } from '../keyboard/escape'
@@ -23,20 +23,9 @@ import { HostedDialog } from './DialogHost'
 
 const OVERLAY_DISMISS_GUARD_MS = 350
 
-type DialogSize =
-  | 'compact'
-  | 'default'
-  | 'medium'
-  | 'large'
-  | 'wide'
-  | 'list'
-  | 'settings'
-  | 'fill'
+type DialogSize = 'compact' | 'default' | 'medium' | 'large' | 'wide' | 'list' | 'settings' | 'fill'
 
-export type DialogProps = Pick<
-  ComponentProps<typeof HostedDialog>,
-  'open' | 'onOpenChange'
-> & {
+export type DialogProps = Pick<ComponentProps<typeof HostedDialog>, 'open' | 'onOpenChange'> & {
   size?: DialogSize
   height?: ComponentProps<typeof YStack>['height']
   minH?: number
@@ -144,13 +133,7 @@ export type DialogActionProps = ButtonProps & {
 function DialogAction({ tone = 'default', ...props }: DialogActionProps) {
   return (
     <Button
-      theme={
-        tone === 'destroy'
-          ? 'red'
-          : tone === 'confirm' || tone === 'create'
-            ? 'brand'
-            : null
-      }
+      theme={tone === 'destroy' ? 'red' : tone === 'confirm' || tone === 'create' ? 'brand' : null}
       {...props}
     />
   )

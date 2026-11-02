@@ -1,12 +1,5 @@
 import * as React from 'react'
-import type {
-  CompiledMDX,
-  Frontmatter,
-  HastMdxAttribute,
-  HastNode,
-  HastPropertyValue,
-  HastRoot,
-} from './types'
+import type { HastMdxAttribute, HastNode, HastRoot } from './types'
 
 export type {
   CompiledMDX,
@@ -26,7 +19,7 @@ export type MDXProps = {
 }
 
 function literalMdxProperties(
-  attributes: readonly HastMdxAttribute[] | undefined,
+  attributes: readonly HastMdxAttribute[] | undefined
 ): Record<string, unknown> {
   const properties: Record<string, unknown> = {}
   for (const attribute of attributes ?? []) {
@@ -35,7 +28,7 @@ function literalMdxProperties(
     }
     if (typeof attribute.value === 'object' && attribute.value !== null) {
       throw new Error(
-        `takeout-mdx: expression attribute "${attribute.name}" requires build-time MDX`,
+        `takeout-mdx: expression attribute "${attribute.name}" requires build-time MDX`
       )
     }
     properties[attribute.name] = attribute.value ?? true
@@ -43,19 +36,13 @@ function literalMdxProperties(
   return properties
 }
 
-function renderNode(
-  node: HastNode,
-  components: MDXComponents,
-  key: string,
-): React.ReactNode {
+function renderNode(node: HastNode, components: MDXComponents, key: string): React.ReactNode {
   switch (node.type) {
     case 'root':
       return React.createElement(
         React.Fragment,
         { key },
-        ...node.children.map((child, index) =>
-          renderNode(child, components, `${key}.${index}`),
-        ),
+        ...node.children.map((child, index) => renderNode(child, components, `${key}.${index}`))
       )
     case 'text':
       return node.value
@@ -73,9 +60,7 @@ function renderNode(
       return React.createElement(
         Component,
         properties,
-        ...node.children.map((child, index) =>
-          renderNode(child, components, `${key}.${index}`),
-        ),
+        ...node.children.map((child, index) => renderNode(child, components, `${key}.${index}`))
       )
     }
     case 'mdxJsxFlowElement':
@@ -84,9 +69,7 @@ function renderNode(
         return React.createElement(
           React.Fragment,
           { key },
-          ...node.children.map((child, index) =>
-            renderNode(child, components, `${key}.${index}`),
-          ),
+          ...node.children.map((child, index) => renderNode(child, components, `${key}.${index}`))
         )
       }
       const Component = components[node.name]
@@ -96,9 +79,7 @@ function renderNode(
       return React.createElement(
         Component,
         { ...literalMdxProperties(node.attributes), key },
-        ...node.children.map((child, index) =>
-          renderNode(child, components, `${key}.${index}`),
-        ),
+        ...node.children.map((child, index) => renderNode(child, components, `${key}.${index}`))
       )
     }
     case 'mdxFlowExpression':

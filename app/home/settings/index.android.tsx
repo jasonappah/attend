@@ -1,11 +1,5 @@
-import {
-  Form,
-  NavigationRow,
-  Section,
-  SubmitButton,
-  ToggleField,
-} from 'takeout-ui/forms/Form'
 import { One, useRouter } from 'one'
+import { Form, NavigationRow, Section, SubmitButton, ToggleField } from 'takeout-ui/forms/Form'
 import { Paragraph, XStack } from 'tamagui'
 import { APP_NAME_LOWERCASE, DOMAIN } from '~/constants'
 import { useSettingsData } from '~/features/settings/useSettingsData'
@@ -25,9 +19,7 @@ export default function SettingsPage() {
         <Section
           key={section.title}
           title={section.title}
-          footer={
-            index === sections.length - 1 ? `${APP_NAME_LOWERCASE} v1.0.0` : undefined
-          }
+          footer={index === sections.length - 1 ? `${APP_NAME_LOWERCASE} v1.0.0` : undefined}
         >
           {section.items.map((item) => {
             const testID = `setting-${item.id}`

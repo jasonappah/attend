@@ -1,5 +1,5 @@
 import { Redirect } from 'one'
-import { H1, Paragraph, YStack, isWeb } from 'tamagui'
+import { H1, isWeb, Paragraph, YStack } from 'tamagui'
 import { useAuth } from '~/auth/client/authClient'
 import { APP_HOME_HREF } from '~/features/app/routes'
 import { Link } from '~/interface/app/Link'
@@ -32,9 +32,15 @@ export default function Index() {
     return <NativeIndex />
   }
 
-  return <YStack width="100%" maxW={600} self="center" p={24} gap={16}>
-    <H1>Attend.</H1>
-    <Paragraph>A simple app to track your class attendance.</Paragraph>
-    <Link href="/auth/login" asChild><Button accent testID="public-app-entry">Open Attend</Button></Link>
-  </YStack>
+  return (
+    <YStack width="100%" maxW={600} self="center" p={24} gap={16}>
+      <H1>Attend.</H1>
+      <Paragraph>A simple app to track your class attendance.</Paragraph>
+      <Link href="/auth/login" asChild>
+        <Button accent testID="public-app-entry">
+          Open Attend
+        </Button>
+      </Link>
+    </YStack>
+  )
 }

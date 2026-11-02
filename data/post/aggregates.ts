@@ -1,5 +1,5 @@
-import { count, type AggregateDefinitions } from 'orez-lite/aggregate'
-import { schema } from '~/data/generated/schema'
+import { type AggregateDefinitions, count } from 'orez-lite/aggregate'
+import type { schema } from '~/data/generated/schema'
 
 export const aggregates = {
   postCommentCount: {

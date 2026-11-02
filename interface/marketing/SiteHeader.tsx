@@ -82,12 +82,7 @@ export const SiteHeader = memo(() => {
             }}
           />
 
-          <YStack
-            opacity={isScrolled ? 0.85 : 0}
-            position="absolute"
-            inset={0}
-            bg="color-2"
-          />
+          <YStack opacity={isScrolled ? 0.85 : 0} position="absolute" inset={0} bg="color-2" />
 
           <XStack z={1} width="100%" items="center" py={8} px={12} position="relative">
             {/* left: social links on desktop */}

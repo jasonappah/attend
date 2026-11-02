@@ -1,6 +1,6 @@
 import { useWindowDimensions } from '@tamagui/use-window-dimensions'
-import { Link, usePathname, type Href } from 'one'
-import { SizableText, View, XStack, type ColorTokens } from 'tamagui'
+import { type Href, Link, usePathname } from 'one'
+import { type ColorTokens, SizableText, View, XStack } from 'tamagui'
 import type { Icon, IconComponent } from '../icons/types'
 
 type MeasuredLayoutEvent = {
@@ -91,7 +91,7 @@ export function MobileTabBar({
   const pathname = usePathname()
   const { width } = useWindowDimensions()
   const activeIndex = tabs.findIndex(
-    (tab) => pathname === tab.href || pathname.startsWith(`${tab.href}/`),
+    (tab) => pathname === tab.href || pathname.startsWith(`${tab.href}/`)
   )
 
   // uikit sizes the pill to its tabs and caps it at the room beside the
@@ -121,15 +121,7 @@ export function MobileTabBar({
         {/* the pill paints its glass on a layer of its own so the lens, a
             sibling above it, filters the finished glass; a backdrop filter
             nested inside another only sees its parent. */}
-        <View
-          position="absolute"
-          t={0}
-          r={0}
-          b={0}
-          l={0}
-          pointerEvents="none"
-          {...glassSurface}
-        />
+        <View position="absolute" t={0} r={0} b={0} l={0} pointerEvents="none" {...glassSurface} />
         {activeIndex >= 0 && (
           <View
             position="absolute"

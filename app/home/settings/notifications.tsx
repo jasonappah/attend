@@ -1,7 +1,7 @@
+import { router } from 'one'
 import { notificationPermissionAlerts, useNotificationPermission } from 'takeout-notifications'
 import { formatDistanceToNow } from 'takeout-ui/display'
-import { router } from 'one'
-import { Paragraph, SizableText, Switch, View, XStack, YStack, styled } from 'tamagui'
+import { Paragraph, SizableText, Switch, styled, View, XStack, YStack } from 'tamagui'
 import {
   notificationDestinationHref,
   readNotificationDestination,

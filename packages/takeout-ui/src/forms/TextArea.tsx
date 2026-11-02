@@ -1,12 +1,12 @@
 import {
+  type ComponentSize,
   getVariableValue,
   resolveSizing,
   resolveTextMetrics,
-  type ComponentSize,
 } from '@tamagui/core'
-import { TextArea as TamaguiTextArea, styled } from 'tamagui'
-import { fieldBaseStyle } from './Input'
 import type { GetProps } from 'tamagui'
+import { styled, TextArea as TamaguiTextArea } from 'tamagui'
+import { fieldBaseStyle } from './Input'
 
 // textarea floors are textarea-specific, not ladder geometry: the ladder has
 // no multi-line height, so each rung keeps its own floor here. the map stays
@@ -55,7 +55,7 @@ function textAreaHeight(
       { size: Record<string, unknown>; lineHeight: Record<string, unknown> } | undefined
     >
     font?: { size: Record<string, unknown>; lineHeight: Record<string, unknown> }
-  },
+  }
 ) {
   const size = props.size
   const floor =
@@ -63,8 +63,7 @@ function textAreaHeight(
     (size == null || typeof size === 'boolean' ? textAreaMinH['md'] : undefined)
   if (floor === undefined) return
   const fontFamily = props.fontFamily
-  const font =
-    typeof fontFamily === 'string' ? (env.fonts[fontFamily] ?? env.font) : env.font
+  const font = typeof fontFamily === 'string' ? (env.fonts[fontFamily] ?? env.font) : env.font
   const sizeRecord = font?.size
   const defaultKey = sizeRecord && 'sm' in sizeRecord ? 'sm' : '4'
   const fontSize = props.fontSize ?? defaultKey
@@ -78,10 +77,9 @@ function textAreaHeight(
   const leading = configuredLeading ?? lineHeight
   resolveTextMetrics(
     metrics,
-    (props.lineHeight == null || configuredLeading !== undefined) &&
-      typeof leading === 'number'
+    (props.lineHeight == null || configuredLeading !== undefined) && typeof leading === 'number'
       ? `${leading}px`
-      : (leading as string),
+      : (leading as string)
   )
   const rows = props.rows ?? props.numberOfLines
   const rowsHeight =

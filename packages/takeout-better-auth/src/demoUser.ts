@@ -14,16 +14,14 @@ export interface DemoUserSignInOptions<Result extends DemoSignInResult> {
   credentials: DemoUserCredentials | (() => DemoUserCredentials)
   errorMessage?: string
   onSignedIn?(result: Result): void | Promise<void>
-  signInEmail(
-    credentials: Pick<DemoUserCredentials, 'email' | 'password'>,
-  ): Promise<Result>
+  signInEmail(credentials: Pick<DemoUserCredentials, 'email' | 'password'>): Promise<Result>
   signUpEmail(credentials: DemoUserCredentials): Promise<unknown>
 }
 
 export type DemoUserSignInOutcome = { ok: true } | { error: string }
 
 export function createDemoUserSignIn<Result extends DemoSignInResult>(
-  options: DemoUserSignInOptions<Result>,
+  options: DemoUserSignInOptions<Result>
 ) {
   let inFlight: Promise<DemoUserSignInOutcome> | undefined
 
@@ -33,9 +31,7 @@ export function createDemoUserSignIn<Result extends DemoSignInResult>(
     const request = (async (): Promise<DemoUserSignInOutcome> => {
       try {
         const credentials =
-          typeof options.credentials === 'function'
-            ? options.credentials()
-            : options.credentials
+          typeof options.credentials === 'function' ? options.credentials() : options.credentials
 
         await options.signUpEmail(credentials)
         const result = await options.signInEmail({
@@ -54,9 +50,7 @@ export function createDemoUserSignIn<Result extends DemoSignInResult>(
       } catch (error) {
         return {
           error:
-            error instanceof Error
-              ? error.message
-              : (options.errorMessage ?? 'demo login failed'),
+            error instanceof Error ? error.message : (options.errorMessage ?? 'demo login failed'),
         }
       }
     })().finally(() => {

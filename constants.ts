@@ -5,8 +5,7 @@ export const APP_NAME = 'Attend'
 export const APP_NAME_LOWERCASE = APP_NAME.toLowerCase()
 export const APP_SCHEME = 'attend'
 // the one sentence under the name on the landing page
-export const APP_TAGLINE =
-  'A simple way to track your class attendance.'
+export const APP_TAGLINE = 'A simple way to track your class attendance.'
 
 // domain
 export const DOMAIN = process.env.VITE_WEB_HOSTNAME || 'localhost:4200'

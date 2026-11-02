@@ -7,6 +7,7 @@
 // read ahead of this module.
 declare module '*.swift' {
   import type { ComponentType } from 'react'
+
   const SwiftEntry: ComponentType<Record<string, unknown> & { children?: never }>
   export default SwiftEntry
 }

@@ -82,7 +82,7 @@ async function fileToResizedJpeg(file: File, maxDim: number, quality: number): P
     out.toBlob(
       (blob) => (blob ? resolve(blob) : reject(new Error('encode failed'))),
       'image/jpeg',
-      quality,
+      quality
     )
   })
 }

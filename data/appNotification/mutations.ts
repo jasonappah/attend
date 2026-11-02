@@ -33,12 +33,12 @@ export const mutate = mutations(
           .where('readAt', 'IS', null)
           .orderBy('createdAt', 'desc')
           .orderBy('id', 'desc')
-          .limit(MARK_ALL_READ_LIMIT),
+          .limit(MARK_ALL_READ_LIMIT)
       )
       for (const row of unread) {
         await ctx.tx.mutate.appNotification.update({ id: row.id, readAt: props.readAt })
       }
     },
   },
-  { crud: false },
+  { crud: false }
 )

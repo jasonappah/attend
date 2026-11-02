@@ -19,8 +19,7 @@ export function SwipeableRow({ actions, children }: SwipeableRowProps) {
             <View
               key={action.title}
               bg={
-                action.backgroundColor ??
-                (action.style === 'destructive' ? 'red-800' : 'gray-600')
+                action.backgroundColor ?? (action.style === 'destructive' ? 'red-800' : 'gray-600')
               }
               justify="center"
               items="center"

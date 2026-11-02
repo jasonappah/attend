@@ -1,14 +1,11 @@
-import {
-  KeyboardAvoidingFrame,
-  KeyboardStickyFrame,
-} from 'takeout-ui/keyboard/KeyboardLayoutFrame'
 import { router, useSafeAreaInsets } from 'one'
-import { Circle, H5, isWeb, Spacer, XStack, YStack, SizableText } from 'tamagui'
+import type { ReactNode } from 'react'
+import type { Icon } from 'takeout-ui/icons/types'
+import { KeyboardAvoidingFrame, KeyboardStickyFrame } from 'takeout-ui/keyboard/KeyboardLayoutFrame'
+import { Circle, H5, isWeb, SizableText, Spacer, XStack, YStack } from 'tamagui'
 import { Button } from '~/interface/buttons/Button'
 import { Icons } from '~/interface/icons'
 import { PageScrollView } from '~/interface/layout/PageScrollView'
-import type { Icon } from 'takeout-ui/icons/types'
-import type { ReactNode } from 'react'
 
 export type StepPageProps = {
   title: string

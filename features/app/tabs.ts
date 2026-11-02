@@ -1,4 +1,6 @@
-import { One, type Href } from 'one'
+import type { Href, One } from 'one'
+import type { ComponentProps } from 'react'
+import type { Icon, SfSymbolName } from 'takeout-ui/icons/types'
 /**
  * @agent-rule
  * the app's tab set, declared once. the native tab layout, the web MobileTabBar,
@@ -8,9 +10,7 @@ import { One, type Href } from 'one'
  */
 import { Home } from '~/interface/icons/lucide/Home'
 import { User } from '~/interface/icons/lucide/User'
-import { APP_TODAY_HREF, APP_HISTORY_HREF, APP_COURSES_HREF } from './routes'
-import type { Icon, SfSymbolName } from 'takeout-ui/icons/types'
-import type { ComponentProps } from 'react'
+import { APP_COURSES_HREF, APP_HISTORY_HREF, APP_TODAY_HREF } from './routes'
 
 export type ComposeIconName = ComponentProps<typeof One.Android.Icon>['name']
 

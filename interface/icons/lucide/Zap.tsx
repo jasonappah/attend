@@ -1,7 +1,7 @@
-import { useIconProps } from 'takeout-ui/icons/useIconProps'
 import { memo } from 'react'
-import { Svg, Path } from 'react-native-svg'
+import { Path, Svg } from 'react-native-svg'
 import type { IconProps } from 'takeout-ui/icons/types'
+import { useIconProps } from 'takeout-ui/icons/useIconProps'
 
 export const Zap = memo((props: IconProps) => {
   const { width, height, fill, ...svgProps } = useIconProps(props)

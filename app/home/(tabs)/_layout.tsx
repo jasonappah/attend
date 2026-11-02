@@ -9,9 +9,10 @@
  * layout engine, which cannot parse CSS. do not copy a value like it into a
  * shared (non-platform-suffixed) file without giving native a plain number.
  */
-import { MobileTabBar } from 'takeout-ui/tabs/MobileTabBar'
+
 import { Slot } from 'one'
 import { useState } from 'react'
+import { MobileTabBar } from 'takeout-ui/tabs/MobileTabBar'
 import { useMedia, View, YStack } from 'tamagui'
 import { MAIN_HEADER_ROW_HEIGHT, MainHeader } from '~/features/app/MainHeader'
 import { useFocusedTabAction } from '~/features/app/tabAction'

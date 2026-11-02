@@ -5,15 +5,13 @@
   "compatibility_flags": ["nodejs_compat"],
   // the app owns authoritative SQLite; the separate Rust worker owns sync.
   "durable_objects": {
-    "bindings": [{ "name": "ZERO_SQL_DO", "class_name": "ZeroSqlDO" }],
+    "bindings": [{ "name": "ZERO_SQL_DO", "class_name": "ZeroSqlDO" }]
   },
-  "migrations": [
-    { "tag": "v1", "new_sqlite_classes": ["ZeroSqlDO"] },
-  ],
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["ZeroSqlDO"] }],
   "observability": {
     "logs": {
       "enabled": true,
-      "invocation_logs": true,
-    },
-  },
+      "invocation_logs": true
+    }
+  }
 }

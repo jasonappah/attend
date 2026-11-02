@@ -1,13 +1,13 @@
 import { usePathname } from 'one'
+import type { ReactNode } from 'react'
 import { memo } from 'react'
-import { ScrollView, SizableText, styled, Switch, View, XStack, YStack } from 'tamagui'
+import { ScrollView, SizableText, Switch, styled, View, XStack, YStack } from 'tamagui'
 import { APP_NAME_LOWERCASE, DOMAIN } from '~/constants'
 import { MainHeader } from '~/features/app/MainHeader'
-import { useSettingsData, type SettingItem } from '~/features/settings/useSettingsData'
+import { type SettingItem, useSettingsData } from '~/features/settings/useSettingsData'
 import { Link } from '~/interface/app/Link'
 import { UnreadDot } from '~/interface/app/UnreadDot'
 import { PageMainContainer } from '~/interface/layout/PageContainer'
-import type { ReactNode } from 'react'
 
 // the web shell around every settings screen: the main header, the sidebar on
 // md and up, and the page column. it is a component the screens render rather

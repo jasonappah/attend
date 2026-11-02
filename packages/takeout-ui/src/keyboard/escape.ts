@@ -49,9 +49,7 @@ export function useEscapeHandler(handler: () => void, enabled = true) {
 export function blurNonEmptyTextField(target: unknown = focusedElement()): boolean {
   if (!isWeb) return false
   const field =
-    target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement
-      ? target
-      : null
+    target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement ? target : null
   if (!field?.value) return false
   field.blur()
   return true

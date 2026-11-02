@@ -1,9 +1,4 @@
-import type {
-  FeedbackPoint,
-  FeedbackRect,
-  FeedbackStroke,
-  FeedbackSurface,
-} from './types'
+import type { FeedbackPoint, FeedbackRect, FeedbackStroke, FeedbackSurface } from './types'
 
 // freehand marks: the counterpart to inspect's single tap. the surface that
 // owns the canvas captures raw finger points in its own coordinate space and
@@ -35,7 +30,7 @@ export function strokeBounds(points: readonly FeedbackPoint[]): FeedbackRect {
 // being truncated mid-stroke.
 export function simplifyStroke(
   points: readonly FeedbackPoint[],
-  tolerance: number,
+  tolerance: number
 ): FeedbackPoint[] {
   if (points.length <= 2) return [...points]
   let epsilon = Math.max(tolerance, 0.5)
@@ -92,7 +87,7 @@ function reduce(points: readonly FeedbackPoint[], epsilon: number): FeedbackPoin
 // never does.
 export function isClosedStroke(
   points: readonly FeedbackPoint[],
-  bounds: { w: number; h: number },
+  bounds: { w: number; h: number }
 ): boolean {
   if (points.length < 4) return false
   const first = points[0]!
@@ -105,20 +100,14 @@ export function isClosedStroke(
 // a device coordinate as a fraction of the surface it was measured on. this is
 // the only geometry that survives leaving the device: the reader has an image
 // of some size, not this screen.
-export function normalizePoint(
-  point: FeedbackPoint,
-  surface: FeedbackSurface,
-): FeedbackPoint {
+export function normalizePoint(point: FeedbackPoint, surface: FeedbackSurface): FeedbackPoint {
   return {
     x: clampFraction(point.x / Math.max(1, surface.width)),
     y: clampFraction(point.y / Math.max(1, surface.height)),
   }
 }
 
-export function normalizeRect(
-  rect: FeedbackRect,
-  surface: FeedbackSurface,
-): FeedbackRect {
+export function normalizeRect(rect: FeedbackRect, surface: FeedbackSurface): FeedbackRect {
   const width = Math.max(1, surface.width)
   const height = Math.max(1, surface.height)
   return {
@@ -138,7 +127,7 @@ function clampFraction(value: number): number {
 // surface so the same gesture simplifies identically on a phone and a tablet.
 export function buildStroke(
   raw: readonly FeedbackPoint[],
-  surface: FeedbackSurface,
+  surface: FeedbackSurface
 ): FeedbackStroke | null {
   if (raw.length < 2) return null
   const tolerance = Math.max(2, Math.min(surface.width, surface.height) * 0.008)

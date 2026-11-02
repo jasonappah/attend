@@ -2,15 +2,7 @@ import { memo } from 'react'
 import { Separator, SizableText, styled, View } from 'tamagui'
 
 export const MenuSeparator = memo(() => {
-  return (
-    <Separator
-      my="0-5"
-      mx={7}
-      borderWidth={0.5}
-      borderColor="border-color"
-      opacity={0.5}
-    />
-  )
+  return <Separator my="0-5" mx={7} borderWidth={0.5} borderColor="border-color" opacity={0.5} />
 })
 
 export const MenuTitle = memo(({ title }: { title: string }) => {

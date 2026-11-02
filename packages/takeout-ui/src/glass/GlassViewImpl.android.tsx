@@ -1,7 +1,7 @@
 import { One } from 'one'
-import { StyleSheet, View, useColorScheme } from 'react-native'
-import { YStack, useThemeName } from 'tamagui'
-import { glassFor, type GlassViewProps } from './glass'
+import { StyleSheet, useColorScheme, View } from 'react-native'
+import { useThemeName, YStack } from 'tamagui'
+import { type GlassViewProps, glassFor } from './glass'
 
 // android leg: a system blur under the web leg's theme-tinted wash, so the
 // surface reads as the same material without liquid glass (the toast's
@@ -31,12 +31,7 @@ export function GlassView({
         tint={dark ? 'systemThickMaterialDark' : 'systemThickMaterialLight'}
         style={StyleSheet.absoluteFill}
       />
-      <YStack
-        bg={glass[glassEffectStyle]}
-        position="absolute"
-        inset={0}
-        pointerEvents="none"
-      />
+      <YStack bg={glass[glassEffectStyle]} position="absolute" inset={0} pointerEvents="none" />
       {children}
     </View>
   )

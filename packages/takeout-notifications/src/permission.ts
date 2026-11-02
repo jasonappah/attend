@@ -29,7 +29,7 @@ export type NotificationPermissionState = Readonly<{
 // iOS reports the authorization it actually granted, so it decides. every other
 // platform reports one cross-platform status and is read from that.
 export function readNotificationPermission(
-  response: NotificationPermissionResponse,
+  response: NotificationPermissionResponse
 ): NotificationPermissionState {
   const canAskAgain = response.canAskAgain
   const ios = response.ios
@@ -54,16 +54,12 @@ function iosStatus(authorization: IosAuthorization): NotificationPermissionStatu
 
 // whether the platform will deliver notifications at all. provisional counts:
 // it is real authorization, just a quiet one.
-export function notificationPermissionDelivers(
-  status: NotificationPermissionStatus,
-): boolean {
+export function notificationPermissionDelivers(status: NotificationPermissionStatus): boolean {
   return status === 'granted' || status === 'provisional' || status === 'ephemeral'
 }
 
 // whether a delivered notification may interrupt with a banner and sound.
 // provisional never does, so copy that promises alerts is wrong for it.
-export function notificationPermissionAlerts(
-  status: NotificationPermissionStatus,
-): boolean {
+export function notificationPermissionAlerts(status: NotificationPermissionStatus): boolean {
   return status === 'granted' || status === 'ephemeral'
 }

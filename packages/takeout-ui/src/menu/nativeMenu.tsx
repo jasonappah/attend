@@ -1,5 +1,5 @@
-import { One } from 'one'
-import { isValidElement, memo, useMemo, type ComponentProps, type ReactNode } from 'react'
+import type { One } from 'one'
+import { type ComponentProps, isValidElement, memo, type ReactNode, useMemo } from 'react'
 import { isSeparator, isTitle, type MenuEntry, type MenuItem } from './types'
 
 // the shared half of the native legs: MenuImpl.ios.tsx and
@@ -23,9 +23,7 @@ const warnedUnsupported = new Set<string>()
 function warnUnsupported(feature: string) {
   if (warnedUnsupported.has(feature) || process.env.NODE_ENV === 'production') return
   warnedUnsupported.add(feature)
-  console.warn(
-    `[takeout-ui] native menus do not draw ${feature}, so it will not render.`,
-  )
+  console.warn(`[takeout-ui] native menus do not draw ${feature}, so it will not render.`)
 }
 
 // a system menu item takes an SF Symbol name, never a view. sfSymbol() tags
@@ -54,7 +52,7 @@ function toNativeItem(
   item: MenuItem,
   id: string,
   platform: NativeMenuPlatform,
-  handlers: Map<string, () => void>,
+  handlers: Map<string, () => void>
 ): NativeMenuItem {
   if (item.right != null) warnUnsupported('right-aligned item content')
   // a system menu row has no subtitle slot. One carries a description as
@@ -123,7 +121,7 @@ function toNativeItems(
   entries: MenuEntry[],
   path: string,
   platform: NativeMenuPlatform,
-  handlers: Map<string, () => void>,
+  handlers: Map<string, () => void>
 ): NativeMenuItem[] {
   const items: NativeMenuItem[] = []
   let section: NativeMenuItem[] | null = null
@@ -164,6 +162,4 @@ export function useNativeMenu(entries: MenuEntry[], platform: NativeMenuPlatform
   }, [entries, platform])
 }
 
-export const MenuPassThrough = memo(({ children }: { children: ReactNode }) => (
-  <>{children}</>
-))
+export const MenuPassThrough = memo(({ children }: { children: ReactNode }) => <>{children}</>)

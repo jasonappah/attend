@@ -1,4 +1,5 @@
 ---
+
 name: Screen binding
 description: Bind an app screen leaf to live data, including form controls, presentation, display values, and image uploads.
 ---
@@ -62,11 +63,16 @@ if (file) setImageUrl((await uploadFile(file)).url)
 // native: import { One } from 'one'
 const result = await One.ImagePicker.launchLibrary({ mediaTypes: 'images' })
 const asset = result.canceled ? null : result.assets[0]
-if (asset) setImageUrl((await uploadFile({
-  uri: asset.uri,
-  name: asset.fileName ?? 'image.jpg',
-  type: asset.mimeType ?? 'application/octet-stream',
-})).url)
+if (asset)
+  setImageUrl(
+    (
+      await uploadFile({
+        uri: asset.uri,
+        name: asset.fileName ?? 'image.jpg',
+        type: asset.mimeType ?? 'application/octet-stream',
+      })
+    ).url
+  )
 ```
 
 Store the uploaded URL, never the picker URI or a blob preview. Keep save disabled while upload is pending and show upload failure in the form.

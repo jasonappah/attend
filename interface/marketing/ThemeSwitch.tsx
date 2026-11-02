@@ -1,5 +1,5 @@
-import { Tooltip } from 'takeout-ui/tooltip/Tooltip'
 import { setUserScheme, useUserScheme } from 'one'
+import { Tooltip } from 'takeout-ui/tooltip/Tooltip'
 import { Button } from '~/interface/buttons/Button'
 import { CircleHalfIcon, MoonStarsIcon, SunIcon } from './TakeoutIcons'
 
@@ -10,7 +10,7 @@ export function ThemeSwitch() {
   const setting = userScheme.setting
 
   const onPress = () => {
-    const currentIndex = schemeSettings.findIndex((scheme) => scheme === setting)
+    const currentIndex = schemeSettings.indexOf(setting)
     const nextIndex = currentIndex >= 0 ? (currentIndex + 1) % 3 : 0
     setUserScheme(schemeSettings[nextIndex]!)
   }

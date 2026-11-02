@@ -59,7 +59,4 @@ export const isMenuItem = (entry: MenuEntry): entry is MenuItem =>
 // functions, so `typeof` alone cannot tell a component from a rendered element
 export const isIconComponent = (icon: MenuItem['icon']): icon is IconComponent =>
   typeof icon === 'function' ||
-  (typeof icon === 'object' &&
-    icon !== null &&
-    '$$typeof' in icon &&
-    !isValidElement(icon))
+  (typeof icon === 'object' && icon !== null && '$$typeof' in icon && !isValidElement(icon))

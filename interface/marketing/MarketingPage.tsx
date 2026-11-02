@@ -1,9 +1,9 @@
 import { useUserScheme } from 'one'
+import type { ReactNode } from 'react'
 import { Theme, YStack } from 'tamagui'
 import { HomeBackground } from './HomeBackground'
 import { SiteFooter } from './SiteFooter'
 import { SiteHeader } from './SiteHeader'
-import type { ReactNode } from 'react'
 
 export function MarketingPage({ children }: { children: ReactNode }) {
   const { value } = useUserScheme()
