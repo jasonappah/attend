@@ -6,6 +6,7 @@ import { useMutation, useQuery, zero } from '~/data/zero-client'
 import { AccountToolbarButton } from '~/features/account/AccountToolbarButton'
 import { Button } from '~/interface/buttons/Button'
 import { PageScrollView } from '~/interface/layout/PageScrollView'
+import { AttendanceCalendar, AttendanceGauge } from './AttendanceVisuals'
 import { CalendarSettings } from './CalendarSettings'
 import { TimelineImport } from './TimelineImport'
 
@@ -31,12 +32,6 @@ export function AttendanceScreen({ mode }: { mode: 'today' | 'history' | 'course
     new Date(week).getDate() + 7
   ).getTime()
   const month = new Date(now.getFullYear(), now.getMonth(), 1).getTime()
-  const rate = (items: typeof allSessions) => {
-    const marked = items.filter((item) => item.attendance !== null)
-    return marked.length
-      ? `${Math.round((marked.filter((item) => item.attendance === 'present').length / marked.length) * 100)}%`
-      : '—'
-  }
   const visible =
     mode === 'today'
       ? allSessions.filter((session) => session.startTime >= start && session.startTime < end)
@@ -80,14 +75,15 @@ export function AttendanceScreen({ mode }: { mode: 'today' | 'history' | 'course
                         : 'No room'}
                     </Paragraph>
                     <XStack gap={16} flexWrap="wrap">
-                      <Paragraph>
-                        {previousWeek ? 'Last week' : 'This week'}:{' '}
-                        {rate(weekSessions.filter((item) => item.endTime <= now.getTime()))}
-                      </Paragraph>
-                      <Paragraph>
-                        This month: {rate(completed.filter((item) => item.startTime >= month))}
-                      </Paragraph>
-                      <Paragraph>Overall: {rate(completed)}</Paragraph>
+                      <AttendanceGauge
+                        label={previousWeek ? 'Last week' : 'This week'}
+                        sessions={weekSessions.filter((item) => item.endTime <= now.getTime())}
+                      />
+                      <AttendanceGauge
+                        label="This month"
+                        sessions={completed.filter((item) => item.startTime >= month)}
+                      />
+                      <AttendanceGauge label="Overall" sessions={completed} />
                     </XStack>
                     <XStack gap={8}>
                       <Button
@@ -116,6 +112,7 @@ export function AttendanceScreen({ mode }: { mode: 'today' | 'history' | 'course
                     ) : (
                       <Paragraph color="color-10">No sessions scheduled this week.</Paragraph>
                     )}
+                    <AttendanceCalendar sessions={courseSessions} now={now.getTime()} />
                   </YStack>
                 )
               })
