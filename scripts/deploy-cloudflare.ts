@@ -60,6 +60,9 @@ config.vars = {
   BETTER_AUTH_URL: origin,
   VITE_PROTOCOL: 'https',
   VITE_WEB_HOSTNAME: new URL(origin).hostname,
+  // only this address may create an account in production. stored as a
+  // SHA-256 hash so the email never appears in plain text.
+  ALLOWED_SIGNUP_EMAILS: 'ad82961668b30f1be2f86bd963d6aadeef90ad0b25b6a20bdb8285d6a911dfce',
   VITE_ZERO_HOSTNAME: new URL(origin).hostname,
   ZERO_APP_ID: 'attend',
   CLOUDFLARE_R2_BUCKET: bucketName,

@@ -14,6 +14,13 @@ const result = createEnv({
 
   base: {
     BETTER_AUTH_SECRET: expected,
+    // comma-separated list of SHA-256 hashes of emails allowed to sign up.
+    // empty (default) = sign-up is open, which is what you want in development.
+    // set this in production to the hash of a single address (yours) to keep
+    // randoms from creating accounts. hashes keep the email out of plain text.
+    // evaluated live from process.env, so it can be a deploy-time secret
+    // without a rebuild.
+    ALLOWED_SIGNUP_EMAILS: '',
     ZERO_APP_ID: 'attend',
     ZERO_MUTATE_FORWARD_COOKIES: 'true',
     ZERO_QUERY_FORWARD_COOKIES: 'true',
