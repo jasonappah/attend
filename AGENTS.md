@@ -115,6 +115,7 @@ page. This file is project-local guidance for coding agents.
 - each namespace under `data/` is one `<table>/` folder with `queries.ts` and
   `mutations.ts`. `data/generated/**`, `data/zero-client.tsx`, and
   `data/zero-server.ts` are generated/load-bearing wiring.
+- tRPC and Zero look like two paths for doing data fetching and RPC with the server, but they should generally be used in two certain instances. In general, default to using zero unless you need to do something that interacts with an external system, or is I/O bound (other than interacting with the database). This is important because because every zero query or mutation is tied to the life cycle of a database transaction. So we don't want to cause contention with the database because we have transactions that are blocking on external requests. So in that instance, fall back to tRPC. There's no other good reason you should use tRPC though.
 
 ## First Visible Surfaces
 
