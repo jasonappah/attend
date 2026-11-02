@@ -48,9 +48,20 @@ export async function syncRooms(userId: string) {
     })
   })
   if (!rows.length) throw new Error('Concept3D returned no usable rooms.')
-  await syncedDb(userId).transaction(async ({ drizzle }) => {
-    // for (const row of rows) await drizzle.insert(room).values(row).onConflictDoNothing()
-    await drizzle.insert(room).values(rows).onConflictDoNothing()
+
+  // Concept3D can return the same room in multiple categories. Deduplicate by
+  // (buildingCode, roomNumber) so the bulk insert doesn't violate the unique
+  // index on those columns.
+  const seen = new Set<string>()
+  const uniqueRows = rows.filter((row) => {
+    const key = `${row.buildingCode}|${row.roomNumber}`
+    if (seen.has(key)) return false
+    seen.add(key)
+    return true
   })
-  return { imported: rows.length }
+
+  await syncedDb(userId).transaction(async ({ drizzle }) => {
+    await drizzle.insert(room).values(uniqueRows).onConflictDoNothing()
+  })
+  return { imported: uniqueRows.length }
 }
