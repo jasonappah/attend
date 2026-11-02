@@ -1,4 +1,4 @@
-import { afterAll, beforeAll, expect, mock, test } from 'bun:test'
+import { afterAll, beforeAll, expect, mock, spyOn, test } from 'bun:test'
 import { mkdtempSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
@@ -141,4 +141,88 @@ test('rolls back an entire calendar when a later event has an unknown room', asy
     drizzle.select().from(course).where(eq(course.userId, 'rollback-user'))
   )
   expect(courses).toHaveLength(0)
+})
+
+test('imports rooms within Cloudflare SQLite binding limits and skips duplicates on resync', async () => {
+  const { syncRooms } = await import('./roomSync')
+  const { syncedDb } = await import('../../database/syncedDb')
+  const originalKey = process.env.CONCEPT3D_API_KEY
+  process.env.CONCEPT3D_API_KEY = 'test-key'
+  const locations = Array.from({ length: 16 }, (_, i) => ({
+    name: `SYNCROOM 1.${String(i).padStart(3, '0')}`,
+    lat: 32,
+    lng: -96,
+    level: [1],
+    mapId: 1,
+    catId: 1,
+    mrkId: i,
+    id: i,
+  }))
+  const fetchMock = spyOn(globalThis, 'fetch').mockImplementation(
+    Object.assign(
+      async (input: string | URL | Request) => {
+        const url = String(input)
+        return Response.json(
+          url.includes('/categories?')
+            ? { group: [1] }
+            : [
+                {
+                  name: 'Test Building (SYNCROOM)',
+                  children: { locations: [...locations, locations[0]] },
+                },
+              ]
+        )
+      },
+      { preconnect: globalThis.fetch.preconnect }
+    )
+  )
+  let insertStatements = 0
+  let failSecondBatch = true
+  const limitedFactory = (namespace: string) => {
+    const client = factory(namespace)
+    return {
+      ...client,
+      transaction: (...args: Parameters<typeof client.transaction>) => {
+        const [compile, work, budget] = args
+        return client.transaction(
+          compile,
+          (tx) =>
+            work({
+              ...tx,
+              exec: (sql, params = []) => {
+                if (/insert into ["`]?room["`]?/i.test(sql)) {
+                  insertStatements++
+                  if (params.length > 100) throw new Error('too many SQL variables')
+                  if (failSecondBatch && insertStatements === 2) throw new Error('injected failure')
+                }
+                return tx.exec(sql, params)
+              },
+            }),
+          budget
+        )
+      },
+    }
+  }
+  Reflect.set(globalThis, '__soot_cf_application_sql_client', limitedFactory)
+  try {
+    await expect(syncRooms('room-sync-user')).rejects.toThrow()
+    const afterFailure = await syncedDb('room-sync-user').transaction(({ drizzle }) =>
+      drizzle.select().from(room).where(eq(room.buildingCode, 'SYNCROOM'))
+    )
+    expect(afterFailure).toHaveLength(0)
+    failSecondBatch = false
+    insertStatements = 0
+    expect(await syncRooms('room-sync-user')).toEqual({ imported: 16 })
+    expect(insertStatements).toBeGreaterThan(1)
+    expect(await syncRooms('room-sync-user')).toEqual({ imported: 16 })
+    const rows = await syncedDb('room-sync-user').transaction(({ drizzle }) =>
+      drizzle.select().from(room).where(eq(room.buildingCode, 'SYNCROOM'))
+    )
+    expect(rows).toHaveLength(16)
+  } finally {
+    fetchMock.mockRestore()
+    if (originalKey === undefined) delete process.env.CONCEPT3D_API_KEY
+    else process.env.CONCEPT3D_API_KEY = originalKey
+    Reflect.set(globalThis, '__soot_cf_application_sql_client', factory)
+  }
 })

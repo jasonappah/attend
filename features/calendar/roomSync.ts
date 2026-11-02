@@ -89,7 +89,14 @@ export async function syncRooms(userId: string) {
   })
 
   await syncedDb(userId).transaction(async ({ drizzle }) => {
-    await drizzle.insert(room).values(uniqueRows).onConflictDoNothing()
+    // Durable Object SQLite allows at most 100 bound parameters per statement.
+    // Each room currently uses 13; seven leaves room for a small schema change.
+    for (let i = 0; i < uniqueRows.length; i += 7) {
+      await drizzle
+        .insert(room)
+        .values(uniqueRows.slice(i, i + 7))
+        .onConflictDoNothing()
+    }
   })
   return { imported: uniqueRows.length }
 }
