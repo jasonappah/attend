@@ -20,15 +20,15 @@ const websiteMetadata: Record<string, { title: string; description: string }> = 
   '/privacy-policy': {
     title: 'Privacy Policy',
     description:
-      'Learn how Takeout handles your personal data and protects your privacy.',
+      'Learn how Attend handles your personal data and protects your privacy.',
   },
   '/terms-of-service': {
     title: 'Terms of Service',
-    description: 'Read the Terms of Service for using Takeout.',
+    description: 'Read the Terms of Service for using Attend.',
   },
   '/eula': {
     title: 'End User License Agreement',
-    description: 'Review the End User License Agreement (EULA) for Takeout.',
+    description: 'Review the End User License Agreement (EULA) for Attend.',
   },
   '/docs/intro': {
     title: 'Introduction',
