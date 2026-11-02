@@ -4,6 +4,7 @@ import { AppProvider } from 'takeout-ui/provider/AppProvider'
 import { isWeb, useTheme } from 'tamagui'
 import { APP_NAME, DOMAIN } from '~/constants'
 import { appAnalytics } from '~/features/analytics/appAnalytics'
+import { OnlineProvider } from '~/features/app/OnlineProvider'
 import { TRPCProvider } from '~/features/app/trpc-client'
 import { LINK_UNDERLINE_RESET, SAFE_AREA_VARS } from '~/interface/webRootCss'
 import { config } from '~/tamagui/tamagui.config'
@@ -67,9 +68,11 @@ function AppShell() {
   return (
     <AppAnalyticsProvider client={appAnalytics}>
       <AppProvider config={config}>
-        <TRPCProvider>
-          <AppRoutes />
-        </TRPCProvider>
+        <OnlineProvider>
+          <TRPCProvider>
+            <AppRoutes />
+          </TRPCProvider>
+        </OnlineProvider>
       </AppProvider>
     </AppAnalyticsProvider>
   )

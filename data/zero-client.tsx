@@ -1,10 +1,17 @@
 import { toast } from '@tamagui/toast'
-import { clearZeroClientData, createZeroClient, type ZeroEventsEmitter } from 'on-zero'
+import {
+  clearZeroClientData,
+  createZeroClient,
+  useMutation as useZeroMutation,
+  type ZeroEventsEmitter,
+} from 'on-zero'
 import { createZeroKvStore } from 'on-zero/kv-store'
 import { createZeroClientTransport } from 'orez-lite/client'
-import { type ReactNode, useEffect, useMemo } from 'react'
+import { type ReactNode, useCallback, useEffect, useMemo } from 'react'
+import { showToast } from 'takeout-ui/toast/Toast'
 import { useAuth } from '~/auth/client/authClient'
 import { SERVER_URL } from '~/constants'
+import { useOnline } from '~/features/app/connectivity'
 import { aggregates } from './generated/aggregates'
 import * as groupedQueries from './generated/groupedQueries'
 import { models } from './generated/models'
@@ -13,8 +20,28 @@ import { schema } from './generated/schema'
 export const queryFns = groupedQueries
 
 // re-export useMutation from the same barrel as useQuery so app code imports
-// every Zero hook from one place (`~/data/zero-client`).
-export { useMutation } from 'on-zero'
+// every Zero hook from one place (`~/data/zero-client`). wrapped so no write
+// fires while the device is offline: Zero reads are local-first and keep
+// working, but writes are held until the connection comes back.
+export function useMutation<
+  Fn extends (...args: any[]) => { client: Promise<unknown>; server: Promise<unknown> },
+>(mutationFn: Fn) {
+  const online = useOnline()
+  const [trigger, mutation] = useZeroMutation(mutationFn)
+
+  const wrappedTrigger = useCallback(
+    (...args: any[]) => {
+      if (!online) {
+        showToast('You appear to be offline', { type: 'warning' })
+        return
+      }
+      return trigger(...args)
+    },
+    [trigger, online]
+  )
+
+  return [wrappedTrigger, mutation] as const
+}
 
 const zeroClient = createZeroClient({
   models,

@@ -1,7 +1,9 @@
 import { useState } from 'react'
+import { showToast } from 'takeout-ui/toast/Toast'
 import { H3, Paragraph, XStack, YStack } from 'tamagui'
 import { sessions } from '~/data/courseSession/queries'
 import { useQuery, zero } from '~/data/zero-client'
+import { getOnline } from '~/features/app/onlineState'
 import { Button } from '~/interface/buttons/Button'
 import { inferAttendance, parseVisits } from './infer'
 
@@ -38,6 +40,10 @@ export function TimelineImport() {
   }
 
   async function apply() {
+    if (!getOnline()) {
+      showToast('You appear to be offline', { type: 'warning' })
+      return
+    }
     setBusy(true)
     try {
       for (const result of results) {

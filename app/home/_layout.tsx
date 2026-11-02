@@ -11,6 +11,7 @@ import { useAuth } from '~/auth/client/authClient'
 import { ProvideZero } from '~/data/zero-client'
 import { APP_TABS_ROUTE_NAME } from '~/features/app/routes'
 import { NotificationsRoot } from '~/features/notifications/NotificationsRoot'
+import { OfflineBanner } from '~/interface/offline/OfflineBanner'
 
 // a deep link to a pushed screen or a sheet seats the tabs under it
 export const unstable_settings = { initialRouteName: APP_TABS_ROUTE_NAME }
@@ -24,6 +25,7 @@ function AuthenticatedHome({ children }: { children: ReactNode }) {
   // event a tap opens are both synced rows.
   return (
     <ProvideZero>
+      <OfflineBanner />
       <NotificationsRoot>{children}</NotificationsRoot>
     </ProvideZero>
   )

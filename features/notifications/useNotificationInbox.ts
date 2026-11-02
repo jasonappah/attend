@@ -1,8 +1,7 @@
-import { useMutation } from 'on-zero'
 import { useCallback } from 'react'
 import { newestUnreadNotification, recentNotifications } from '~/data/appNotification/queries'
 import { notificationPreferences } from '~/data/notificationPreference/queries'
-import { useQuery, zero } from '~/data/zero-client'
+import { useMutation, useQuery, zero } from '~/data/zero-client'
 import type { NotificationWorkflowId } from './workflows'
 import { NOTIFICATION_WORKFLOW_ORDER, NOTIFICATION_WORKFLOWS } from './workflows'
 
