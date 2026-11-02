@@ -12,6 +12,9 @@ page. This file is project-local guidance for coding agents.
 - `bun run typecheck` typechecks the app; `bun run build` builds for
   Cloudflare; `bun run generate` regenerates migrations and Zero types after
   a schema change.
+- `bun run lint` checks formatting, import order, and lint rules with Biome;
+  `bun run lint:fix` applies every safe fix, and `bun run format` rewrites
+  formatting only. Run `bun run lint:fix` before handing work back.
 - Check every UI change in a browser (headless playwright works well) and
   watch the console for errors.
 - `bunx one run:ios` and `bunx one run:android` build and launch the native

@@ -1,0 +1,126 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.6.4/schema.json",
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
+  "files": {
+    "ignoreUnknown": true,
+    "includes": [
+      "**",
+      "!app/routes.d.ts",
+      "!data/generated",
+      "!database/generated",
+      "!database/migrations",
+      "!packages/takeout-mdx/vendor",
+      "!packages/takeout-ui/src/icons/generated",
+      "!public"
+    ]
+  },
+  "formatter": {
+    "enabled": true,
+    "formatWithErrors": false,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineWidth": 100,
+    "lineEnding": "lf"
+  },
+  "assist": {
+    "enabled": true,
+    "actions": {
+      "source": {
+        "organizeImports": "on"
+      }
+    }
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "preset": "recommended",
+
+      "correctness": {
+        // react hooks are allowed to declare their dependencies by hand where
+        // the automatic analysis cannot see through a ref or an external store.
+        "useExhaustiveDependencies": "off",
+        // tamagui components render text on native through their own text
+        // primitives, so the raw-text heuristic flags every screen.
+        "noReactNativeRawText": "off",
+        // hooks and components are deliberately returned from factories such as
+        // createAuthClient and sfSymbol.
+        "noComponentHookFactories": "off",
+        // one's native glass view takes its content as a prop, so passing
+        // children is the only way to compose it.
+        "noChildrenProp": "off"
+      },
+
+      "suspicious": {
+        // library boundaries and generated adapters type their escape hatches
+        // with any on purpose.
+        "noExplicitAny": "off",
+        "noArrayIndexKey": "off",
+        // assigning in an expression is how tamagui's icon size cache lazily
+        // fills itself.
+        "noAssignInExpressions": "off",
+        "noDoubleEquals": "off"
+      },
+
+      "style": {
+        // native bridging code and third-party callback signatures assert
+        // non-null instead of narrowing through a temporary.
+        "noNonNullAssertion": "off",
+        "noParameterAssign": "off",
+        "useConst": "off",
+        "useTemplate": "off"
+      },
+
+      "complexity": {
+        "noBannedTypes": "off",
+        "noUselessFragments": "off",
+        "useLiteralKeys": "off",
+        "useOptionalChain": "off"
+      },
+
+      "security": {
+        // the web document shell injects the app's own reset stylesheet.
+        "noDangerouslySetInnerHtml": "off"
+      },
+
+      "a11y": {
+        // decorative svg artwork such as the phone mockup's clip path has no
+        // accessible name to give.
+        "noSvgWithoutTitle": "off"
+      }
+    }
+  },
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "single",
+      "jsxQuoteStyle": "double",
+      "semicolons": "asNeeded",
+      "trailingCommas": "es5",
+      "arrowParentheses": "always"
+    }
+  },
+  "json": {
+    "formatter": {
+      "enabled": true,
+      "indentStyle": "space",
+      "indentWidth": 2
+    }
+  },
+  "overrides": [
+    {
+      // the marketing page's demo video doubles as its play/pause control, so
+      // its role cannot become a <button> without changing the layout.
+      "includes": ["interface/marketing/**"],
+      "linter": {
+        "rules": {
+          "a11y": {
+            "useSemanticElements": "off"
+          }
+        }
+      }
+    }
+  ]
+}

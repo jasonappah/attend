@@ -17,6 +17,8 @@ Open http://localhost:4200. In development, **Login as Demo User** provides a sh
 
 ```sh
 bun run typecheck
+bun run lint
+bun run lint:fix
 bun test features/attendance/infer.test.ts
 bun run build
 bun run generate
