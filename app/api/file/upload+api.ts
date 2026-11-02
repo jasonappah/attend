@@ -3,7 +3,7 @@ import { S3mini } from 's3mini'
 import { authServer } from '~/auth/server/authServer'
 import { getZeroAuthData } from '~/auth/server/getZeroAuthData'
 import { server } from '~/env'
-import { randomId } from '~/helpers/randomId'
+import { uuidv7 } from '~/helpers/uuid'
 
 const FOLDER = 'uploads'
 
@@ -65,7 +65,7 @@ export const POST: Endpoint = async (req) => {
   }
 
   const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_')
-  const key = `${FOLDER}/${randomId()}-${safeName}`
+  const key = `${FOLDER}/${uuidv7()}-${safeName}`
 
   const bytes = new Uint8Array(await file.arrayBuffer())
   const contentType = file.type || undefined

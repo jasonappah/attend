@@ -1,0 +1,4 @@
+`$fn($args)` where {
+  $fn <: `crypto.randomUUID`,
+  register_diagnostic(span=$fn, message="New record ids are UUID v7. Use uuidv7() from '~/helpers/uuid' instead of crypto.randomUUID().")
+}

@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import { room } from '~/database/schema'
 import { syncedDb } from '~/database/syncedDb'
+import { uuidv7 } from '~/helpers/uuid'
 
 const locationSchema = z.object({
   name: z.string(),
@@ -57,7 +58,7 @@ export async function syncRooms(userId: string) {
       if (!match) return []
       return [
         {
-          id: crypto.randomUUID(),
+          id: uuidv7(),
           buildingCode: match[1],
           roomNumber: match[2],
           latitude: location.lat,

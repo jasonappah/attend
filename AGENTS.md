@@ -115,6 +115,11 @@ page. This file is project-local guidance for coding agents.
   local: a collapsed section, a chosen tab, a theme override, an unsent draft.
   Put a product record there and it never syncs, never reaches the server, and
   is invisible on every other device and in the other platform's preview.
+- a new record's id is a UUID v7 from `uuidv7()` in `~/helpers/uuid`, never
+  `crypto.randomUUID()` or another v4 generator: v7 ids sort by creation time,
+  which keeps inserts and pages in order. the same helper serves storage keys
+  and nonces. Biome fails the build on both the global call (a GritQL plugin)
+  and the `node:crypto` import.
 - each namespace under `data/` is one `<table>/` folder with `queries.ts` and
   `mutations.ts`. `data/generated/**`, `data/zero-client.tsx`, and
   `data/zero-server.ts` are generated/load-bearing wiring.

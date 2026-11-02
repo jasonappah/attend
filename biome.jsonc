@@ -1,5 +1,6 @@
 {
   "$schema": "https://biomejs.dev/schemas/2.6.4/schema.json",
+  "plugins": ["./plugins/no-random-uuid.grit"],
   "vcs": {
     "enabled": true,
     "clientKind": "git",
@@ -71,7 +72,25 @@
         "noNonNullAssertion": "off",
         "noParameterAssign": "off",
         "useConst": "off",
-        "useTemplate": "off"
+        "useTemplate": "off",
+        // new record ids are UUID v7 so rows sort by creation time. the
+        // plugin below catches the global crypto.randomUUID(); this catches
+        // the imported one.
+        "noRestrictedImports": {
+          "level": "error",
+          "options": {
+            "paths": {
+              "node:crypto": {
+                "importNames": ["randomUUID"],
+                "message": "New record ids are UUID v7. Use uuidv7() from '~/helpers/uuid' instead of randomUUID()."
+              },
+              "crypto": {
+                "importNames": ["randomUUID"],
+                "message": "New record ids are UUID v7. Use uuidv7() from '~/helpers/uuid' instead of randomUUID()."
+              }
+            }
+          }
+        }
       },
 
       "complexity": {

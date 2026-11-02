@@ -3,6 +3,7 @@ import type { VEvent } from 'node-ical'
 import ical from 'node-ical'
 import { calendar, course, courseSession, room } from '~/database/schema'
 import { syncedDb } from '~/database/syncedDb'
+import { uuidv7 } from '~/helpers/uuid'
 import { currentAcademicTerm, sessionTimes } from './calendarEvents'
 
 // Never follow a calendar redirect: calendar URLs can contain private tokens,
@@ -90,7 +91,7 @@ export async function syncCalendars(
           .where(eq(course.calendarEventId, event.uid))
         if (existing[0] && existing[0].userId !== userId)
           throw new Error('A calendar event belongs to another user.')
-        const id = existing[0]?.id ?? crypto.randomUUID()
+        const id = existing[0]?.id ?? uuidv7()
         const now = Date.now()
         const values = {
           calendarId: source.id,
@@ -121,7 +122,7 @@ export async function syncCalendars(
         for (const occurrence of occurrences) {
           await drizzle
             .insert(courseSession)
-            .values({ id: crypto.randomUUID(), courseId: id, ...occurrence, createdAt: now })
+            .values({ id: uuidv7(), courseId: id, ...occurrence, createdAt: now })
             .onConflictDoNothing()
         }
         imported++

@@ -3,6 +3,7 @@ import { and, eq } from 'drizzle-orm'
 import { z } from 'zod'
 import { calendar } from '~/database/schema'
 import { syncedDb } from '~/database/syncedDb'
+import { uuidv7 } from '~/helpers/uuid'
 import { syncRooms } from './roomSync'
 import { syncCalendars, validateCalendarUrl } from './sync'
 
@@ -23,7 +24,7 @@ export const calendarRouter = t.router({
     try {
       await syncedDb(ctx.userId).transaction(({ drizzle }) =>
         drizzle.insert(calendar).values({
-          id: crypto.randomUUID(),
+          id: uuidv7(),
           userId: ctx.userId,
           upstreamUrl: url.href,
           createdAt: Date.now(),

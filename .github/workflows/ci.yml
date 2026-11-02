@@ -24,7 +24,7 @@ jobs:
       - run: bun install --frozen-lockfile --ignore-scripts
       - run: bun run typecheck
       - run: bunx biome ci . --reporter=github
-      - run: bun test features/auth/googleCallback.test.ts features/attendance/infer.test.ts features/trpc/calendarEvents.test.ts features/trpc/calendarSync.integration.test.ts
+      - run: bun test features/auth/googleCallback.test.ts features/attendance/infer.test.ts features/calendar/calendarEvents.test.ts features/calendar/calendarSync.integration.test.ts helpers/uuid.test.ts
       - run: bun run build
         env:
           ALLOW_MISSING_ENV: "1"

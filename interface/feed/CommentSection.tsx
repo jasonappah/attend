@@ -6,7 +6,7 @@ import { Input } from 'takeout-ui/forms/Input'
 import { Paragraph, XStack, YStack } from 'tamagui'
 import { useSession } from '~/auth/client/authClient'
 import { zero } from '~/data/zero-client'
-import { randomId } from '~/helpers/randomId'
+import { uuidv7 } from '~/helpers/uuid'
 import { Avatar } from '~/interface/avatars/Avatar'
 import { Button } from '~/interface/buttons/Button'
 import type { CommentWithUser } from '~/types'
@@ -29,7 +29,7 @@ export function CommentSection({ postId, comments }: Props) {
     One.Haptics.selection()
     // optimistic: the comment shows instantly, clear the input now. a server
     // rejection rolls back the optimistic row and surfaces via onMutationError.
-    addComment({ id: randomId(), postId, content, createdAt: Date.now() })
+    addComment({ id: uuidv7(), postId, content, createdAt: Date.now() })
     setText('')
   }
 

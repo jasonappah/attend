@@ -4,6 +4,7 @@ import {
   createAppAnalyticsClient,
 } from 'takeout-better-auth/analytics'
 import { SERVER_URL } from '~/constants'
+import { uuidv7 } from '~/helpers/uuid'
 
 const installationStorage = createStorageValue<AppAnalyticsInstallationState>(
   'app-analytics-installation-id'
@@ -12,5 +13,5 @@ const installationStorage = createStorageValue<AppAnalyticsInstallationState>(
 export const appAnalytics = createAppAnalyticsClient({
   serverUrl: SERVER_URL,
   installationStorage,
-  createInstallationId: () => crypto.randomUUID(),
+  createInstallationId: () => uuidv7(),
 })

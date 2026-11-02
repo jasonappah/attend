@@ -8,7 +8,7 @@ import { dismissKeyboard } from 'takeout-ui/keyboard/KeyboardLayoutFrame'
 import { Circle, isWeb, SizableText, Spinner, useWindowDimensions, YStack } from 'tamagui'
 import { useSession } from '~/auth/client/authClient'
 import { zero } from '~/data/zero-client'
-import { randomId } from '~/helpers/randomId'
+import { uuidv7 } from '~/helpers/uuid'
 import { Button } from '~/interface/buttons/Button'
 import { Pressable } from '~/interface/buttons/Pressable'
 import { Icons } from '~/interface/icons'
@@ -120,7 +120,7 @@ export function CreatePostDialog({ open, onOpenChange }: Props) {
     // optimistic: the post lands in the feed instantly, close the dialog now. a
     // server rejection rolls the post back and surfaces via onMutationError.
     createPost({
-      id: randomId(),
+      id: uuidv7(),
       image: imageUrl,
       imageWidth: imageDims?.width ?? null,
       imageHeight: imageDims?.height ?? null,

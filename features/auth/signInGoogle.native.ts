@@ -4,6 +4,7 @@ import { reestablishAuthSession } from 'takeout-better-auth'
 import { showToast } from 'takeout-ui/toast/Toast'
 import { authClient, nativeTokenStore } from '~/auth/client/authClient'
 import { APP_SCHEME, SERVER_URL } from '~/constants'
+import { uuidv7 } from '~/helpers/uuid'
 import { googleCallbackToken } from './googleCallback'
 
 // Android's Custom Tab fallback can send the deep link after the browser
@@ -13,7 +14,7 @@ let cancelPending: (() => void) | undefined
 
 export async function signInGoogle() {
   cancelPending?.()
-  const nonce = crypto.randomUUID()
+  const nonce = uuidv7()
   const callbackURL = `${APP_SCHEME}://?attempt=${nonce}`
   const result = await authClient.signIn.social({
     provider: 'google',
