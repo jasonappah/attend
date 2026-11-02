@@ -46,6 +46,15 @@ export default {
           version: '1.0.0',
           orientation: 'portrait',
           userInterfaceStyle: 'automatic',
+          // the runtime version gates OTA updates: bump this whenever native
+          // code or a dependency with native code changes, so One's built-in
+          // updates only serve compatible bundles. url points at this app's
+          // backend, which serves update files from R2 under the updates/ prefix.
+          // updates are disabled in debug builds and until url is set.
+          updates: {
+            runtimeVersion: '1.0.0',
+            url: process.env.UPDATES_URL || `https://${process.env.VITE_WEB_HOSTNAME || 'localhost:4200'}/api/updates`,
+          },
           icon: { source: './assets/icon.png', backgroundColor: '#e6dac1' },
           splash: { source: './assets/logo.png', backgroundColor: '#e6dac1' },
           ios: {
