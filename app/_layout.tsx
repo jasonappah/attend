@@ -6,7 +6,7 @@ import { APP_NAME, DOMAIN } from '~/constants'
 import { appAnalytics } from '~/features/analytics/appAnalytics'
 import { LINK_UNDERLINE_RESET, SAFE_AREA_VARS } from '~/interface/webRootCss'
 import { config } from '~/tamagui/tamagui.config'
-import { TRPCProvider } from '~/features/trpc/client'
+import { TRPCProvider } from '~/features/app/trpc-client'
 
 const webRootCss = `body { margin: 0; }
 ${SAFE_AREA_VARS}

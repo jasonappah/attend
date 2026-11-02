@@ -3,7 +3,7 @@ import { and, eq } from 'drizzle-orm'
 import { z } from 'zod'
 import { syncedDb } from '~/database/syncedDb'
 import { calendar } from '~/database/schema'
-import { syncCalendars, validateCalendarUrl } from './calendarSync'
+import { syncCalendars, validateCalendarUrl } from './sync'
 import { syncRooms } from './roomSync'
 
 const t = initTRPC.context<{ userId: string | null }>().create()
@@ -12,7 +12,7 @@ const authenticated = t.procedure.use(({ ctx, next }) => {
   return next({ ctx: { userId: ctx.userId } })
 })
 
-export const appRouter = t.router({
+export const calendarRouter = t.router({
   addCalendar: authenticated.input(z.object({ url: z.url() })).mutation(async ({ ctx, input }) => {
     let url: URL
     try {
@@ -38,4 +38,4 @@ export const appRouter = t.router({
   }),
 })
 
-export type AppRouter = typeof appRouter
+export type CalendarRouter = typeof calendarRouter

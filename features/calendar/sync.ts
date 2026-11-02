@@ -46,7 +46,7 @@ export async function syncCalendars(userId: string, fetchCalendar: (input: Reque
   let imported = 0
   for (const source of calendars) {
     const response = await fetchCalendar(validateCalendarUrl(source.upstreamUrl), {
-      redirect: 'error', signal: AbortSignal.timeout(30_000),
+      redirect: 'manual', signal: AbortSignal.timeout(30_000),
     })
     if (!response.ok) throw new Error(`Calendar returned HTTP ${response.status}.`)
     const text = await readCalendar(response)

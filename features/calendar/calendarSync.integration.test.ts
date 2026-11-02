@@ -24,7 +24,7 @@ afterAll(async () => {
 
 test('imports and resyncs calendar sessions without erasing attendance', async () => {
   const { syncedDb } = await import('../../database/syncedDb')
-  const { syncCalendars } = await import('./calendarSync')
+  const { syncCalendars } = await import('./sync')
   const db = syncedDb('test-user')
   const now = Date.now()
   await db.transaction(async ({ drizzle }) => {
@@ -49,7 +49,7 @@ test('imports and resyncs calendar sessions without erasing attendance', async (
 
 test('rolls back an entire calendar when a later event has an unknown room', async () => {
   const { syncedDb } = await import('../../database/syncedDb')
-  const { syncCalendars } = await import('./calendarSync')
+  const { syncCalendars } = await import('./sync')
   const db = syncedDb('rollback-user')
   const now = Date.now()
   await db.transaction(async ({ drizzle }) => {

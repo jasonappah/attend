@@ -4,9 +4,9 @@ import { createTRPCReact } from '@trpc/react-query'
 import { useRef, useState, type ReactNode } from 'react'
 import { useAuth } from '~/auth/client/authClient'
 import { SERVER_URL } from '~/constants'
-import type { AppRouter } from './router'
+import type { CalendarRouter } from '../calendar/trpc'
 
-export const trpc = createTRPCReact<AppRouter>()
+export const trpc = createTRPCReact<CalendarRouter>()
 
 export function TRPCProvider({ children }: { children: ReactNode }) {
   const auth = useAuth()

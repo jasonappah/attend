@@ -4,7 +4,7 @@ import { Input } from 'takeout-ui/forms/Input'
 import { H3, Paragraph, XStack, YStack } from 'tamagui'
 import { calendars } from '~/data/calendar/queries'
 import { useQuery } from '~/data/zero-client'
-import { trpc } from '~/features/trpc/client'
+import { trpc } from '~/features/app/trpc-client'
 import { Button } from '~/interface/buttons/Button'
 
 export function CalendarSettings() {

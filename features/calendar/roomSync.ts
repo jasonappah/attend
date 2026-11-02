@@ -20,7 +20,7 @@ export async function syncRooms(userId: string) {
     return result
   }
   const get = async (target: URL) => {
-    const response = await fetch(target, { redirect: 'error', signal: AbortSignal.timeout(30_000) })
+    const response = await fetch(target, { redirect: 'manual', signal: AbortSignal.timeout(30_000) })
     if (!response.ok) throw new Error(`Concept3D returned HTTP ${response.status}.`)
     return response.json()
   }
@@ -49,7 +49,8 @@ export async function syncRooms(userId: string) {
   })
   if (!rows.length) throw new Error('Concept3D returned no usable rooms.')
   await syncedDb(userId).transaction(async ({ drizzle }) => {
-    for (const row of rows) await drizzle.insert(room).values(row).onConflictDoNothing()
+    // for (const row of rows) await drizzle.insert(room).values(row).onConflictDoNothing()
+    await drizzle.insert(room).values(rows).onConflictDoNothing()
   })
   return { imported: rows.length }
 }
