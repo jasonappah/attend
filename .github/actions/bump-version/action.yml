@@ -28,3 +28,4 @@ runs:
         VERSION_CODE=$(( major * 10000 + minor * 100 + patch ))
         echo "versionCode=$VERSION_CODE" >> "$GITHUB_OUTPUT"
         echo "Computed semver $VERSION (versionCode $VERSION_CODE)"
+      shell: bash
