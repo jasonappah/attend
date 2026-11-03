@@ -9,19 +9,16 @@
  * is used instead. on web, op-sqlite isn't available, so every function is a
  * no-op (matching the disabled diagnostics screen).
  *
- * queryAst is required by the SQLiteTransactionExecutor type but createSQLiteDrizzle
- * never calls it — it only uses exec/query through the drizzle() callback — so
- * it's a deliberate no-op.
+ * Uses drizzle directly from drizzle-orm/sqlite-proxy rather than
+ * createSQLiteDatabase from @o/database/sqlite, because the latter imports
+ * node:async_hooks at the top level which Hermes cannot resolve.
  */
-import 'server-only'
-import {
-  createSQLiteDatabase,
-  type SQLiteTransactionExecutor,
-  type SQLiteTransactionProvider,
-} from '@o/database/sqlite'
-import { open, type Scalar } from '@op-engineering/op-sqlite'
-import { relations } from './localRelations'
+import { open } from '@op-engineering/op-sqlite'
+import { drizzle } from 'drizzle-orm/sqlite-proxy'
 import * as schema from './localSchema'
+import { relations } from './localRelations'
+
+type LocalDrizzle = ReturnType<typeof drizzle>
 
 let db: ReturnType<typeof open> | null = null
 
@@ -46,43 +43,25 @@ function getDb() {
   return db
 }
 
-const transactionProvider: SQLiteTransactionProvider = async (work) => {
-  const database = getDb()
-  let result: unknown
-  await database.transaction(async (tx) => {
-    const executor: SQLiteTransactionExecutor = {
-      exec: async (sql, params) => {
-        const res = await tx.execute(sql, params ? ([...params] as Scalar[]) : [])
-        return { changes: res.rowsAffected }
-      },
-      execMany: async (statements) => {
-        return await Promise.all(
-          statements.map(async ({ sql, params = [] }) => {
-            const res = await tx.execute(sql, [...params] as Scalar[])
-            return { changes: res.rowsAffected }
-          })
-        )
-      },
-      query: async <Row extends Record<string, unknown> = Record<string, unknown>>(
-        sql: string,
-        params?: readonly unknown[]
-      ): Promise<Row[]> => {
-        const res = await tx.execute(sql, params ? ([...params] as Scalar[]) : [])
-        return res.rows as Row[]
-      },
-      // createSQLiteDrizzle only calls exec/query through the drizzle()
-      // callback; queryAst is part of the executor type but never invoked.
-      queryAst: async () => {
-        throw new Error('queryAst is not supported on the local op-sqlite DB')
-      },
-    }
-    result = await work(executor)
-  })
-  return result as unknown as ReturnType<typeof work>
+export const localDb = {
+  transaction: <T>(work: (drizzle: LocalDrizzle) => Promise<T>): Promise<T> =>
+    new Promise<T>((resolve, reject) => {
+      const database = getDb()
+      database.transaction(async (tx) => {
+        try {
+          const localDrizzle = drizzle(async (sql, params, method) => {
+            if (method === 'run') {
+              const res = await tx.execute(sql, params)
+              return { changes: res.rowsAffected, rows: [] }
+            }
+            const res = await tx.execute(sql, params)
+            return { rows: res.rows }
+          }, { schema, relations })
+          const result = await work(localDrizzle)
+          resolve(result)
+        } catch (error) {
+          reject(error)
+        }
+      })
+    }),
 }
-
-export const localDb = createSQLiteDatabase({
-  schema,
-  relations,
-  transactionProvider,
-})

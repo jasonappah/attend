@@ -61,7 +61,7 @@ export async function recordRun(task: string) {
   if (isWeb) return
   try {
     const status = await readSystemStatus()
-    await localDb.transaction(async ({ drizzle }) => {
+    await localDb.transaction(async (drizzle) => {
       await drizzle.insert(schema.backgroundTaskRun).values({
         id: uuidv7(),
         task,
@@ -84,7 +84,7 @@ export async function recordRun(task: string) {
 export async function listRuns(limit = 200) {
   if (isWeb) return []
   try {
-    return await localDb.transaction(async ({ drizzle }) => {
+    return await localDb.transaction(async (drizzle) => {
       return await drizzle
         .select()
         .from(schema.backgroundTaskRun)
