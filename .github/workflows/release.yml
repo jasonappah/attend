@@ -132,13 +132,16 @@ jobs:
           rm -rf ./ota-android && mkdir -p ./ota-android
           bunx one updates publish --platform android --out ./ota-android
 
+          # Authenticate wrangler with API token
+          echo "$CLOUDFLARE_API_TOKEN" | bunx wrangler auth login --api-token > /dev/null 2>&1 || true
+
           # Upload manifest to R2 via wrangler (no awscli needed)
-          wrangler r2 object put "${CLOUDFLARE_R2_BUCKET}/updates/android/${{ steps.version.outputs.version }}/manifest.json" \
+          bunx wrangler r2 object put "${CLOUDFLARE_R2_BUCKET}/updates/android/${{ steps.version.outputs.version }}/manifest.json" \
             --file "./ota-android/manifest.json"
 
           # Upload each asset
           for f in ./ota-android/assets/*; do
-            [ -f "$f" ] && wrangler r2 object put "${CLOUDFLARE_R2_BUCKET}/updates/android/${{ steps.version.outputs.version }}/assets/$(basename "$f")" --file "$f"
+            [ -f "$f" ] && bunx wrangler r2 object put "${CLOUDFLARE_R2_BUCKET}/updates/android/${{ steps.version.outputs.version }}/assets/$(basename "$f")" --file "$f"
           done
 
           echo "OTA update published for android runtimeVersion=${{ steps.version.outputs.version }}"
