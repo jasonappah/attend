@@ -3,6 +3,7 @@ import { onZeroPlugin } from 'on-zero/vite'
 import { one } from 'one/vite'
 import { orezSyncCfHostWasm } from 'orez-lite/cloudflare/vite-wasm-loader'
 import { orez } from 'orez-lite/vite'
+import { BACKGROUND_TASKS } from './features/background-tasks/tasks'
 
 const { tamaguiPlugin } = createRequire(import.meta.url)('@tamagui/vite-plugin')
 const portOffset = Number(process.env.PORT_OFFSET || 0)
@@ -63,6 +64,13 @@ export default {
             bundleId: appIdentity.bundleId,
             tablet: false,
             deploymentTarget: '17.0',
+            // declared once per identifier; one stamps them into
+            // BGTaskSchedulerPermittedIdentifiers on iOS. refresh tasks carry
+            // no requirements; processing tasks can wait for network or power.
+            backgroundTasks: {
+              refresh: Object.keys(BACKGROUND_TASKS),
+              processing: [],
+            },
           },
           android: {
             applicationId: appIdentity.bundleId,

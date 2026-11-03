@@ -3,6 +3,7 @@ import { openFeedback } from 'takeout-native/feedback'
 import type { NavigationRowProps } from 'takeout-ui/forms/formContract'
 import type { Icon } from 'takeout-ui/icons/types'
 import {
+  APP_SETTINGS_DIAGNOSTICS_HREF,
   APP_SETTINGS_EDIT_PROFILE_HREF,
   APP_SETTINGS_NOTIFICATIONS_HREF,
 } from '~/features/app/routes'
@@ -58,6 +59,18 @@ export function useSettingsData() {
           systemImage: 'bell',
           href: APP_SETTINGS_NOTIFICATIONS_HREF,
           showsUnreadDot: hasUnreadNotifications,
+        },
+      ],
+    },
+    {
+      title: 'Diagnostics',
+      items: [
+        {
+          id: 'diagnostics',
+          title: 'Background tasks',
+          icon: Icons.Settings,
+          systemImage: 'gear',
+          href: APP_SETTINGS_DIAGNOSTICS_HREF,
         },
       ],
     },

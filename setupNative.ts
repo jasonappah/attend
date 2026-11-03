@@ -1,6 +1,7 @@
 import 'takeout-native'
 import '~/features/storage/setupStorage'
 import '~/features/feedback/setupFeedback'
+import '~/features/background-tasks/registerBackgroundTasks'
 import * as nativeRegistry from '@tamagui/native-registry'
 import { AppRegistry } from 'react-native'
 import { withFeedback } from 'takeout-native/feedback/overlay'

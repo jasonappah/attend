@@ -29,6 +29,7 @@
     "format:check": "biome format ."
   },
   "dependencies": {
+    "@op-engineering/op-sqlite": "18.2.5",
     "@better-auth/core": "1.6.30",
     "@better-auth/expo": "1.6.30",
     "@callstack/liquid-glass": "^0.8.2",

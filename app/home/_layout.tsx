@@ -78,6 +78,10 @@ export default function HomeLayout() {
           name="settings/notifications"
           options={{ headerShown: true, title: 'Notifications' }}
         />
+        <Stack.Screen
+          name="settings/diagnostics"
+          options={{ headerShown: true, title: 'Diagnostics' }}
+        />
       </Stack>
     </AuthenticatedHome>
   )
