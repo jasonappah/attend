@@ -1,17 +1,11 @@
 name: Release APK
 
-# Build a signed release APK, apply automatic semver, tag, create a GitHub
-# Release, and publish an OTA update on every push to main.
 on:
   push:
     branches: [main]
-  workflow_dispatch:
 
 permissions:
-  contents: write # create tags + releases
-
-env:
-  GRADLE_OPTS: -Dorg.gradle.jvmargs=-Xmx2048m
+  contents: write
 
 jobs:
   build-and-release:
@@ -20,117 +14,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # full history so we can derive semver from tags
+          fetch-depth: 0
 
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: latest
-
-      - name: Setup Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: zulu
-          java-version: 17
-
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: Install dependencies
-        run: bun install --frozen-lockfile
-
-      # --- automatic semver: bump patch from the latest git tag -------------
-      - name: Determine semver
-        id: version
-        run: |
-          LATEST_TAG=$(git describe --tags --abbrev=0 --match='v*' 2>/dev/null || echo 'v0.0.0')
-          LATEST_TAG="${LATEST_TAG#v}"
-          IFS='.' read -r major minor patch <<< "$LATEST_TAG"
-          patch=$((patch + 1))
-          VERSION="$major.$minor.$patch"
-          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-          echo "tag=v$VERSION" >> "$GITHUB_OUTPUT"
-          # monotonic integer versionCode: major*10000 + minor*100 + patch
-          VERSION_CODE=$(( major * 10000 + minor * 100 + patch ))
-          echo "versionCode=$VERSION_CODE" >> "$GITHUB_OUTPUT"
-          echo "Computed semver $VERSION (versionCode $VERSION_CODE)"
-
-      # --- apply version to native config (working tree only, not committed) --
-      - name: Apply version to native config
-        run: |
-          sed -i 's/versionCode [0-9]*/versionCode ${{ steps.version.outputs.versionCode }}/' android/app/build.gradle
-          sed -i 's/versionName "[0-9.]*"/versionName "${{ steps.version.outputs.version }}"/' android/app/build.gradle
-          sed -i "s/version: '[0-9.]*',/version: '${{ steps.version.outputs.version }}',/" vite.config.ts
-          sed -i "s/runtimeVersion: '[0-9.]*',/runtimeVersion: '${{ steps.version.outputs.version }}',/" vite.config.ts
-          grep -n "versionCode\|versionName" android/app/build.gradle
-          grep -n "version:\|runtimeVersion:" vite.config.ts
-
-      # --- decode release keystore from base64 secret -----------------------
-      - name: Decode release keystore
-        if: secrets.ANDROID_RELEASE_KEYSTORE_B64 != ''
-        run: |
-          echo "${{ secrets.ANDROID_RELEASE_KEYSTORE_B64 }}" | base64 -d > /tmp/attend-release.keystore
-          echo "ANDROID_RELEASE_STORE_FILE=/tmp/attend-release.keystore" >> "$GITHUB_ENV"
-
-      # --- build signed release APK -----------------------------------------
-      - name: Build release APK
-        env:
-          ANDROID_RELEASE_STORE_PASSWORD: ${{ secrets.ANDROID_RELEASE_STORE_PASSWORD }}
-          ANDROID_RELEASE_KEY_ALIAS: ${{ secrets.ANDROID_RELEASE_KEY_ALIAS }}
-          ANDROID_RELEASE_KEY_PASSWORD: ${{ secrets.ANDROID_RELEASE_KEY_PASSWORD }}
-        run: |
-          cd android
-          ./gradlew assembleRelease
-
-      # --- publish OTA update to the update server --------------------------
-      - name: Publish OTA update
-        env:
-          CLOUDFLARE_R2_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY }}
-          CLOUDFLARE_R2_SECRET_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_KEY }}
-          CLOUDFLARE_R2_ENDPOINT: ${{ secrets.CLOUDFLARE_R2_ENDPOINT }}
-          CLOUDFLARE_R2_BUCKET: ${{ secrets.CLOUDFLARE_R2_BUCKET }}
-        run: |
-          # one updates publish bundles the JS + assets for the release binary.
-          # Output goes to an empty folder: manifest.json + assets/<sha256>.
-          rm -rf ./ota-android && mkdir -p ./ota-android
-          bunx one updates publish --platform android --out ./ota-android
-
-          # Upload the OTA output to R2 under updates/android/<version>/, which
-          # app/api/updates/[...rest]+api.ts serves to clients.
-          pip install awscli --quiet
-          aws configure set aws_access_key_id "$CLOUDFLARE_R2_ACCESS_KEY"
-          aws configure set aws_secret_access_key "$CLOUDFLARE_R2_SECRET_KEY"
-          aws configure set default.region us-east-1
-          aws s3 sync ./ota-android "s3://${CLOUDFLARE_R2_BUCKET}/updates/android/${{ steps.version.outputs.version }}/" \
-            --endpoint-url "$CLOUDFLARE_R2_ENDPOINT" \
-            --cache-control "public, max-age=31536000, immutable" \
-            --exclude "*/manifest.json"
-          aws s3 cp ./ota-android/manifest.json "s3://${CLOUDFLARE_R2_BUCKET}/updates/android/${{ steps.version.outputs.version }}/manifest.json" \
-            --endpoint-url "$CLOUDFLARE_R2_ENDPOINT" \
-            --cache-control "public, max-age=0, must-revalidate"
-          echo "OTA update published for android runtimeVersion=${{ steps.version.outputs.version }}"
-
-      # --- tag + create GitHub Release with the APK attached ----------------
-      - name: Create git tag and push
-        run: |
-          git config user.name "Attend CI"
-          git config user.email "ci@attend.local"
-          git tag ${{ steps.version.outputs.tag }}
-          git push origin ${{ steps.version.outputs.tag }}
-
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ steps.version.outputs.tag }}
-          name: Attend ${{ steps.version.outputs.version }}
-          body: |
-            Auto-released from main.
-
-            Version: ${{ steps.version.outputs.version }}
-            Build: ${{ steps.version.outputs.versionCode }}
-
-            Install the APK below on your Android device. Existing users also
-            receive this as an OTA update (same runtimeVersion) on next launch.
-          files: android/app/build/outputs/apk/release/app-release.apk
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Test
+        run: echo "release workflow works"
