@@ -1,47 +1,21 @@
 /**
- * Direct access to the application SQLite database for background-task
- * diagnostics. this is a separate, non-synced database that lives alongside
- * Zero's synced database; rows written here never leave the device.
+ * Direct access to local storage for background-task diagnostics.
+ * this is a separate, non-synced store that lives alongside Zero's synced
+ * database; rows written here never leave the device.
  *
- * written through Drizzle like the rest of the app's database access
- * (createSQLiteDatabase + drizzle.insert / drizzle.select). drizzle binds
- * values as parameters rather than interpolating them into SQL, so there's no
- * SQL injection risk; the underlying driver prepares the statement internally
- * on each call.
- *
- * SQLite on native: neither `node:sqlite` (orez-lite/local) nor
- * `@o/database/sqlite`'s `bun:sqlite`-based providers are available in the
- * Hermes native bundle — they're Node/Bun runtime APIs, so they can't be
- * imported here. `getDb()` therefore returns null on native and
- * recordRun()/listRuns() degrade to no-ops until a Hermes-compatible local
- * SQLite store exists. on web every function is already a no-op, matching the
- * disabled diagnostics screen.
- *
- * a database can be injected via setDatabase() when one becomes available
- * (e.g. tests or a future native SQLite module).
+ * On native, records are stored through @o/helpers storage, which is backed
+ * by MMKV (react-native-mmkv, initialized by setupStorage.ts). node:sqlite /
+ * bun:sqlite aren't available in the Hermes native bundle, so MMKV is used
+ * instead — each run is stored as a separate JSON key and listRuns reads all
+ * run keys. On web, no storage driver is set up (setupStorage is native-only),
+ * so every function is a no-op, matching the disabled diagnostics screen.
  */
-
-import type { SQLiteDatabase } from '@o/database/sqlite'
-import { desc } from 'drizzle-orm'
+import { createStorage } from '@o/helpers'
 import { One } from 'one'
 import { isWeb } from 'tamagui'
-import type { relations } from '~/database/relations'
-import * as schema from '~/database/schema'
 import { uuidv7 } from '~/helpers/uuid'
 
-type LocalDb = SQLiteDatabase<typeof schema, typeof relations>
-
-let db: LocalDb | null = null
-
-export function setDatabase(database: LocalDb) {
-  db = database
-}
-
-async function getDb(): Promise<LocalDb | null> {
-  if (isWeb) return null
-  if (db) return db
-  return null
-}
+const store = createStorage<string, TaskRunRow>('background-task-runs')
 
 export type SystemStatus = {
   batteryLevel: number
@@ -53,9 +27,19 @@ export type SystemStatus = {
   isSimulator: boolean
 }
 
-// one snapshot of battery + device state at the moment a background task ran.
-// safe on every platform (web resolves defaults), though recordRun itself is
-// native-only.
+type TaskRunRow = {
+  id: string
+  task: string
+  ranAt: number
+  batteryLevel: number | null
+  batteryState: string | null
+  lowPowerMode: boolean | null
+  deviceModel: string | null
+  deviceSystemName: string | null
+  deviceSystemVersion: string | null
+  isSimulator: boolean | null
+}
+
 async function readSystemStatus(): Promise<SystemStatus> {
   const power = await One.Battery.getPowerState().catch(() => ({
     batteryLevel: -1,
@@ -81,54 +65,45 @@ async function readSystemStatus(): Promise<SystemStatus> {
   }
 }
 
-// drizzle stores boolean-ish columns as SQLite integers (0/1) on write and
-// converts them back to booleans on read for columns declared with
-// `mode: 'boolean'`, so the row shape coming out of .select() already
-// matches TaskRunRow.
-type TaskRunRow = {
-  id: string
-  task: string
-  ranAt: number
-  batteryLevel: number | null
-  batteryState: string | null
-  lowPowerMode: boolean | null
-  deviceModel: string | null
-  deviceSystemName: string | null
-  deviceSystemVersion: string | null
-  isSimulator: boolean | null
-}
+// one snapshot of battery + device state at the moment a background task ran.
+// safe on every platform (web resolves defaults), though recordRun itself is
+// native-only.
 
 export async function recordRun(task: string) {
   if (isWeb) return
-  const database = await getDb()
-  if (!database) return
-  const status = await readSystemStatus()
-  await database.transaction(async ({ drizzle }) => {
-    await drizzle.insert(schema.backgroundTaskRun).values({
+  try {
+    const status = await readSystemStatus()
+    const run: TaskRunRow = {
       id: uuidv7(),
       task,
       ranAt: Date.now(),
       batteryLevel: status.batteryLevel,
       batteryState: status.batteryState,
-      lowPowerMode: status.lowPowerMode ? 1 : 0,
+      lowPowerMode: status.lowPowerMode,
       deviceModel: status.deviceModel,
       deviceSystemName: status.deviceSystemName,
       deviceSystemVersion: status.deviceSystemVersion,
-      isSimulator: status.isSimulator ? 1 : 0,
-    } as any)
-  })
+      isSimulator: status.isSimulator,
+    }
+    store.set(run.id, run)
+  } catch (error) {
+    // never let a recording failure take down the handler
+    console.error('[background tasks] failed to record run', task, error)
+  }
 }
 
 export async function listRuns(limit = 200) {
   if (isWeb) return []
-  const database = await getDb()
-  if (!database) return []
-  const rows = await database.transaction(async ({ drizzle }) => {
-    return drizzle
-      .select()
-      .from(schema.backgroundTaskRun)
-      .orderBy(desc(schema.backgroundTaskRun.ranAt))
-      .limit(limit)
-  })
-  return rows as unknown as TaskRunRow[]
+  try {
+    const ids = store.keys()
+    const runs = ids
+      .map((id) => store.get(id))
+      .filter((r): r is TaskRunRow => r != null)
+      .sort((a, b) => (b.ranAt ?? 0) - (a.ranAt ?? 0))
+      .slice(0, limit)
+    return runs
+  } catch (error) {
+    console.error('[background tasks] failed to list runs', error)
+    return []
+  }
 }
