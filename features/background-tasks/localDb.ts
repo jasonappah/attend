@@ -1,48 +1,46 @@
 /**
  * Direct access to the application SQLite database for background-task
- * diagnostics. this is a separate, non-synced database (managed by orex-lite,
- * backed by node:sqlite) that lives alongside Zero's synced database. rows
- * written here never leave the device.
+ * diagnostics. this is a separate, non-synced database that lives alongside
+ * Zero's synced database; rows written here never leave the device.
  *
  * written through Drizzle like the rest of the app's database access
  * (createSQLiteDatabase + drizzle.insert / drizzle.select). drizzle binds
  * values as parameters rather than interpolating them into SQL, so there's no
- * SQL injection risk; the underlying node:sqlite driver prepares the
- * statement internally on each call. the orex-lite / node:sqlite modules are
- * lazily imported only on native — they aren't web-safe — so on web every
- * function is a no-op, matching the disabled diagnostics screen.
+ * SQL injection risk; the underlying driver prepares the statement internally
+ * on each call.
  *
- * note on Drizzle's `.prepare()` API: this wrapper's drizzle instance calls
- * `executor.exec(sql, params)` fresh every time, which internally does
- * `database.prepare(sql).run(params)` — node:sqlite compiles the statement
- * internally each call. for background tasks that run at most once per
- * minute, the compile cost is negligible, and `.prepare()` adds no benefit
- * here since there's no compiled-statement cache across calls.
+ * SQLite on native: neither `node:sqlite` (orez-lite/local) nor
+ * `@o/database/sqlite`'s `bun:sqlite`-based providers are available in the
+ * Hermes native bundle — they're Node/Bun runtime APIs, so they can't be
+ * imported here. `getDb()` therefore returns null on native and
+ * recordRun()/listRuns() degrade to no-ops until a Hermes-compatible local
+ * SQLite store exists. on web every function is already a no-op, matching the
+ * disabled diagnostics screen.
+ *
+ * a database can be injected via setDatabase() when one becomes available
+ * (e.g. tests or a future native SQLite module).
  */
+
+import type { SQLiteDatabase } from '@o/database/sqlite'
+import { desc } from 'drizzle-orm'
 import { One } from 'one'
 import { isWeb } from 'tamagui'
-import { desc } from 'drizzle-orm'
-import type { SQLiteDatabase, SQLiteTransactionProvider } from '@o/database/sqlite'
-import { uuidv7 } from '~/helpers/uuid'
-import { relations } from '~/database/relations'
+import type { relations } from '~/database/relations'
 import * as schema from '~/database/schema'
+import { uuidv7 } from '~/helpers/uuid'
 
 type LocalDb = SQLiteDatabase<typeof schema, typeof relations>
 
 let db: LocalDb | null = null
 
+export function setDatabase(database: LocalDb) {
+  db = database
+}
+
 async function getDb(): Promise<LocalDb | null> {
   if (isWeb) return null
   if (db) return db
-  const { createLocalApplicationSqlClientFactory } = await import('orez-lite/local')
-  const { createSQLiteDatabase } = await import('@o/database/sqlite')
-  const factory = createLocalApplicationSqlClientFactory({ dataDir: '.orez/application-sql' })
-  const transactionProvider: SQLiteTransactionProvider = (work) =>
-    factory('singleton').transaction(() => {
-      throw new Error('localDb does not support Drizzle AST queries')
-    }, work)
-  db = createSQLiteDatabase({ schema, relations, transactionProvider })
-  return db
+  return null
 }
 
 export type SystemStatus = {
