@@ -14,10 +14,7 @@
  */
 export type BackgroundTaskKind = 'record' | 'ping'
 
-export const BACKGROUND_TASKS: Record<
-  string,
-  { intervalMs: number; kind: BackgroundTaskKind }
-> = {
+export const BACKGROUND_TASKS: Record<string, { intervalMs: number; kind: BackgroundTaskKind }> = {
   // record tasks — just log the run
   'attend.background-task.every-minute': {
     intervalMs: 60_000,
@@ -52,10 +49,7 @@ export const BACKGROUND_TASKS: Record<
     intervalMs: 1_800_000,
     kind: 'ping',
   },
-} as const satisfies Record<
-  string,
-  { intervalMs: number; kind: BackgroundTaskKind }
->
+} as const satisfies Record<string, { intervalMs: number; kind: BackgroundTaskKind }>
 
 export type BackgroundTaskIdentifier = keyof typeof BACKGROUND_TASKS
 

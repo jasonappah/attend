@@ -1,15 +1,15 @@
 import { One } from 'one'
 import { useCallback, useEffect, useState } from 'react'
+import { showToast } from 'takeout-ui/toast/Toast'
 import { isWeb, Paragraph, SizableText, XStack, YStack } from 'tamagui'
+import { listRuns, recordRun } from '~/features/background-tasks/localDb'
+import { BACKGROUND_TASKS } from '~/features/background-tasks/tasks'
+import { SettingsWebChrome } from '~/features/settings/SettingsWebChrome'
 import { Button } from '~/interface/buttons/Button'
+import { Icons } from '~/interface/icons'
 import { EmptyState } from '~/interface/layout/EmptyState'
 import { PageScrollView } from '~/interface/layout/PageScrollView'
 import { SepHeading } from '~/interface/text/Headings'
-import { showToast } from 'takeout-ui/toast/Toast'
-import { BACKGROUND_TASKS } from '~/features/background-tasks/tasks'
-import { listRuns, recordRun } from '~/features/background-tasks/localDb'
-import { Icons } from '~/interface/icons'
-import { SettingsWebChrome } from '~/features/settings/SettingsWebChrome'
 
 export default function DiagnosticsScreen() {
   if (isWeb) {
@@ -52,9 +52,7 @@ function systemStatusLabel(row: TaskRun): string {
     parts.push('low power mode')
   }
   if (row.deviceModel || row.deviceSystemName) {
-    parts.push(
-      `${row.deviceModel ?? ''} ${row.deviceSystemName ?? ''}`.trim()
-    )
+    parts.push(`${row.deviceModel ?? ''} ${row.deviceSystemName ?? ''}`.trim())
   }
   if (row.isSimulator === true) {
     parts.push('simulator')
@@ -99,11 +97,7 @@ function DiagnosticsContent() {
   const exportDatabase = useCallback(async () => {
     try {
       const directories = One.FileSystem.getDirectories()
-      const candidates = [
-        directories.documents,
-        directories.cache,
-        directories.applicationSupport,
-      ]
+      const candidates = [directories.documents, directories.cache, directories.applicationSupport]
       let databaseDir: string | null = null
       for (const candidate of candidates) {
         const info = await One.FileSystem.getInfo(candidate)
@@ -146,16 +140,15 @@ function DiagnosticsContent() {
       <YStack flex={1} flexBasis="auto" pb={60} gap="12">
         <SepHeading>Background tasks</SepHeading>
         <Paragraph size="3" color="color-11">
-          Four background tasks are registered — every minute, every ten minutes,
-          every hour, and every thirty minutes. each task re-submits itself from
-          its handler, so this log shows when the operating system actually
-          launched each run, not when we asked for it. arm the tasks, leave the
-          app in the background, then come back and compare the times against
-          the intervals.{" "}
+          Four background tasks are registered — every minute, every ten minutes, every hour, and
+          every thirty minutes. each task re-submits itself from its handler, so this log shows when
+          the operating system actually launched each run, not when we asked for it. arm the tasks,
+          leave the app in the background, then come back and compare the times against the
+          intervals.{' '}
           {isWeb ? (
             <>
-              on web, submission validates but the OS never launches anything —
-              background tasks are a native-only feature.
+              on web, submission validates but the OS never launches anything — background tasks are
+              a native-only feature.
             </>
           ) : null}
         </Paragraph>
@@ -230,9 +223,9 @@ function DiagnosticsContent() {
           <>
             <SepHeading>Export database</SepHeading>
             <Paragraph size="3" color="color-11">
-              Copies the local SQLite database file into the app's cache folder
-              and opens the system share sheet, so you can pull the file off the
-              device and inspect when each task really ran.
+              Copies the local SQLite database file into the app's cache folder and opens the system
+              share sheet, so you can pull the file off the device and inspect when each task really
+              ran.
             </Paragraph>
             <Button onPress={exportDatabase} testID="diagnostics-export-database">
               Export SQLite database

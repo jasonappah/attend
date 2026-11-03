@@ -15,8 +15,8 @@
  */
 import { open } from '@op-engineering/op-sqlite'
 import { drizzle } from 'drizzle-orm/sqlite-proxy'
-import * as schema from './localSchema'
 import { relations } from './localRelations'
+import * as schema from './localSchema'
 
 type LocalDrizzle = ReturnType<typeof drizzle>
 
@@ -49,14 +49,17 @@ export const localDb = {
       const database = getDb()
       database.transaction(async (tx) => {
         try {
-          const localDrizzle = drizzle(async (sql, params, method) => {
-            if (method === 'run') {
+          const localDrizzle = drizzle(
+            async (sql, params, method) => {
+              if (method === 'run') {
+                const res = await tx.execute(sql, params)
+                return { changes: res.rowsAffected, rows: [] }
+              }
               const res = await tx.execute(sql, params)
-              return { changes: res.rowsAffected, rows: [] }
-            }
-            const res = await tx.execute(sql, params)
-            return { rows: res.rows }
-          }, { schema, relations })
+              return { rows: res.rows }
+            },
+            { schema, relations }
+          )
           const result = await work(localDrizzle)
           resolve(result)
         } catch (error) {
