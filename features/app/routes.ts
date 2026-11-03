@@ -18,6 +18,7 @@ export const APP_PROFILE_HREF = '/home/profile' satisfies Href
 export const APP_SETTINGS_HREF = '/home/settings' satisfies Href
 export const APP_SETTINGS_EDIT_PROFILE_HREF = '/home/settings/edit-profile' satisfies Href
 export const APP_SETTINGS_NOTIFICATIONS_HREF = '/home/settings/notifications' satisfies Href
+export const APP_SETTINGS_DIAGNOSTICS_HREF = '/home/settings/diagnostics' satisfies Href
 // the feed's create/edit entry: one dialog on web, the system form sheet on
 // native, the same file under soft and hard navigation alike.
 export const APP_FEED_MAKE_HREF = '/home/feed/make' satisfies Href
