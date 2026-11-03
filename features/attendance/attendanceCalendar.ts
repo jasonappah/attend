@@ -8,7 +8,7 @@ export type CalendarSession = {
 export type CalendarDay = {
   date: Date
   sessions: CalendarSession[]
-  status: 'empty' | 'present' | 'absent' | 'mixed' | 'unrecorded' | 'upcoming'
+  status: 'empty' | 'present' | 'absent' | 'cancelled' | 'mixed' | 'unrecorded' | 'upcoming'
 }
 
 function dayKey(date: Date) {

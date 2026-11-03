@@ -131,21 +131,18 @@ export function AttendanceCalendar({
         </XStack>
       </ScrollView>
       <XStack gap={12} flexWrap="wrap">
-        {([
-          'present',
-          'absent',
-          'cancelled',
-          'mixed',
-          'unrecorded',
-          'upcoming',
-        ] as const).map((status) => (
-          <XStack key={status} items="center" gap={4}>
-            <YStack width={12} height={12} rounded={3} background={colors[status]} />
-            <SizableText size="xs" color="color-10">
-              {status === 'unrecorded' ? 'Not recorded' : status[0].toUpperCase() + status.slice(1)}
-            </SizableText>
-          </XStack>
-        ))}
+        {(['present', 'absent', 'cancelled', 'mixed', 'unrecorded', 'upcoming'] as const).map(
+          (status) => (
+            <XStack key={status} items="center" gap={4}>
+              <YStack width={12} height={12} rounded={3} background={colors[status]} />
+              <SizableText size="xs" color="color-10">
+                {status === 'unrecorded'
+                  ? 'Not recorded'
+                  : status[0].toUpperCase() + status.slice(1)}
+              </SizableText>
+            </XStack>
+          )
+        )}
       </XStack>
       <SizableText size="xs" color="color-10">
         {selected ? describeDay(selected, now) : 'Select a class day for details.'}
