@@ -11,7 +11,10 @@ permissions:
   contents: write # create tags + releases
 
 env:
-  GRADLE_OPTS: -Dorg.gradle.jvmargs=-Xmx2048m
+  # 4-core / 16GB runner: cap heap and parallel workers
+  GRADLE_OPTS: -Dorg.gradle.jvmargs="-Xmx8g -XX:MaxMetaspaceSize=1g" -Dorg.gradle.daemon=false -Dorg.gradle.max-workers=4
+  # Only build for Samsung Galaxy A13 (arm64-v8a)
+  reactNativeArchitectures: arm64-v8a
 
 jobs:
   build-and-release:
@@ -27,34 +30,47 @@ jobs:
         with:
           bun-version: latest
 
-      - name: Setup Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: zulu
-          java-version: 17
-
-      - name: Accept Android SDK licenses
-        run: |
-          yes | "${ANDROID_HOME:-/usr/local/lib/android/sdk}/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null 2>&1 || true
-
-      - name: Install dependencies
-        run: bun install --frozen-lockfile
-
-      - name: Cache Bun install
-        uses: actions/cache@v4
+      - name: Restore Bun cache
+        uses: actions/cache/restore@v4
         with:
           path: |
             node_modules
             ~/.bun/install/cache
           key: ${{ runner.os }}-bun-${{ hashFiles('bun.lockb') }}
 
-      - name: Cache Gradle
-        uses: actions/cache@v4
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Save Bun cache
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            node_modules
+            ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('bun.lockb') }}
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: zulu
+          java-version: 17
+
+      - name: Install ccache
+        run: sudo apt-get update -y && sudo apt-get install -y ccache
+
+      - name: Accept Android SDK licenses
+        run: |
+          yes | "${ANDROID_HOME:-/usr/local/lib/android/sdk}/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null 2>&1 || true
+
+      - name: Restore Gradle cache
+        uses: actions/cache/restore@v4
         with:
           path: |
             ~/.gradle/caches
             android/.gradle
           key: ${{ runner.os }}-gradle-${{ hashFiles('android/gradle/wrapper/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
 
       # --- automatic semver: bump patch from the latest git tag -------------
       - name: Determine semver
@@ -94,9 +110,21 @@ jobs:
           ANDROID_RELEASE_STORE_PASSWORD: ${{ secrets.ANDROID_RELEASE_STORE_PASSWORD }}
           ANDROID_RELEASE_KEY_ALIAS: ${{ secrets.ANDROID_RELEASE_KEY_ALIAS }}
           ANDROID_RELEASE_KEY_PASSWORD: ${{ secrets.ANDROID_RELEASE_KEY_PASSWORD }}
+          CCACHE_DIR: /tmp/ccache
         run: |
           cd android
-          ./gradlew assembleRelease
+          ./gradlew assembleRelease \
+            -PreactNativeArchitectures=${{ env.reactNativeArchitectures }} \
+            -Pccache.enabled=true \
+            --no-daemon
+
+      - name: Save Gradle cache
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            android/.gradle
+          key: ${{ runner.os }}-gradle-${{ hashFiles('android/gradle/wrapper/gradle-wrapper.properties') }}
 
       # --- publish OTA update to the update server --------------------------
       - name: Publish OTA update
