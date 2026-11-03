@@ -1,19 +1,37 @@
-import type { SQLiteTransactionProvider } from '@o/database/sqlite'
-import { createSQLiteDatabase } from '@o/database/sqlite'
-import { createQueryCompiler } from 'orez-lite/cloudflare/query-compiler'
+/**
+ * Direct access to the application SQLite database for background-task
+ * diagnostics. this is a separate, non-synced database (managed by orex-lite,
+ * backed by node:sqlite) that lives alongside Zero's synced database. rows
+ * written here never leave the device.
+ *
+ * only raw SQL is used (exec / query), so no Drizzle query compiler is
+ * needed. the dummy compileQuery satisfies the transaction API but throws if
+ * anything tries to compile a Drizzle AST.
+ */
 import { createLocalApplicationSqlClientFactory } from 'orez-lite/local'
-import { relations } from '~/database/relations'
-import * as schema from '~/database/schema'
+import { uuidv7 } from '~/helpers/uuid'
 
-// the application SQLite database outside Zero: private diagnostic rows that
-// never sync and live only on this device. the background-task handlers write
-// here from a headless JavaScript launch, so unlike ~/database/db this module
-// has no `server-only` marker and stays importable on native. it opens the
-// same application-sql database orez-lite already manages for the app.
 const factory = createLocalApplicationSqlClientFactory({ dataDir: '.orez/application-sql' })
-const compileQuery = createQueryCompiler(schema)
 
-export const transactionProvider: SQLiteTransactionProvider = (work) =>
-  factory('singleton').transaction(compileQuery, work)
+const compileQuery = (() => {
+  throw new Error('localDb does not support Drizzle AST queries')
+}) as any
 
-export const db = createSQLiteDatabase({ schema, relations, transactionProvider })
+export async function recordRun(task: string) {
+  await factory('singleton').transaction(compileQuery, async (tx) => {
+    await tx.exec(
+      'INSERT INTO backgroundTaskRun (id, task, ranAt) VALUES (?, ?, ?)',
+      [uuidv7(), task, Date.now()]
+    )
+  })
+}
+
+export async function listRuns(limit = 200) {
+  const rows = await factory('singleton').transaction(compileQuery, async (tx) => {
+    return tx.query(
+      'SELECT id, task, ranAt FROM backgroundTaskRun ORDER BY ranAt DESC LIMIT ?',
+      [limit]
+    )
+  })
+  return rows as { id: string; task: string; ranAt: number }[]
+}

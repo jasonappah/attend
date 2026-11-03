@@ -39,6 +39,7 @@ declare module 'one' {
         | `/home/profile`
         | `/home/profile/`
         | `/home/settings`
+        | `/home/settings/diagnostics`
         | `/home/settings/edit-profile`
         | `/home/settings/notifications`
         | `/home/today`

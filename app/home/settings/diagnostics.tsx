@@ -1,5 +1,4 @@
 import { One } from 'one'
-import { desc } from 'drizzle-orm'
 import { useCallback, useEffect, useState } from 'react'
 import { isWeb, Paragraph, SizableText, XStack, YStack } from 'tamagui'
 import { Button } from '~/interface/buttons/Button'
@@ -7,19 +6,18 @@ import { EmptyState } from '~/interface/layout/EmptyState'
 import { PageScrollView } from '~/interface/layout/PageScrollView'
 import { SepHeading } from '~/interface/text/Headings'
 import { showToast } from 'takeout-ui/toast/Toast'
-import { backgroundTaskRun } from '~/database/schema'
 import { BACKGROUND_TASKS } from '~/features/background-tasks/tasks'
-import { db } from '~/features/background-tasks/localDb'
-import { SettingsWebChrome } from '~/features/settings/SettingsWebChrome'
-import { Button } from '~/interface/buttons/Button'
+import { listRuns, recordRun } from '~/features/background-tasks/localDb'
 import { Icons } from '~/interface/icons'
-import { EmptyState } from '~/interface/layout/EmptyState'
-import { PageScrollView } from '~/interface/layout/PageScrollView'
-import { SepHeading } from '~/interface/text/Headings'
+import { SettingsWebChrome } from '~/features/settings/SettingsWebChrome'
 
 export default function DiagnosticsScreen() {
   if (isWeb) {
-    return <SettingsWebChrome><DiagnosticsContent /></SettingsWebChrome>
+    return (
+      <SettingsWebChrome>
+        <DiagnosticsContent />
+      </SettingsWebChrome>
+    )
   }
   return <DiagnosticsContent />
 }
@@ -33,14 +31,8 @@ function DiagnosticsContent() {
   const refreshRuns = useCallback(async () => {
     setLoading(true)
     try {
-      const rows = await db.transaction(({ drizzle }) =>
-        drizzle
-          .select()
-          .from(backgroundTaskRun)
-          .orderBy(desc(backgroundTaskRun.ranAt))
-          .limit(200)
-      )
-      setRuns(rows as unknown as TaskRun[])
+      const rows = await listRuns(200)
+      setRuns(rows)
     } catch (error) {
       showToast('Could not read background task runs', { type: 'error' })
     } finally {
@@ -70,8 +62,9 @@ function DiagnosticsContent() {
     try {
       const directories = One.FileSystem.getDirectories()
       const candidates = [
-        new URL('.orez/application-sql', directories.files),
-        new URL('.orez/application-sql', directories.documents),
+        directories.documents,
+        directories.cache,
+        directories.applicationSupport,
       ]
       let databaseDir: string | null = null
       for (const candidate of candidates) {
@@ -120,8 +113,13 @@ function DiagnosticsContent() {
           its handler, so this log shows when the operating system actually
           launched each run, not when we asked for it. arm the tasks, leave the
           app in the background, then come back and compare the times against
-          the intervals. on web submission validates but the OS never launches
-          anything.
+          the intervals.{" "}
+          {isWeb ? (
+            <>
+              on web, submission validates but the OS never launches anything —
+              background tasks are a native-only feature.
+            </>
+          ) : null}
         </Paragraph>
 
         <XStack px={18} py={13} items="center" justify="space-between" gap={13}>
@@ -137,9 +135,9 @@ function DiagnosticsContent() {
             accent
             onPress={armTasks}
             testID="diagnostics-arm-tasks"
-            disabled={loading}
+            disabled={loading || isWeb}
           >
-            Arm
+            {isWeb ? 'Not available on web' : 'Arm'}
           </Button>
         </XStack>
 
@@ -148,7 +146,11 @@ function DiagnosticsContent() {
           <EmptyState
             icon={<Icons.Settings size={40} color="color-11" />}
             title="No background task runs yet"
-            description="Arm the tasks above, then wait for the OS to launch them."
+            description={
+              isWeb
+                ? 'Background tasks are a native-only feature. run the app on a device to see task runs here.'
+                : 'Arm the tasks above, then wait for the OS to launch them.'
+            }
             ctaLabel="Arm tasks"
             onCtaPress={armTasks}
           />

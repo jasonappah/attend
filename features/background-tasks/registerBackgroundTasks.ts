@@ -1,7 +1,5 @@
 import { One } from 'one'
-import { uuidv7 } from '~/helpers/uuid'
-import { backgroundTaskRun } from '~/database/schema'
-import { db } from './localDb'
+import { recordRun } from './localDb'
 import { BACKGROUND_TASKS } from './tasks'
 
 // define every handler at module scope of the native setup file: a background
@@ -17,11 +15,7 @@ export function registerBackgroundTasks() {
     One.BackgroundTasks.defineTask(identifier, async (invocation) => {
       const { signal } = invocation
       try {
-        await db.insert(backgroundTaskRun).values({
-          id: uuidv7(),
-          task: identifier,
-          ranAt: Date.now(),
-        })
+        await recordRun(identifier)
       } catch (error) {
         // never let a recording failure take down the handler: report it and
         // keep the chain alive so the schedule keeps producing observations.
