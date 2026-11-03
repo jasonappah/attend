@@ -1,7 +1,8 @@
-name: Release APK
+name: Build & Release
 
-# Build a signed release APK, apply automatic semver, tag, create a GitHub
-# Release, and publish an OTA update on every push to main.
+# Deploys Cloudflare infra first, then builds + signs the release APK,
+# publishes an OTA update to R2, tags, and creates a GitHub Release.
+# Runs on every push to main.
 on:
   push:
     branches: [main]
@@ -11,14 +12,15 @@ permissions:
   contents: write # create tags + releases
 
 env:
-  # 4-core / 16GB runner: cap heap and parallel workers
-  GRADLE_OPTS: -Dorg.gradle.jvmargs="-Xmx8g -XX:MaxMetaspaceSize=1g" -Dorg.gradle.daemon=false -Dorg.gradle.max-workers=4
-  # Only build for Samsung Galaxy A13 (arm64-v8a)
+  # 4-core / 16GB runner: cap heap at 12G, disable daemon, limit workers
+  GRADLE_OPTS: -Dorg.gradle.jvmargs="-Xmx12g -XX:MaxMetaspaceSize=2g" -Dorg.gradle.daemon=false -Dorg.gradle.max-workers=4
+  # Samsung Galaxy A13 uses arm64-v8a only
   reactNativeArchitectures: arm64-v8a
 
 jobs:
-  build-and-release:
+  build-release:
     runs-on: ubuntu-latest
+    timeout-minutes: 120
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -49,18 +51,41 @@ jobs:
             ~/.bun/install/cache
           key: ${{ runner.os }}-bun-${{ hashFiles('bun.lockb') }}
 
+      # --- automatic semver: bump patch from the latest git tag ----------
+      - name: Determine semver
+        uses: ./.github/actions/bump-version
+        id: version
+
+      # --- step 1: deploy Cloudflare infra first -------------------------
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: zulu
           java-version: 17
 
-      - name: Install ccache
-        run: sudo apt-get update -y && sudo apt-get install -y ccache
-
       - name: Accept Android SDK licenses
         run: |
           yes | "${ANDROID_HOME:-/usr/local/lib/android/sdk}/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null 2>&1 || true
+
+      - name: Build (Cloudflare)
+        run: bun run build
+        env:
+          ALLOW_MISSING_ENV: "1"
+          ONE_SERVER_URL: https://attend.example.invalid
+          BETTER_AUTH_URL: https://attend.example.invalid
+
+      - name: Deploy worker and sync to Cloudflare
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          ONE_SERVER_URL: ${{ secrets.ONE_SERVER_URL }}
+          ATTEND_CF_WORKER_NAME: ${{ secrets.ATTEND_CF_WORKER_NAME }}
+          ATTEND_CF_BUCKET_NAME: ${{ secrets.ATTEND_CF_BUCKET_NAME }}
+          ATTEND_CF_FILES_URL: ${{ secrets.ATTEND_CF_FILES_URL }}
+        run: bun scripts/deploy-cloudflare.ts
+
+      # --- step 2: build signed release APK ------------------------------
+      - name: Install ccache
+        run: sudo apt-get update -y && sudo apt-get install -y ccache
 
       - name: Restore Gradle cache
         uses: actions/cache/restore@v4
@@ -72,28 +97,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      # --- automatic semver: bump patch from the latest git tag -------------
-      - name: Determine semver
-        uses: ./.github/actions/bump-version
-        id: version
-
-      # --- apply version to native config (working tree only, not committed) --
-      - name: Apply version to native config
-        run: |
-          sed -i 's/versionCode [0-9]*/versionCode ${{ steps.version.outputs.versionCode }}/' android/app/build.gradle
-          sed -i 's/versionName "[0-9.]*"/versionName "${{ steps.version.outputs.version }}"/' android/app/build.gradle
-          sed -i "s/version: '[0-9.]*',/version: '${{ steps.version.outputs.version }}',/" vite.config.ts
-          sed -i "s/runtimeVersion: '[0-9.]*',/runtimeVersion: '${{ steps.version.outputs.version }}',/" vite.config.ts
-          grep -n "versionCode\|versionName" android/app/build.gradle
-          grep -n "version:\|runtimeVersion:" vite.config.ts
-
-      # --- decode release keystore from base64 secret -----------------------
       - name: Decode release keystore
         run: |
           echo "${{ secrets.ANDROID_RELEASE_KEYSTORE_B64 }}" | base64 -d > /tmp/attend-release.keystore
           echo "ANDROID_RELEASE_STORE_FILE=/tmp/attend-release.keystore" >> "$GITHUB_ENV"
 
-      # --- build signed release APK -----------------------------------------
       - name: Build release APK
         env:
           ANDROID_RELEASE_STORE_PASSWORD: ${{ secrets.ANDROID_RELEASE_STORE_PASSWORD }}
@@ -104,7 +112,6 @@ jobs:
           cd android
           ./gradlew assembleRelease \
             -PreactNativeArchitectures=${{ env.reactNativeArchitectures }} \
-            -Pccache.enabled=true \
             --no-daemon
 
       - name: Save Gradle cache
@@ -115,35 +122,28 @@ jobs:
             android/.gradle
           key: ${{ runner.os }}-gradle-${{ hashFiles('android/gradle/wrapper/gradle-wrapper.properties') }}
 
-      # --- publish OTA update to the update server --------------------------
+      # --- step 3: publish OTA update to R2 via wrangler -----------------
       - name: Publish OTA update
         env:
-          CLOUDFLARE_R2_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY }}
-          CLOUDFLARE_R2_SECRET_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_KEY }}
-          CLOUDFLARE_R2_ENDPOINT: ${{ secrets.CLOUDFLARE_R2_ENDPOINT }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_R2_BUCKET: ${{ secrets.CLOUDFLARE_R2_BUCKET }}
         run: |
-          # one updates publish bundles the JS + assets for the release binary.
-          # Output goes to an empty folder: manifest.json + assets/<sha256>.
+          # Publish OTA bundle (bundles JS + assets for the release binary)
           rm -rf ./ota-android && mkdir -p ./ota-android
           bunx one updates publish --platform android --out ./ota-android
 
-          # Upload the OTA output to R2 under updates/android/<version>/, which
-          # app/api/updates/[...rest]+api.ts serves to clients.
-          pip install awscli --quiet
-          aws configure set aws_access_key_id "$CLOUDFLARE_R2_ACCESS_KEY"
-          aws configure set aws_secret_access_key "$CLOUDFLARE_R2_SECRET_KEY"
-          aws configure set default.region us-east-1
-          aws s3 sync ./ota-android "s3://${CLOUDFLARE_R2_BUCKET}/updates/android/${{ steps.version.outputs.version }}/" \
-            --endpoint-url "$CLOUDFLARE_R2_ENDPOINT" \
-            --cache-control "public, max-age=31536000, immutable" \
-            --exclude "*/manifest.json"
-          aws s3 cp ./ota-android/manifest.json "s3://${CLOUDFLARE_R2_BUCKET}/updates/android/${{ steps.version.outputs.version }}/manifest.json" \
-            --endpoint-url "$CLOUDFLARE_R2_ENDPOINT" \
-            --cache-control "public, max-age=0, must-revalidate"
+          # Upload manifest to R2 via wrangler (no awscli needed)
+          wrangler r2 object put "${CLOUDFLARE_R2_BUCKET}/updates/android/${{ steps.version.outputs.version }}/manifest.json" \
+            --file "./ota-android/manifest.json"
+
+          # Upload each asset
+          for f in ./ota-android/assets/*; do
+            [ -f "$f" ] && wrangler r2 object put "${CLOUDFLARE_R2_BUCKET}/updates/android/${{ steps.version.outputs.version }}/assets/$(basename "$f")" --file "$f"
+          done
+
           echo "OTA update published for android runtimeVersion=${{ steps.version.outputs.version }}"
 
-      # --- tag + create GitHub Release with the APK attached ----------------
+      # --- tag + create GitHub Release -----------------------------------
       - name: Create git tag and push
         run: |
           git config user.name "Attend CI"
