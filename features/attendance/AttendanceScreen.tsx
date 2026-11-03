@@ -32,10 +32,19 @@ export function AttendanceScreen({ mode }: { mode: 'today' | 'history' | 'course
     new Date(week).getDate() + 7
   ).getTime()
   const month = new Date(now.getFullYear(), now.getMonth(), 1).getTime()
+
+  // Render whatever each query already has locally instead of blocking the
+  // whole screen until both queries finish.
+  const courseData = courseQuery.type === 'complete' ? allCourses : []
+  const sessionData = sessionQuery.type === 'complete' ? allSessions : []
+  const coursesReady = courseQuery.type === 'complete'
+  const sessionsReady = sessionQuery.type === 'complete'
+  const hasError = courseQuery.type === 'error' || sessionQuery.type === 'error'
+
   const visible =
     mode === 'today'
-      ? allSessions.filter((session) => session.startTime >= start && session.startTime < end)
-      : [...allSessions].reverse()
+      ? sessionData.filter((session) => session.startTime >= start && session.startTime < end)
+      : [...sessionData].reverse()
 
   return (
     <>
@@ -48,77 +57,81 @@ export function AttendanceScreen({ mode }: { mode: 'today' | 'history' | 'course
           {mutation.error ? (
             <Paragraph color="red-900">Could not save attendance. Please try again.</Paragraph>
           ) : null}
-          {courseQuery.type === 'error' || sessionQuery.type === 'error' ? (
-            <Paragraph>Could not load classes.</Paragraph>
-          ) : courseQuery.type !== 'complete' || sessionQuery.type !== 'complete' ? (
+          {hasError ? <Paragraph>Could not load classes.</Paragraph> : null}
+          {mode === 'courses' ? (
+            <>
+              {!coursesReady && <Paragraph>Loading courses…</Paragraph>}
+              {!sessionsReady && <Paragraph>Loading sessions…</Paragraph>}
+              {coursesReady && courseData.length ? (
+                courseData.map((course) => {
+                  const courseSessions = sessionData.filter((item) => item.courseId === course.id)
+                  const completed = courseSessions.filter((item) => item.endTime <= now.getTime())
+                  const weekSessions = courseSessions.filter(
+                    (item) => item.startTime >= week && item.startTime < nextWeek
+                  )
+                  return (
+                    <YStack
+                      key={course.id}
+                      gap={8}
+                      py={12}
+                      borderBottomWidth={1}
+                      borderColor="color-5"
+                    >
+                      <SizableText fontWeight="700">{course.courseName}</SizableText>
+                      <Paragraph color="color-10">
+                        {course.room
+                          ? `${course.room.buildingCode} ${course.room.roomNumber}`
+                          : 'No room'}
+                      </Paragraph>
+                      <XStack gap={16} flexWrap="wrap">
+                        <AttendanceGauge
+                          label={previousWeek ? 'Last week' : 'This week'}
+                          sessions={weekSessions.filter((item) => item.endTime <= now.getTime())}
+                        />
+                        <AttendanceGauge
+                          label="This month"
+                          sessions={completed.filter((item) => item.startTime >= month)}
+                        />
+                        <AttendanceGauge label="Overall" sessions={completed} />
+                      </XStack>
+                      <XStack gap={8}>
+                        <Button
+                          size="sm"
+                          subtle={previousWeek}
+                          onPress={() => setPreviousWeek(false)}
+                        >
+                          This week
+                        </Button>
+                        <Button
+                          size="sm"
+                          subtle={!previousWeek}
+                          onPress={() => setPreviousWeek(true)}
+                        >
+                          Last week
+                        </Button>
+                      </XStack>
+                      {weekSessions.length ? (
+                        weekSessions.map((item) => (
+                          <Paragraph key={item.id} color="color-10">
+                            {new Date(item.startTime).toLocaleString()} ·{' '}
+                            {item.attendance ??
+                              (item.endTime > now.getTime() ? 'Upcoming' : 'Not recorded')}
+                          </Paragraph>
+                        ))
+                      ) : (
+                        <Paragraph color="color-10">No sessions scheduled this week.</Paragraph>
+                      )}
+                      <AttendanceCalendar sessions={courseSessions} now={now.getTime()} />
+                    </YStack>
+                  )
+                })
+              ) : coursesReady ? (
+                <Paragraph>No courses yet. Add a calendar below.</Paragraph>
+              ) : null}
+              <CalendarSettings />
+            </>
+          ) : !sessionsReady ? (
             <Paragraph>Loading classes…</Paragraph>
-          ) : mode === 'courses' ? (
-            allCourses.length ? (
-              allCourses.map((course) => {
-                const courseSessions = allSessions.filter((item) => item.courseId === course.id)
-                const completed = courseSessions.filter((item) => item.endTime <= now.getTime())
-                const weekSessions = courseSessions.filter(
-                  (item) => item.startTime >= week && item.startTime < nextWeek
-                )
-                return (
-                  <YStack
-                    key={course.id}
-                    gap={8}
-                    py={12}
-                    borderBottomWidth={1}
-                    borderColor="color-5"
-                  >
-                    <SizableText fontWeight="700">{course.courseName}</SizableText>
-                    <Paragraph color="color-10">
-                      {course.room
-                        ? `${course.room.buildingCode} ${course.room.roomNumber}`
-                        : 'No room'}
-                    </Paragraph>
-                    <XStack gap={16} flexWrap="wrap">
-                      <AttendanceGauge
-                        label={previousWeek ? 'Last week' : 'This week'}
-                        sessions={weekSessions.filter((item) => item.endTime <= now.getTime())}
-                      />
-                      <AttendanceGauge
-                        label="This month"
-                        sessions={completed.filter((item) => item.startTime >= month)}
-                      />
-                      <AttendanceGauge label="Overall" sessions={completed} />
-                    </XStack>
-                    <XStack gap={8}>
-                      <Button
-                        size="sm"
-                        subtle={previousWeek}
-                        onPress={() => setPreviousWeek(false)}
-                      >
-                        This week
-                      </Button>
-                      <Button
-                        size="sm"
-                        subtle={!previousWeek}
-                        onPress={() => setPreviousWeek(true)}
-                      >
-                        Last week
-                      </Button>
-                    </XStack>
-                    {weekSessions.length ? (
-                      weekSessions.map((item) => (
-                        <Paragraph key={item.id} color="color-10">
-                          {new Date(item.startTime).toLocaleString()} ·{' '}
-                          {item.attendance ??
-                            (item.endTime > now.getTime() ? 'Upcoming' : 'Not recorded')}
-                        </Paragraph>
-                      ))
-                    ) : (
-                      <Paragraph color="color-10">No sessions scheduled this week.</Paragraph>
-                    )}
-                    <AttendanceCalendar sessions={courseSessions} now={now.getTime()} />
-                  </YStack>
-                )
-              })
-            ) : (
-              <Paragraph>No courses yet. Add a calendar below.</Paragraph>
-            )
           ) : visible.length ? (
             visible.map((session) => (
               <YStack key={session.id} gap={8} py={12} borderBottomWidth={1} borderColor="color-5">
@@ -157,7 +170,6 @@ export function AttendanceScreen({ mode }: { mode: 'today' | 'history' | 'course
           ) : (
             <Paragraph>{mode === 'today' ? 'No classes today.' : 'No sessions yet.'}</Paragraph>
           )}
-          {mode === 'courses' ? <CalendarSettings /> : null}
           {mode === 'history' ? <TimelineImport /> : null}
         </YStack>
       </PageScrollView>
