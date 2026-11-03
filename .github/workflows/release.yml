@@ -1,10 +1,12 @@
 name: Build & Release
 
-# Deploys Cloudflare infra first, then builds + signs the release APK,
-# publishes an OTA update to R2, tags, and creates a GitHub Release.
+# Runs checks, deploys Cloudflare infra, builds + signs the release APK,
+# creates the GitHub Release, then publishes the OTA update to R2.
 # Runs on every push to main.
 on:
   push:
+    branches: [main]
+  pull_request:
     branches: [main]
   workflow_dispatch:
 
@@ -16,9 +18,59 @@ env:
   GRADLE_OPTS: -Dorg.gradle.jvmargs="-Xmx12g -XX:MaxMetaspaceSize=2g" -Dorg.gradle.daemon=false -Dorg.gradle.max-workers=4
   # Samsung Galaxy A13 uses arm64-v8a only
   reactNativeArchitectures: arm64-v8a
+  # Consistent bun version across jobs
+  BUN_VERSION: latest
 
 jobs:
+  # --- gate: typecheck, lint, tests ---------------------------------------
+  checks:
+    name: Checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+
+      - name: Restore Bun cache
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            node_modules
+            ~/.bun/install/cache
+            ~/.config/bun
+          key: ${{ runner.os }}-bun-${{ hashFiles('bun.lockb') }}
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile --ignore-scripts
+
+      - name: Save Bun cache
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            node_modules
+            ~/.bun/install/cache
+            ~/.config/bun
+          key: ${{ runner.os }}-bun-${{ hashFiles('bun.lockb') }}
+
+      - name: Typecheck
+        run: bun run typecheck
+
+      - name: Lint
+        run: bunx biome ci . --reporter=github
+
+      - name: Test
+        run: bun test features/auth/googleCallback.test.ts features/attendance/infer.test.ts features/calendar/calendarEvents.test.ts features/calendar/calendarSync.integration.test.ts helpers/uuid.test.ts
+
+  # --- deploy infra, build APK, release, OTA ------------------------------
   build-release:
+    name: Build & Release
+    needs: checks
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     timeout-minutes: 120
     steps:
@@ -30,7 +82,7 @@ jobs:
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
         with:
-          bun-version: latest
+          bun-version: ${{ env.BUN_VERSION }}
 
       - name: Restore Bun cache
         uses: actions/cache/restore@v4
@@ -38,6 +90,7 @@ jobs:
           path: |
             node_modules
             ~/.bun/install/cache
+            ~/.config/bun
           key: ${{ runner.os }}-bun-${{ hashFiles('bun.lockb') }}
 
       - name: Install dependencies
@@ -49,9 +102,10 @@ jobs:
           path: |
             node_modules
             ~/.bun/install/cache
+            ~/.config/bun
           key: ${{ runner.os }}-bun-${{ hashFiles('bun.lockb') }}
 
-      # --- automatic semver: bump patch from the latest git tag ----------
+      # --- automatic semver: bump patch from the latest git tag -----------
       - name: Determine semver
         id: version
         run: |
@@ -66,7 +120,7 @@ jobs:
           echo "versionCode=$VERSION_CODE" >> "$GITHUB_OUTPUT"
           echo "Computed semver $VERSION (versionCode $VERSION_CODE)"
 
-      # --- step 1: deploy Cloudflare infra first -------------------------
+      # --- step 1: deploy Cloudflare infra first --------------------------
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
@@ -93,7 +147,7 @@ jobs:
           ATTEND_CF_FILES_URL: ${{ secrets.ATTEND_CF_FILES_URL }}
         run: bun scripts/deploy-cloudflare.ts
 
-      # --- step 2: build signed release APK ------------------------------
+      # --- step 2: build signed release APK -------------------------------
       - name: Install ccache
         run: sudo apt-get update -y && sudo apt-get install -y ccache
 
@@ -132,31 +186,7 @@ jobs:
             android/.gradle
           key: ${{ runner.os }}-gradle-${{ hashFiles('android/gradle/wrapper/gradle-wrapper.properties') }}
 
-      # --- step 3: publish OTA update to R2 via wrangler -----------------
-      - name: Publish OTA update
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_R2_BUCKET: ${{ secrets.ATTEND_CF_BUCKET_NAME }}
-        run: |
-          # Publish OTA bundle (bundles JS + assets for the release binary)
-          rm -rf ./ota-android && mkdir -p ./ota-android
-          bunx one updates publish --platform android --out ./ota-android
-
-          # Authenticate wrangler with API token
-          echo "$CLOUDFLARE_API_TOKEN" | bunx wrangler auth login --api-token > /dev/null 2>&1 || true
-
-          # Upload manifest to R2 via wrangler (no awscli needed)
-          bunx wrangler r2 object put "${CLOUDFLARE_R2_BUCKET}/updates/android/${{ steps.version.outputs.version }}/manifest.json" \
-            --file "./ota-android/manifest.json"
-
-          # Upload each asset
-          for f in ./ota-android/assets/*; do
-            [ -f "$f" ] && bunx wrangler r2 object put "${CLOUDFLARE_R2_BUCKET}/updates/android/${{ steps.version.outputs.version }}/assets/$(basename "$f")" --file "$f"
-          done
-
-          echo "OTA update published for android runtimeVersion=${{ steps.version.outputs.version }}"
-
-      # --- tag + create GitHub Release -----------------------------------
+      # --- step 3: create GitHub Release (before OTA) ---------------------
       - name: Create git tag and push
         run: |
           git config user.name "Attend CI"
@@ -180,3 +210,27 @@ jobs:
           files: android/app/build/outputs/apk/release/app-release.apk
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # --- step 4: publish OTA update to R2 via wrangler ------------------
+      - name: Publish OTA update
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_R2_BUCKET: ${{ secrets.ATTEND_CF_BUCKET_NAME }}
+        run: |
+          # Publish OTA bundle (bundles JS + assets for the release binary)
+          rm -rf ./ota-android && mkdir -p ./ota-android
+          bunx one updates publish --platform android --out ./ota-android
+
+          # Authenticate wrangler with API token
+          echo "$CLOUDFLARE_API_TOKEN" | bunx wrangler auth login --api-token > /dev/null 2>&1 || true
+
+          # Upload manifest to R2 via wrangler (no awscli needed)
+          bunx wrangler r2 object put "${CLOUDFLARE_R2_BUCKET}/updates/android/${{ steps.version.outputs.version }}/manifest.json" \
+            --file "./ota-android/manifest.json"
+
+          # Upload each asset
+          for f in ./ota-android/assets/*; do
+            [ -f "$f" ] && bunx wrangler r2 object put "${CLOUDFLARE_R2_BUCKET}/updates/android/${{ steps.version.outputs.version }}/assets/$(basename "$f")" --file "$f"
+          done
+
+          echo "OTA update published for android runtimeVersion=${{ steps.version.outputs.version }}"
