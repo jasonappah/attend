@@ -1,15 +1,31 @@
+# Android signing keys — NEVER commit these
+*.keystore
+*.jks
+*.key
+
+# Android
+android/app/build.gradle.kts
+android/local.properties
+android/.gradle/
+android/build/
+android/app/build/
+android/keystore.properties
+
+# Node / Bun
 node_modules/
+.bun/
 dist/
-.one/
-.orez/
-.orez-*/
-.tamagui/
-.wrangler/
-app/routes.d.ts
-.env*
-scripts/tmp/
-ios/
-android/
+dist-worker/
+dist/client/
+dist/worker/
+dist/orez-sync/
+
+# Environment
+.env
+.env.development
+.env.production
+.env.local
+
+# OS
 .DS_Store
-.remote-out/
-.remote-deliveries/
+Thumbs.db

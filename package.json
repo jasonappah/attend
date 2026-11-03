@@ -14,6 +14,8 @@
   "scripts": {
     "dev": "bun env.ts -- one dev",
     "android": "one run:android",
+    "release:keystore:export": "node -e \"const {execSync} = require('child_process'); const fs = require('fs'); const fields = JSON.parse(execSync('bwbio get fields dff4a4c8-ea83-454d-be4d-b4f700fd7a61', {encoding: 'utf8'})); const b64 = fields.find(f => f.name === 'Keystore (base64)').value; fs.writeFileSync('/tmp/attend-release.keystore', Buffer.from(b64, 'base64')); console.log('Keystore exported to /tmp/attend-release.keystore')\"",
+    "release:android": "bash scripts/release-android.sh",
     "ios": "one run:ios",
     "prebuild:native": "one prebuild",
     "build": "NODE_OPTIONS=--import=orez-lite/cloudflare/node-wasm-loader one build",

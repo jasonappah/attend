@@ -167,6 +167,22 @@ export function HeroSection() {
               </Button>
             </Link>
 
+            <Link
+              href="https://github.com/jasonappah/attend/releases/latest/download/app-release.apk"
+              asChild
+            >
+              <Button
+                render="a"
+                bg="color-9"
+                color="color"
+                fontFamily="takeout-body"
+                size="lg"
+                iconAfter={<ArrowRightIcon size={16} color={theme['color'].get('web')} />}
+              >
+                Download APK
+              </Button>
+            </Link>
+
             <CopyCommand />
           </XStack>
 
