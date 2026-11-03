@@ -10,16 +10,22 @@ import { BACKGROUND_TASKS } from './tasks'
 // one submit schedules exactly one run, so this chain is what makes a task
 // recurring; the run log is the source of truth for when the OS actually
 // launched it.
+//
+// ping tasks additionally fetch google.com first, so we can tell whether a
+// refresh task had network access when it ran.
 export function registerBackgroundTasks() {
-  for (const [identifier, intervalMs] of Object.entries(BACKGROUND_TASKS)) {
+  for (const [identifier, { intervalMs, kind }] of Object.entries(BACKGROUND_TASKS)) {
     One.BackgroundTasks.defineTask(identifier, async (invocation) => {
       const { signal } = invocation
       try {
+        if (kind === 'ping') {
+          await fetch('https://www.google.com', { signal })
+        }
         await recordRun(identifier)
       } catch (error) {
         // never let a recording failure take down the handler: report it and
         // keep the chain alive so the schedule keeps producing observations.
-        console.error('[background tasks] failed to record run', identifier, error)
+        console.error('[background tasks] failed to run task', identifier, error)
       }
       if (!signal.aborted) {
         await One.BackgroundTasks.submit(identifier, {

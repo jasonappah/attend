@@ -28,11 +28,11 @@ type TaskRun = {
   ranAt: number
   batteryLevel: number | null
   batteryState: string | null
-  lowPowerMode: number | null
+  lowPowerMode: boolean | null
   deviceModel: string | null
   deviceSystemName: string | null
   deviceSystemVersion: string | null
-  isSimulator: number | null
+  isSimulator: boolean | null
 }
 
 // one-line summary of the system state when the task ran: battery level and
@@ -48,7 +48,7 @@ function systemStatusLabel(row: TaskRun): string {
   if (row.batteryState) {
     parts.push(row.batteryState)
   }
-  if (row.lowPowerMode === 1) {
+  if (row.lowPowerMode === true) {
     parts.push('low power mode')
   }
   if (row.deviceModel || row.deviceSystemName) {
@@ -56,7 +56,7 @@ function systemStatusLabel(row: TaskRun): string {
       `${row.deviceModel ?? ''} ${row.deviceSystemName ?? ''}`.trim()
     )
   }
-  if (row.isSimulator === 1) {
+  if (row.isSimulator === true) {
     parts.push('simulator')
   }
   return parts.join(' • ')
