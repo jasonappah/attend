@@ -126,7 +126,7 @@ jobs:
       - name: Publish OTA update
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_R2_BUCKET: ${{ secrets.CLOUDFLARE_R2_BUCKET }}
+          CLOUDFLARE_R2_BUCKET: ${{ secrets.ATTEND_CF_BUCKET_NAME }}
         run: |
           # Publish OTA bundle (bundles JS + assets for the release binary)
           rm -rf ./ota-android && mkdir -p ./ota-android
