@@ -26,7 +26,7 @@ export const mutationValidators = {
   courseSession: {
     updateAttendance: v.object({
       id: v.string(),
-      attendance: v.nullable(v.union([v.literal("absent"), v.literal("present")])),
+      attendance: v.nullable(v.union([v.literal("absent"), v.literal("cancelled"), v.literal("present")])),
     }),
     importAttendance: v.object({
       id: v.string(),

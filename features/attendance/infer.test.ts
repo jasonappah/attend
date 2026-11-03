@@ -33,6 +33,7 @@ describe('Timeline attendance inference', () => {
     const visits = parseVisits({ semanticSegments: [visit('32°, -96°')] })
     expect(inferAttendance(visits, [session], start)).toEqual([])
     expect(inferAttendance(visits, [{ ...session, attendance: 'absent' }], end + 1)).toEqual([])
+    expect(inferAttendance(visits, [{ ...session, attendance: 'cancelled' }], end + 1)).toEqual([])
     expect(
       inferAttendance(
         parseVisits({ semanticSegments: [visit('32.1°, -96.1°', start, start + 1000)] }),

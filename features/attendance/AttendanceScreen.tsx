@@ -164,6 +164,12 @@ export function AttendanceScreen({ mode }: { mode: 'today' | 'history' | 'course
                   >
                     Clear
                   </Button>
+                  <Button
+                    size="sm"
+                    onPress={() => void mark({ id: session.id, attendance: 'cancelled' })}
+                  >
+                    Cancelled
+                  </Button>
                 </XStack>
               </YStack>
             ))
