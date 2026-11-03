@@ -4,21 +4,22 @@
  * backed by node:sqlite) that lives alongside Zero's synced database. rows
  * written here never leave the device.
  *
- * writes and reads go through prepared statements on the transaction
- * executor (`executor.exec` / `executor.query`), so every parameter is bound
- * positionally through node:sqlite's prepared-statement path. the orex-lite /
- * node:sqlite modules are lazily imported only on native — they aren't
- * web-safe — so on web every function is a no-op, matching the disabled
- * diagnostics screen.
+ * written through Drizzle like the rest of the app's database access
+ * (createSQLiteDatabase + drizzle.insert / drizzle.select). drizzle binds
+ * values as parameters rather than interpolating them into SQL, so this is
+ * still the prepared-statement path. the orex-lite / node:sqlite modules are
+ * lazily imported only on native — they aren't web-safe — so on web every
+ * function is a no-op, matching the disabled diagnostics screen.
  */
 import { One } from 'one'
 import { isWeb } from 'tamagui'
-import type { SQLiteTransactionExecutor, SQLiteTransactionProvider } from '@o/database/sqlite'
+import { desc } from 'drizzle-orm'
+import type { SQLiteDatabase, SQLiteTransactionProvider } from '@o/database/sqlite'
 import { uuidv7 } from '~/helpers/uuid'
 import { relations } from '~/database/relations'
 import * as schema from '~/database/schema'
 
-type LocalDb = ReturnType<typeof import('@o/database/sqlite').createSQLiteDatabase>
+type LocalDb = SQLiteDatabase<typeof schema, typeof relations>
 
 let db: LocalDb | null = null
 
@@ -44,20 +45,6 @@ export type SystemStatus = {
   deviceSystemName: string
   deviceSystemVersion: string
   isSimulator: boolean
-}
-
-// one row read back from the backgroundTaskRun table.
-type TaskRunRow = {
-  id: string
-  task: string
-  ranAt: number
-  batteryLevel: number | null
-  batteryState: string | null
-  lowPowerMode: number | null
-  deviceModel: string | null
-  deviceSystemName: string | null
-  deviceSystemVersion: string | null
-  isSimulator: number | null
 }
 
 // one snapshot of battery + device state at the moment a background task ran.
@@ -88,28 +75,41 @@ async function readSystemStatus(): Promise<SystemStatus> {
   }
 }
 
+// drizzle stores boolean-ish columns as SQLite integers (0/1) on write and
+// converts them back to booleans on read for columns declared with
+// `mode: 'boolean'`, so the row shape coming out of .select() already
+// matches TaskRunRow.
+type TaskRunRow = {
+  id: string
+  task: string
+  ranAt: number
+  batteryLevel: number | null
+  batteryState: string | null
+  lowPowerMode: boolean | null
+  deviceModel: string | null
+  deviceSystemName: string | null
+  deviceSystemVersion: string | null
+  isSimulator: boolean | null
+}
+
 export async function recordRun(task: string) {
   if (isWeb) return
   const database = await getDb()
   if (!database) return
   const status = await readSystemStatus()
-  await database.transaction(async ({ executor }) => {
-    await executor.exec(
-      `INSERT INTO backgroundTaskRun (id, task, ranAt, batteryLevel, batteryState, lowPowerMode, deviceModel, deviceSystemName, deviceSystemVersion, isSimulator)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [
-        uuidv7(),
-        task,
-        Date.now(),
-        status.batteryLevel,
-        status.batteryState,
-        status.lowPowerMode ? 1 : 0,
-        status.deviceModel,
-        status.deviceSystemName,
-        status.deviceSystemVersion,
-        status.isSimulator ? 1 : 0,
-      ]
-    )
+  await database.transaction(async ({ drizzle }) => {
+    await drizzle.insert(schema.backgroundTaskRun).values({
+      id: uuidv7(),
+      task,
+      ranAt: Date.now(),
+      batteryLevel: status.batteryLevel,
+      batteryState: status.batteryState,
+      lowPowerMode: status.lowPowerMode,
+      deviceModel: status.deviceModel,
+      deviceSystemName: status.deviceSystemName,
+      deviceSystemVersion: status.deviceSystemVersion,
+      isSimulator: status.isSimulator,
+    })
   })
 }
 
@@ -117,17 +117,12 @@ export async function listRuns(limit = 200) {
   if (isWeb) return []
   const database = await getDb()
   if (!database) return []
-  return database.transaction(async ({ executor }) => {
-    const rows = await executor.query<TaskRunRow>(
-      `SELECT id, task, ranAt, batteryLevel, batteryState, lowPowerMode,
-              deviceModel, deviceSystemName, deviceSystemVersion, isSimulator
-       FROM backgroundTaskRun ORDER BY ranAt DESC LIMIT ?`,
-      [limit]
-    )
-    return rows.map((row) => ({
-      ...row,
-      lowPowerMode: row.lowPowerMode === 1 ? true : row.lowPowerMode === 0 ? false : null,
-      isSimulator: row.isSimulator === 1 ? true : row.isSimulator === 0 ? false : null,
-    }))
+  const rows = await database.transaction(async ({ drizzle }) => {
+    return drizzle
+      .select()
+      .from(schema.backgroundTaskRun)
+      .orderBy(desc(schema.backgroundTaskRun.ranAt))
+      .limit(limit)
   })
+  return rows as unknown as TaskRunRow[]
 }
