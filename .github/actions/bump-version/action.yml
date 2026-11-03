@@ -1,0 +1,30 @@
+name: Bump Semver
+description: Determines the next semver by bumping the patch of the latest git tag
+outputs:
+  version:
+    description: The computed semver (e.g. 1.0.1)
+  tag:
+    description: The git tag (e.g. v1.0.1)
+  versionCode:
+    description: Monotonic integer versionCode for Android
+inputs:
+  match:
+    description: Tag pattern to match
+    required: false
+    default: "v*"
+runs:
+  using: composite
+  steps:
+    - id: version
+      run: |
+        LATEST_TAG=$(git describe --tags --abbrev=0 --match="${{ inputs.match }}" 2>/dev/null || echo 'v0.0.0')
+        LATEST_TAG="${LATEST_TAG#v}"
+        IFS='.' read -r major minor patch <<< "$LATEST_TAG"
+        patch=$((patch + 1))
+        VERSION="$major.$minor.$patch"
+        echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+        echo "tag=v$VERSION" >> "$GITHUB_OUTPUT"
+        # monotonic integer versionCode: major*10000 + minor*100 + patch
+        VERSION_CODE=$(( major * 10000 + minor * 100 + patch ))
+        echo "versionCode=$VERSION_CODE" >> "$GITHUB_OUTPUT"
+        echo "Computed semver $VERSION (versionCode $VERSION_CODE)"

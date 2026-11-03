@@ -16,6 +16,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # --- automatic semver: same version as the APK release ---------------
+      - name: Determine semver
+        uses: ./.github/actions/bump-version
+        id: version
+
+      - name: Apply version to web config
+        run: |
+          sed -i "s/version: '[0-9.]*',/version: '${{ steps.version.outputs.version }}',/" vite.config.ts
+          grep -n "version:" vite.config.ts
+
       - name: Install Bun
         uses: oven-sh/setup-bun@v2
         with:

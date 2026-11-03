@@ -74,19 +74,8 @@ jobs:
 
       # --- automatic semver: bump patch from the latest git tag -------------
       - name: Determine semver
+        uses: ./.github/actions/bump-version
         id: version
-        run: |
-          LATEST_TAG=$(git describe --tags --abbrev=0 --match='v*' 2>/dev/null || echo 'v0.0.0')
-          LATEST_TAG="${LATEST_TAG#v}"
-          IFS='.' read -r major minor patch <<< "$LATEST_TAG"
-          patch=$((patch + 1))
-          VERSION="$major.$minor.$patch"
-          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-          echo "tag=v$VERSION" >> "$GITHUB_OUTPUT"
-          # monotonic integer versionCode: major*10000 + minor*100 + patch
-          VERSION_CODE=$(( major * 10000 + minor * 100 + patch ))
-          echo "versionCode=$VERSION_CODE" >> "$GITHUB_OUTPUT"
-          echo "Computed semver $VERSION (versionCode $VERSION_CODE)"
 
       # --- apply version to native config (working tree only, not committed) --
       - name: Apply version to native config
