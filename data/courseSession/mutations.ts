@@ -7,7 +7,10 @@ export const mutate = mutations(
   {
     updateAttendance: async (
       ctx,
-      args: { id: string; attendance: 'present' | 'absent' | null }
+      args: {
+        id: string
+        attendance: 'present' | 'absent' | 'cancelled' | null
+      }
     ) => {
       if (ctx.environment === 'server') {
         if (!ctx.authData?.id) throw new Error('Not authenticated')
