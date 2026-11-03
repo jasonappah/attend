@@ -6,10 +6,18 @@
  *
  * written through Drizzle like the rest of the app's database access
  * (createSQLiteDatabase + drizzle.insert / drizzle.select). drizzle binds
- * values as parameters rather than interpolating them into SQL, so this is
- * still the prepared-statement path. the orex-lite / node:sqlite modules are
+ * values as parameters rather than interpolating them into SQL, so there's no
+ * SQL injection risk; the underlying node:sqlite driver prepares the
+ * statement internally on each call. the orex-lite / node:sqlite modules are
  * lazily imported only on native — they aren't web-safe — so on web every
  * function is a no-op, matching the disabled diagnostics screen.
+ *
+ * note on Drizzle's `.prepare()` API: this wrapper's drizzle instance calls
+ * `executor.exec(sql, params)` fresh every time, which internally does
+ * `database.prepare(sql).run(params)` — node:sqlite compiles the statement
+ * internally each call. for background tasks that run at most once per
+ * minute, the compile cost is negligible, and `.prepare()` adds no benefit
+ * here since there's no compiled-statement cache across calls.
  */
 import { One } from 'one'
 import { isWeb } from 'tamagui'
@@ -104,12 +112,12 @@ export async function recordRun(task: string) {
       ranAt: Date.now(),
       batteryLevel: status.batteryLevel,
       batteryState: status.batteryState,
-      lowPowerMode: status.lowPowerMode,
+      lowPowerMode: status.lowPowerMode ? 1 : 0,
       deviceModel: status.deviceModel,
       deviceSystemName: status.deviceSystemName,
       deviceSystemVersion: status.deviceSystemVersion,
-      isSimulator: status.isSimulator,
-    })
+      isSimulator: status.isSimulator ? 1 : 0,
+    } as any)
   })
 }
 
