@@ -1,21 +1,47 @@
 /**
- * Direct access to local storage for background-task diagnostics.
- * this is a separate, non-synced store that lives alongside Zero's synced
+ * Direct access to a local SQLite database for background-task diagnostics.
+ * this is a separate, non-synced database that lives alongside Zero's synced
  * database; rows written here never leave the device.
  *
- * On native, records are stored through @o/helpers storage, which is backed
- * by MMKV (react-native-mmkv, initialized by setupStorage.ts). node:sqlite /
- * bun:sqlite aren't available in the Hermes native bundle, so MMKV is used
- * instead — each run is stored as a separate JSON key and listRuns reads all
- * run keys. On web, no storage driver is set up (setupStorage is native-only),
- * so every function is a no-op, matching the disabled diagnostics screen.
+ * on native, the database is backed by @op-engineering/op-sqlite — the same
+ * Hermes-compatible SQLite library Zero uses for its local device cache on
+ * React Native (see on-zero/kv-store's native export). node:sqlite and
+ * bun:sqlite aren't available in the Hermes native bundle, so op-sqlite is
+ * used instead. on web, op-sqlite isn't available, so every function is a
+ * no-op, matching the disabled diagnostics screen.
+ *
+ * written with raw SQL (parameterized) rather than drizzle, since drizzle's
+ * SQLite executor is built on bun:sqlite/node:sqlite which can't run in
+ * Hermes.
  */
-import { createStorage } from '@o/helpers'
+import { open } from '@op-engineering/op-sqlite'
 import { One } from 'one'
 import { isWeb } from 'tamagui'
 import { uuidv7 } from '~/helpers/uuid'
 
-const store = createStorage<string, TaskRunRow>('background-task-runs')
+let db: ReturnType<typeof open> | null = null
+
+function getDb() {
+  if (isWeb) return null
+  if (!db) {
+    db = open({ name: 'background-task-runs.db' })
+    db.executeRawSync(`
+      CREATE TABLE IF NOT EXISTS background_task_run (
+        id TEXT PRIMARY KEY,
+        task TEXT NOT NULL,
+        ran_at INTEGER NOT NULL,
+        battery_level INTEGER,
+        battery_state TEXT,
+        low_power_mode INTEGER,
+        device_model TEXT,
+        device_system_name TEXT,
+        device_system_version TEXT,
+        is_simulator INTEGER
+      )
+    `)
+  }
+  return db
+}
 
 export type SystemStatus = {
   batteryLevel: number
@@ -25,19 +51,6 @@ export type SystemStatus = {
   deviceSystemName: string
   deviceSystemVersion: string
   isSimulator: boolean
-}
-
-type TaskRunRow = {
-  id: string
-  task: string
-  ranAt: number
-  batteryLevel: number | null
-  batteryState: string | null
-  lowPowerMode: boolean | null
-  deviceModel: string | null
-  deviceSystemName: string | null
-  deviceSystemVersion: string | null
-  isSimulator: boolean | null
 }
 
 async function readSystemStatus(): Promise<SystemStatus> {
@@ -73,19 +86,25 @@ export async function recordRun(task: string) {
   if (isWeb) return
   try {
     const status = await readSystemStatus()
-    const run: TaskRunRow = {
-      id: uuidv7(),
+    const database = getDb()
+    if (!database) return
+    const stmt = database.prepareStatement(
+      `INSERT INTO background_task_run (id, task, ran_at, battery_level, battery_state, low_power_mode, device_model, device_system_name, device_system_version, is_simulator)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+    )
+    stmt.bindSync([
+      uuidv7(),
       task,
-      ranAt: Date.now(),
-      batteryLevel: status.batteryLevel,
-      batteryState: status.batteryState,
-      lowPowerMode: status.lowPowerMode,
-      deviceModel: status.deviceModel,
-      deviceSystemName: status.deviceSystemName,
-      deviceSystemVersion: status.deviceSystemVersion,
-      isSimulator: status.isSimulator,
-    }
-    store.set(run.id, run)
+      Date.now(),
+      status.batteryLevel,
+      status.batteryState,
+      status.lowPowerMode ? 1 : 0,
+      status.deviceModel,
+      status.deviceSystemName,
+      status.deviceSystemVersion,
+      status.isSimulator ? 1 : 0,
+    ])
+    stmt.executeSync()
   } catch (error) {
     // never let a recording failure take down the handler
     console.error('[background tasks] failed to record run', task, error)
@@ -95,13 +114,27 @@ export async function recordRun(task: string) {
 export async function listRuns(limit = 200) {
   if (isWeb) return []
   try {
-    const ids = store.keys()
-    const runs = ids
-      .map((id) => store.get(id))
-      .filter((r): r is TaskRunRow => r != null)
-      .sort((a, b) => (b.ranAt ?? 0) - (a.ranAt ?? 0))
-      .slice(0, limit)
-    return runs
+    const database = getDb()
+    if (!database) return []
+    const result = database.executeSync(
+      `SELECT id, task, ran_at, battery_level, battery_state, low_power_mode, device_model, device_system_name, device_system_version, is_simulator
+       FROM background_task_run
+       ORDER BY ran_at DESC
+       LIMIT ?`,
+      [limit]
+    )
+    return result.rows.map((row) => ({
+      id: row.id as string,
+      task: row.task as string,
+      ranAt: Number(row.ran_at),
+      batteryLevel: row.battery_level as number | null,
+      batteryState: row.battery_state as string | null,
+      lowPowerMode: row.low_power_mode == null ? null : row.low_power_mode === 1,
+      deviceModel: row.device_model as string | null,
+      deviceSystemName: row.device_system_name as string | null,
+      deviceSystemVersion: row.device_system_version as string | null,
+      isSimulator: row.is_simulator == null ? null : row.is_simulator === 1,
+    }))
   } catch (error) {
     console.error('[background tasks] failed to list runs', error)
     return []
