@@ -11,12 +11,20 @@ const colors = {
   empty: 'color-3',
   present: 'green-700',
   absent: 'red-700',
+  cancelled: 'color-9',
   mixed: 'orange-700',
   unrecorded: 'color-8',
   upcoming: 'color-5',
 } as const
 
-const symbols = { present: '✓', absent: '×', mixed: '•', unrecorded: '?', upcoming: '○' } as const
+const symbols = {
+  present: '✓',
+  absent: '×',
+  cancelled: '∅',
+  mixed: '•',
+  unrecorded: '?',
+  upcoming: '○',
+} as const
 
 export function AttendanceGauge({
   label,
@@ -123,7 +131,14 @@ export function AttendanceCalendar({
         </XStack>
       </ScrollView>
       <XStack gap={12} flexWrap="wrap">
-        {(['present', 'absent', 'mixed', 'unrecorded', 'upcoming'] as const).map((status) => (
+        {([
+          'present',
+          'absent',
+          'cancelled',
+          'mixed',
+          'unrecorded',
+          'upcoming',
+        ] as const).map((status) => (
           <XStack key={status} items="center" gap={4}>
             <YStack width={12} height={12} rounded={3} background={colors[status]} />
             <SizableText size="xs" color="color-10">

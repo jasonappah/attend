@@ -226,7 +226,9 @@ export const courseSession = sqliteTable(
     courseId: text('courseId')
       .notNull()
       .references(() => course.id),
-    attendance: text('attendance', { enum: ['present', 'absent'] }),
+    attendance: text('attendance', {
+      enum: ['present', 'absent', 'cancelled'],
+    }),
     startTime: integer('startTime').notNull(),
     endTime: integer('endTime').notNull(),
     createdAt: integer('createdAt').notNull(),

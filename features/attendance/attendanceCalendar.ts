@@ -2,7 +2,7 @@ export type CalendarSession = {
   id: string
   startTime: number
   endTime: number
-  attendance: 'present' | 'absent' | null
+  attendance: 'present' | 'absent' | 'cancelled' | null
 }
 
 export type CalendarDay = {
@@ -54,7 +54,10 @@ export function attendanceCalendar(
 }
 
 export function attendancePercent(sessions: readonly CalendarSession[]) {
-  const marked = sessions.filter((session) => session.attendance !== null)
+  // Cancelled classes don't count towards attendance at all.
+  const marked = sessions.filter(
+    (session) => session.attendance !== null && session.attendance !== 'cancelled'
+  )
   return marked.length
     ? Math.round(
         (marked.filter((session) => session.attendance === 'present').length / marked.length) * 100
