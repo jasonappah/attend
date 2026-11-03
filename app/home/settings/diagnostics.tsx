@@ -22,7 +22,45 @@ export default function DiagnosticsScreen() {
   return <DiagnosticsContent />
 }
 
-type TaskRun = { id: string; task: string; ranAt: number }
+type TaskRun = {
+  id: string
+  task: string
+  ranAt: number
+  batteryLevel: number | null
+  batteryState: string | null
+  lowPowerMode: number | null
+  deviceModel: string | null
+  deviceSystemName: string | null
+  deviceSystemVersion: string | null
+  isSimulator: number | null
+}
+
+// one-line summary of the system state when the task ran: battery level and
+// charging state, plus a low-power-mode flag. null fields mean the read was
+// unavailable on that platform.
+function systemStatusLabel(row: TaskRun): string {
+  const parts: string[] = []
+  if (row.batteryLevel != null && row.batteryLevel >= 0) {
+    parts.push(`${Math.round(row.batteryLevel * 100)}%`)
+  } else {
+    parts.push('battery n/a')
+  }
+  if (row.batteryState) {
+    parts.push(row.batteryState)
+  }
+  if (row.lowPowerMode === 1) {
+    parts.push('low power mode')
+  }
+  if (row.deviceModel || row.deviceSystemName) {
+    parts.push(
+      `${row.deviceModel ?? ''} ${row.deviceSystemName ?? ''}`.trim()
+    )
+  }
+  if (row.isSimulator === 1) {
+    parts.push('simulator')
+  }
+  return parts.join(' • ')
+}
 
 function DiagnosticsContent() {
   const [runs, setRuns] = useState<TaskRun[]>([])
@@ -172,6 +210,9 @@ function DiagnosticsContent() {
                     <Paragraph size="2" color="color-11">
                       {new Date(row.ranAt).toLocaleString()}
                     </Paragraph>
+                    <SizableText size="2" color="color-10">
+                      {systemStatusLabel(row)}
+                    </SizableText>
                   </YStack>
                   <SizableText size="3" color="color-10" textAlign="right">
                     {new Date(row.ranAt).toLocaleTimeString()}

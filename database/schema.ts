@@ -91,6 +91,18 @@ export const backgroundTaskRun = sqliteTable('backgroundTaskRun', {
   // the submitted task identifier, e.g. attend.background-task.every-minute
   task: text('task').notNull(),
   ranAt: integer('ranAt').notNull(),
+  // system snapshot captured at the moment the task ran. batteryLevel is 0
+  // to 1, or -1 when the device reports no level. batteryState is unknown,
+  // unplugged, charging, full, or notCharging. lowPowerMode is Power Saver
+  // on Android and Low Power Mode on iOS. device fields are the OS snapshot;
+  // isSimulator is true only on simulator/emulator hardware.
+  batteryLevel: integer('batteryLevel'),
+  batteryState: text('batteryState'),
+  lowPowerMode: integer('lowPowerMode', { mode: 'boolean' }),
+  deviceModel: text('deviceModel'),
+  deviceSystemName: text('deviceSystemName'),
+  deviceSystemVersion: text('deviceSystemVersion'),
+  isSimulator: integer('isSimulator', { mode: 'boolean' }),
 })
 
 // ─── public tables (synced to zero) ───
