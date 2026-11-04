@@ -15,7 +15,9 @@ permissions:
 
 env:
   GRADLE_OPTS: -Dorg.gradle.jvmargs="-Xmx12g -XX:MaxMetaspaceSize=2g" -Dorg.gradle.daemon=false -Dorg.gradle.max-workers=8
-  reactNativeArchitectures: armeabi-v7a
+  # The Galaxy A13 4G (SM-A135U1) is 32-bit only. One ABI keeps release builds
+  # fast; override this if the app should also target other devices.
+  RELEASE_ARCHITECTURES: armeabi-v7a
   BUN_VERSION: latest
 
 jobs:
@@ -172,8 +174,19 @@ jobs:
         run: |
           cd android
           ./gradlew assembleRelease \
-            -PreactNativeArchitectures=${{ env.reactNativeArchitectures }} \
+            -PreactNativeArchitectures=${{ env.RELEASE_ARCHITECTURES }} \
             --no-daemon
+
+      - name: Verify APK contains 32-bit ARM libraries
+        run: |
+          set -euo pipefail
+          APK=android/app/build/outputs/apk/release/app-release.apk
+          ABIS=$(unzip -l "$APK" | awk '{print $4}' | grep '^lib/' | cut -d/ -f2 | sort -u)
+          echo "APK ABIs: ${ABIS//$'\n'/, }"
+          if ! grep -qx "armeabi-v7a" <<< "$ABIS"; then
+            echo "::error::Release APK is missing lib/armeabi-v7a; it will not install on the Galaxy A13 4G."
+            exit 1
+          fi
 
       - name: Save Gradle cache
         uses: actions/cache/save@v4

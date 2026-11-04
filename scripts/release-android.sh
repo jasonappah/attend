@@ -18,12 +18,16 @@ KEYSTORE_B64=$(node -e "console.log(JSON.parse(process.argv[1]).find(f => f.name
 echo "$KEYSTORE_B64" | base64 -d > "$KEYSTORE_OUT"
 echo "✅ Keystore exported to $KEYSTORE_OUT"
 
-echo "📱 Building release APK..."
+# Match CI: the Galaxy A13 4G (SM-A135U1) is 32-bit only. Override with
+# ANDROID_ABIS for emulators or other devices.
+ANDROID_ABIS="${ANDROID_ABIS:-armeabi-v7a}"
+
+echo "📱 Building release APK for ${ANDROID_ABIS}..."
 cd android
 ANDROID_RELEASE_STORE_FILE="$KEYSTORE_OUT" \
   ANDROID_RELEASE_STORE_PASSWORD="$STORE_PASS" \
   ANDROID_RELEASE_KEY_ALIAS="$KEY_ALIAS" \
   ANDROID_RELEASE_KEY_PASSWORD="$KEY_PASS" \
-  ./gradlew assembleRelease
+  ./gradlew assembleRelease -PreactNativeArchitectures="$ANDROID_ABIS"
 
 echo "✅ Release APK built: android/app/build/outputs/apk/release/app-release.apk"
