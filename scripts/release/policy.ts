@@ -1,4 +1,4 @@
-import { execFileSync } from 'bun:child_process'
+import { execFileSync } from 'node:child_process'
 
 // Deliberately opt-in: required checks must exist on main before enabling them.
 // Existing independent rulesets/protections are never replaced or deleted.

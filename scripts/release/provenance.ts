@@ -1,4 +1,4 @@
-import { execFileSync } from 'bun:child_process'
+import { execFileSync } from 'node:child_process'
 import { readReleaseTrailers } from '../check-commit-message'
 import { aggregate, type Intent } from './versioning'
 

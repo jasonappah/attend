@@ -1,8 +1,8 @@
-import { execFileSync } from 'bun:child_process'
+import { execFileSync } from 'node:child_process'
 // prepare the One build with published Orez deployment primitives.
-import { createHash } from 'bun:crypto'
-import { mkdirSync, readFileSync, renameSync, writeFileSync } from 'bun:fs'
-import { join, resolve } from 'bun:path'
+import { createHash } from 'node:crypto'
+import { mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs'
+import { join, resolve } from 'node:path'
 import {
   assertWorkerStaticModuleImportsResolve,
   buildMigrationModuleSource,

@@ -1,5 +1,5 @@
-import { execFileSync } from 'bun:child_process'
-import { appendFileSync } from 'bun:fs'
+import { execFileSync } from 'node:child_process'
+import { appendFileSync } from 'node:fs'
 import { readReleaseTrailers } from '../check-commit-message'
 import { verifyMainIntents } from './provenance'
 import { git, jsonAt, RELEASE_BRANCH, type ReleaseState, verifyCandidate } from './versioning'

@@ -1,4 +1,4 @@
-import { execFileSync } from 'bun:child_process'
+import { execFileSync } from 'node:child_process'
 import { readReleaseTrailers } from '../check-commit-message'
 
 export type ReleaseType = 'patch' | 'minor' | 'major'

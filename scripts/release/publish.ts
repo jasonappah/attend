@@ -1,9 +1,9 @@
-import { execFileSync } from 'bun:child_process'
-import { createHash } from 'bun:crypto'
-import { lstatSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'bun:fs'
-import { tmpdir } from 'bun:os'
-import { join } from 'bun:path'
-import { parseArgs } from 'bun:util'
+import { execFileSync } from 'node:child_process'
+import { createHash } from 'node:crypto'
+import { lstat, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
+import { parseArgs } from 'node:util'
 
 // The caller must serialize ALL writers (including rollback) without cancellation.
 // Prepared artifacts must come from the trusted release run, never a caller URL.
@@ -61,7 +61,7 @@ export async function preparePublication(options: Publication) {
   assert(o.platform === 'android' || o.platform === 'ios', 'Invalid platform')
   assert(Number.isSafeInteger(o.nativeBuild) && o.nativeBuild > 0, 'Invalid native build')
   assert(o.predecessor === 'none' || token.test(o.predecessor), 'Invalid predecessor')
-  const bytes = readFileSync(join(o.directory, 'manifest.json'))
+  const bytes = await readFile(join(o.directory, 'manifest.json'))
   const m: Manifest = decode(bytes)
   assert(
     record(m) && typeof m.id === 'string' && token.test(m.id) && m.id !== 'none',
@@ -101,8 +101,8 @@ export async function preparePublication(options: Publication) {
     assert(!paths.has(a.path), 'Duplicate asset install path')
     paths.add(a.path)
     const file = join(o.directory, 'assets', a.hash)
-    assert(lstatSync(file).isFile(), 'Asset must be a regular file')
-    const body = readFileSync(file)
+    assert((await lstat(file)).isFile(), 'Asset must be a regular file')
+    const body = await readFile(file)
     assert(digest(body) === a.hash, 'Asset checksum mismatch')
     assets.set(a.hash, body)
   }
@@ -239,7 +239,7 @@ export function wranglerStorage(bucket: string): Storage {
     })
   return {
     async get(key) {
-      const dir = mkdtempSync(join(tmpdir(), 'attend-r2-read-'))
+      const dir = await mkdtemp(join(tmpdir(), 'attend-r2-read-'))
       try {
         const file = join(dir, 'object')
         try {
@@ -250,19 +250,19 @@ export function wranglerStorage(bucket: string): Storage {
             return null
           throw error
         }
-        return readFileSync(file)
+        return await readFile(file)
       } finally {
-        rmSync(dir, { recursive: true, force: true })
+        await rm(dir, { recursive: true, force: true })
       }
     },
     async put(key, bytes, contentType) {
-      const dir = mkdtempSync(join(tmpdir(), 'attend-r2-write-'))
+      const dir = await mkdtemp(join(tmpdir(), 'attend-r2-write-'))
       try {
         const file = join(dir, 'object')
-        writeFileSync(file, bytes)
+        await writeFile(file, bytes)
         run(['put', `${bucket}/${key}`, '--file', file, '--content-type', contentType])
       } finally {
-        rmSync(dir, { recursive: true, force: true })
+        await rm(dir, { recursive: true, force: true })
       }
     },
   }
@@ -308,7 +308,7 @@ if (import.meta.main) {
     nativeBuild: Number(required('native-build')),
     nativeReceipt:
       typeof v['native-receipt'] === 'string'
-        ? JSON.parse(readFileSync(v['native-receipt'], 'utf8'))
+        ? JSON.parse(await readFile(v['native-receipt'], 'utf8'))
         : undefined,
   }
   if (v['dry-run']) {
