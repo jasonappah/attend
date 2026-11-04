@@ -17,6 +17,7 @@ permissions:
 
 jobs:
   metadata:
+    name: Release metadata
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
