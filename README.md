@@ -26,6 +26,8 @@ bun run generate
 
 For Android, start the dev server and run `bunx one run:android` with an emulator or device connected. For iOS use `bunx one run:ios`. Native identity is configured through `APP_VARIANT=development|preview|production`; production uses the existing `me.jasonaa.attend` identifier and the `attend` URL scheme.
 
+Release APKs are built for `armeabi-v7a` only, which is what the Galaxy A13 4G (SM-A135U1) needs. Build one locally with `bun run release:android`; set `ANDROID_ABIS` (or pass `-PreactNativeArchitectures=...` to Gradle) to target an emulator or a 64-bit device.
+
 ## Existing PostgreSQL data
 
 The starter's SQLite database does **not** automatically contain the old PostgreSQL data. `scripts/import-attend-postgres.ts` copies users, linked accounts, calendars, rooms, courses, and attendance into a new SQLite file. It reads PostgreSQL in a read-only snapshot and refuses to overwrite an existing file:
