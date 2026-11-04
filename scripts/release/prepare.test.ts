@@ -6,6 +6,11 @@ import { releaseStatus } from './detect'
 import { prepare } from './prepare'
 import { calculate, git, verifyCandidate } from './versioning'
 
+// prepare() calls verifyMainIntents() in CI mode, which hits the live GitHub
+// API. Tests run in CI too, so opt out here — verifyMainIntents is exercised
+// through the release-metadata workflow instead.
+process.env.GITHUB_ACTIONS = 'false'
+
 const directories: string[] = []
 afterEach(() => {
   for (const dir of directories.splice(0)) rmSync(dir, { recursive: true, force: true })
