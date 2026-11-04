@@ -9,7 +9,10 @@ android/local.properties
 android/.gradle/
 android/build/
 android/app/build/
+android/app/.cxx
 android/keystore.properties
+
+ios/
 
 # Node / Bun
 node_modules/
@@ -19,6 +22,9 @@ dist-worker/
 dist/client/
 dist/worker/
 dist/orez-sync/
+
+.orez
+.wrangler/
 
 # Environment
 .env

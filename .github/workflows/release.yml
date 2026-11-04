@@ -39,7 +39,6 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: |
-            node_modules
             ~/.bun/install/cache
             ~/.config/bun
           key: ${{ runner.os }}-bun-${{ hashFiles('bun.lockb') }}
@@ -51,7 +50,6 @@ jobs:
         uses: actions/cache/save@v4
         with:
           path: |
-            node_modules
             ~/.bun/install/cache
             ~/.config/bun
           key: ${{ runner.os }}-bun-${{ hashFiles('bun.lockb') }}
@@ -63,7 +61,7 @@ jobs:
         run: bunx biome ci . --reporter=github
 
       - name: Test
-        run: bun test features/auth/googleCallback.test.ts features/attendance/infer.test.ts features/calendar/calendarEvents.test.ts features/calendar/calendarSync.integration.test.ts helpers/uuid.test.ts
+        run: bun test
 
   # --- deploy infra, build APK, release, OTA ------------------------------
   build-release:
@@ -73,6 +71,15 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 120
     steps:
+      - name: Maximize build space
+        uses: easimon/maximize-build-space@master
+        with:
+          root-reserve-mb: 512
+          swap-size-mb: 1024
+          remove-dotnet: 'true'
+          remove-haskell: 'true'
+          remove-codeql: 'true'
+          remove-docker-images: 'true'
       - name: Checkout
         uses: actions/checkout@v4
         with:
@@ -87,7 +94,6 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: |
-            node_modules
             ~/.bun/install/cache
             ~/.config/bun
           key: ${{ runner.os }}-bun-${{ hashFiles('bun.lockb') }}
@@ -99,7 +105,6 @@ jobs:
         uses: actions/cache/save@v4
         with:
           path: |
-            node_modules
             ~/.bun/install/cache
             ~/.config/bun
           key: ${{ runner.os }}-bun-${{ hashFiles('bun.lockb') }}
