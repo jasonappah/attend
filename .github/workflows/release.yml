@@ -1,8 +1,5 @@
-name: Build & Release
+name: Checks, web deployment, and releases
 
-# Runs checks, deploys Cloudflare infra, builds + signs the release APK,
-# creates the GitHub Release, then publishes the OTA update to R2.
-# Runs on every push to main.
 on:
   push:
     branches: [main]
@@ -11,152 +8,197 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write # create tags + releases
+  contents: read
 
 env:
-  GRADLE_OPTS: -Dorg.gradle.jvmargs="-Xmx12g -XX:MaxMetaspaceSize=2g" -Dorg.gradle.daemon=false -Dorg.gradle.max-workers=8
-  # The Galaxy A13 4G (SM-A135U1) is 32-bit only. One ABI keeps release builds
-  # fast; override this if the app should also target other devices.
-  RELEASE_ARCHITECTURES: armeabi-v7a
   BUN_VERSION: latest
+  GRADLE_OPTS: -Dorg.gradle.jvmargs="-Xmx12g" -Dorg.gradle.daemon=false -Dorg.gradle.max-workers=8
+  RELEASE_ARCHITECTURES: armeabi-v7a
 
 jobs:
-  # --- gate: typecheck, lint, tests ---------------------------------------
   checks:
     name: Checks
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: oven-sh/setup-bun@v2
         with:
           bun-version: ${{ env.BUN_VERSION }}
-
-      - name: Restore Bun cache
-        uses: actions/cache/restore@v4
+      - uses: actions/cache@v4
         with:
-          path: |
-            ~/.bun/install/cache
-            ~/.config/bun
-          key: ${{ runner.os }}-bun-${{ hashFiles('bun.lockb') }}
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('bun.lock') }}
+      - run: bun install --frozen-lockfile --ignore-scripts
+      - run: bun run typecheck
+      - run: bunx biome ci . --reporter=github
+      - run: bun test
 
-      - name: Install dependencies
-        run: bun install --frozen-lockfile --ignore-scripts
-
-      - name: Save Bun cache
-        uses: actions/cache/save@v4
-        with:
-          path: |
-            ~/.bun/install/cache
-            ~/.config/bun
-          key: ${{ runner.os }}-bun-${{ hashFiles('bun.lockb') }}
-
-      - name: Typecheck
-        run: bun run typecheck
-
-      - name: Lint
-        run: bunx biome ci . --reporter=github
-
-      - name: Test
-        run: bun test
-
-  # --- deploy infra, build APK, release, OTA ------------------------------
-  build-release:
-    name: Build & Release
+  # Web and backend keep deploying on every main push, as before. A release PR
+  # gates the native APK and OTA feed, never ordinary web delivery.
+  deploy-web:
+    name: Deploy web and backend
     needs: checks
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    concurrency:
+      group: production-web
+      cancel-in-progress: false
+    env:
+      NODE_ENV: production
+      APP_VARIANT: production
+      ONE_PUBLIC_GIT_SHA: ${{ github.sha }}
+      ONE_SERVER_URL: ${{ secrets.ONE_SERVER_URL }}
+      BETTER_AUTH_URL: ${{ secrets.ONE_SERVER_URL }}
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      ATTEND_CF_WORKER_NAME: ${{ secrets.ATTEND_CF_WORKER_NAME }}
+      ATTEND_CF_BUCKET_NAME: ${{ secrets.ATTEND_CF_BUCKET_NAME }}
+      ATTEND_CF_FILES_URL: ${{ secrets.ATTEND_CF_FILES_URL }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+      - run: bun install --frozen-lockfile
+      - name: Validate production origin
+        run: |
+          test -n "$ONE_SERVER_URL"
+          bun -e 'const u=new URL(process.env.ONE_SERVER_URL); if(u.protocol!=="https:" || u.hostname==="localhost") throw Error("Expected production HTTPS origin"); console.log(`VITE_WEB_HOSTNAME=${u.host}`)' >> "$GITHUB_ENV"
+      - name: Build with production origins and exact web source identity
+        env:
+          ALLOW_MISSING_ENV: "1"
+        run: bun run build
+      - name: Deploy Cloudflare app and sync workers
+        run: bun scripts/deploy-cloudflare.ts
+
+  # Only the squash merge of the release PR has a candidate whose recorded
+  # source commit is its parent. Every other main push stops here, so the heavy
+  # native job never runs (or fails) for ordinary commits.
+  detect-release:
+    name: Detect release
+    needs: checks
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      is_release: ${{ steps.status.outputs.is_release }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+      - id: status
+        run: bun scripts/release/detect.ts
+
+  publish-release:
+    name: Publish native and OTA release
+    needs: [checks, detect-release]
+    if: needs.detect-release.outputs.is_release == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 120
+    permissions:
+      contents: write
+      pull-requests: read
+    concurrency:
+      group: production-release
+      cancel-in-progress: false
+    env:
+      NODE_ENV: production
+      APP_VARIANT: production
+      ONE_PUBLIC_GIT_SHA: ${{ github.sha }}
+      GH_TOKEN: ${{ github.token }}
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      OTA_BUCKET: ${{ secrets.ATTEND_CF_BUCKET_NAME }}
+      ONE_SERVER_URL: ${{ secrets.ONE_SERVER_URL }}
     steps:
       - name: Maximize build space
         uses: easimon/maximize-build-space@master
         with:
           root-reserve-mb: 512
           swap-size-mb: 1024
-          remove-dotnet: 'true'
-          remove-haskell: 'true'
-          remove-codeql: 'true'
-          remove-docker-images: 'true'
-      - name: Checkout
-        uses: actions/checkout@v4
+          remove-dotnet: "true"
+          remove-haskell: "true"
+          remove-codeql: "true"
+          remove-docker-images: "true"
+      - uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # full history so we can derive semver from tags
-
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
+          fetch-depth: 0
+      - name: Assert the checkout is the pushed commit
+        run: test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+      - uses: oven-sh/setup-bun@v2
         with:
           bun-version: ${{ env.BUN_VERSION }}
-
-      - name: Restore Bun cache
-        uses: actions/cache/restore@v4
+      - uses: actions/cache@v4
         with:
-          path: |
-            ~/.bun/install/cache
-            ~/.config/bun
-          key: ${{ runner.os }}-bun-${{ hashFiles('bun.lockb') }}
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('bun.lock') }}
+      - run: bun install --frozen-lockfile --ignore-scripts
 
-      - name: Install dependencies
-        run: bun install --frozen-lockfile
+      - name: Verify release provenance and committed identity
+        id: release
+        run: bun scripts/release/verify-release.ts
 
-      - name: Save Bun cache
-        uses: actions/cache/save@v4
-        with:
-          path: |
-            ~/.bun/install/cache
-            ~/.config/bun
-          key: ${{ runner.os }}-bun-${{ hashFiles('bun.lockb') }}
-
-      # --- automatic semver: bump patch from the latest git tag -----------
-      - name: Determine semver
-        id: version
+      - name: Validate production update origin
         run: |
-          LATEST_TAG=$(git describe --tags --abbrev=0 --match='v*' 2>/dev/null || echo 'v0.0.0')
-          LATEST_TAG="${LATEST_TAG#v}"
-          IFS='.' read -r major minor patch <<< "$LATEST_TAG"
-          patch=$((patch + 1))
-          VERSION="$major.$minor.$patch"
-          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-          echo "tag=v$VERSION" >> "$GITHUB_OUTPUT"
-          VERSION_CODE=$(( major * 10000 + minor * 100 + patch ))
-          echo "versionCode=$VERSION_CODE" >> "$GITHUB_OUTPUT"
-          echo "Computed semver $VERSION (versionCode $VERSION_CODE)"
+          test -n "$ONE_SERVER_URL"
+          bun -e 'const u=new URL(process.env.ONE_SERVER_URL); if(u.protocol!=="https:" || u.hostname==="localhost") throw Error("Expected production HTTPS origin"); console.log(`VITE_WEB_HOSTNAME=${u.host}`); console.log(`UPDATES_URL=${u.origin}/api/updates/production`)' >> "$GITHUB_ENV"
 
-      # --- step 1: deploy Cloudflare infra first --------------------------
-      - name: Setup Java
+      # A tag or release for a different commit is never resumed or overwritten.
+      - name: Check tag and ensure the release exists for this commit
+        id: github_release
+        env:
+          TAG: ${{ steps.release.outputs.tag }}
+          VERSION: ${{ steps.release.outputs.version }}
+          NATIVE_CHANGE: ${{ steps.release.outputs.native_change }}
+        run: |
+          set -euo pipefail
+          git fetch --tags --force origin
+          if git rev-parse -q --verify "refs/tags/$TAG" >/dev/null; then
+            TARGET=$(git rev-list -n 1 "$TAG")
+            test "$TARGET" = "$GITHUB_SHA" || { echo "::error::Tag $TAG points at $TARGET, not $GITHUB_SHA"; exit 1; }
+            if gh release view "$TAG" >/dev/null 2>&1; then
+              echo "Resuming existing release $TAG"
+            else
+              echo "Creating the release for the existing tag $TAG"
+              NOTES="Release $VERSION for commit $GITHUB_SHA."
+              gh release create "$TAG" --verify-tag --title "Attend $VERSION" --notes "$NOTES"
+            fi
+          else
+            if [ "$NATIVE_CHANGE" = "yes" ]; then
+              NOTES="Native release $VERSION. Install the APK below; the OTA feed for the new runtime is published after the APK is verified."
+            else
+              NOTES="Over-the-air release $VERSION. The installed binary is unchanged; compatible clients receive this JavaScript bundle on a later cold launch."
+            fi
+            gh release create "$TAG" --target "$GITHUB_SHA" --title "Attend $VERSION" --notes "$NOTES"
+          fi
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
+      - name: Set up Java
+        if: steps.release.outputs.native_change == 'yes'
         uses: actions/setup-java@v4
         with:
           distribution: zulu
           java-version: 17
 
-      - name: Accept Android SDK licenses
+      - name: Install Android build tools and ccache
+        if: steps.release.outputs.native_change == 'yes'
         run: |
-          yes | "${ANDROID_HOME:-/usr/local/lib/android/sdk}/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null 2>&1 || true
-
-      - name: Build (Cloudflare)
-        run: bun run build
-        env:
-          ALLOW_MISSING_ENV: "1"
-          ONE_SERVER_URL: https://attend.example.invalid
-          BETTER_AUTH_URL: https://attend.example.invalid
-
-      - name: Deploy worker and sync to Cloudflare
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          ONE_SERVER_URL: ${{ secrets.ONE_SERVER_URL }}
-          ATTEND_CF_WORKER_NAME: ${{ secrets.ATTEND_CF_WORKER_NAME }}
-          ATTEND_CF_BUCKET_NAME: ${{ secrets.ATTEND_CF_BUCKET_NAME }}
-          ATTEND_CF_FILES_URL: ${{ secrets.ATTEND_CF_FILES_URL }}
-        run: bun scripts/deploy-cloudflare.ts
-
-      # --- step 2: build signed release APK -------------------------------
-      - name: Install ccache
-        run: sudo apt-get update -y && sudo apt-get install -y ccache
+          sudo apt-get update -y && sudo apt-get install -y ccache
+          SDK="${ANDROID_HOME:-/usr/local/lib/android/sdk}"
+          yes | "$SDK/cmdline-tools/latest/bin/sdkmanager" --licenses >/dev/null 2>&1 || true
+          "$SDK/cmdline-tools/latest/bin/sdkmanager" "build-tools;37.0.0" "platforms;android-37" >/dev/null
 
       - name: Restore Gradle cache
-        uses: actions/cache/restore@v4
+        if: steps.release.outputs.native_change == 'yes'
+        uses: actions/cache@v4
         with:
           path: |
             ~/.gradle/caches
@@ -165,87 +207,133 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: Decode release keystore
-        run: |
-          echo "${{ secrets.ANDROID_RELEASE_KEYSTORE_B64 }}" | base64 -d > /tmp/attend-release.keystore
-          echo "ANDROID_RELEASE_STORE_FILE=/tmp/attend-release.keystore" >> "$GITHUB_ENV"
-
-      - name: Build release APK
+      # A retry reuses the already-published binary instead of producing a
+      # different APK for the same version/build.
+      - name: Reuse or build the verified release APK
+        if: steps.release.outputs.native_change == 'yes'
         env:
+          TAG: ${{ steps.release.outputs.tag }}
           ANDROID_RELEASE_STORE_PASSWORD: ${{ secrets.ANDROID_RELEASE_STORE_PASSWORD }}
           ANDROID_RELEASE_KEY_ALIAS: ${{ secrets.ANDROID_RELEASE_KEY_ALIAS }}
           ANDROID_RELEASE_KEY_PASSWORD: ${{ secrets.ANDROID_RELEASE_KEY_PASSWORD }}
           CCACHE_DIR: /tmp/ccache
         run: |
-          cd android
-          ./gradlew assembleRelease \
-            -PreactNativeArchitectures=${{ env.RELEASE_ARCHITECTURES }} \
-            --no-daemon
+          set -euo pipefail
+          APK="$RUNNER_TEMP/app-release.apk"
+          if gh release download "$TAG" --pattern app-release.apk --dir "$RUNNER_TEMP" --clobber; then
+            echo "Reusing the APK already attached to $TAG"
+          else
+            echo "${{ secrets.ANDROID_RELEASE_KEYSTORE_B64 }}" | base64 -d > "$RUNNER_TEMP/attend-release.keystore"
+            export ANDROID_RELEASE_STORE_FILE="$RUNNER_TEMP/attend-release.keystore"
+            (cd android && ./gradlew assembleRelease -PreactNativeArchitectures="$RELEASE_ARCHITECTURES" --no-daemon)
+            cp android/app/build/outputs/apk/release/app-release.apk "$APK"
+            gh release upload "$TAG" "$APK#app-release.apk"
+          fi
+          bun scripts/release/verify-apk.ts "$APK" | tee "$RUNNER_TEMP/apk-identity.json"
 
-      - name: Verify APK contains 32-bit ARM libraries
+      # A native receipt exists only after the APK is attached to the release
+      # and its identity, ABI, and signer have been verified.
+      - name: Create or reuse the native distribution receipt
+        if: steps.release.outputs.native_change == 'yes'
+        env:
+          TAG: ${{ steps.release.outputs.tag }}
+          NATIVE_VERSION: ${{ steps.release.outputs.native_version }}
+          NATIVE_BUILD: ${{ steps.release.outputs.native_build }}
+          RUNTIME: ${{ steps.release.outputs.runtime }}
         run: |
           set -euo pipefail
-          APK=android/app/build/outputs/apk/release/app-release.apk
-          ABIS=$(unzip -l "$APK" | awk '{print $4}' | grep '^lib/' | cut -d/ -f2 | sort -u)
-          echo "APK ABIs: ${ABIS//$'\n'/, }"
-          if ! grep -qx "armeabi-v7a" <<< "$ABIS"; then
-            echo "::error::Release APK is missing lib/armeabi-v7a; it will not install on the Galaxy A13 4G."
-            exit 1
+          RECEIPT="$RUNNER_TEMP/native-receipt.json"
+          if gh release download "$TAG" --pattern native-receipt.json --dir "$RUNNER_TEMP" --clobber; then
+            echo "Reusing the native receipt attached to $TAG"
+          else
+            bun -e '
+              const receipt = {
+                version: process.env.NATIVE_VERSION,
+                build: Number(process.env.NATIVE_BUILD),
+                runtimeVersion: process.env.RUNTIME,
+                variant: "production",
+                platform: "android",
+                gitSha: process.env.GITHUB_SHA,
+                distributed: true,
+              }
+              await Bun.write(process.env.RECEIPT, JSON.stringify(receipt, null, 2) + "\n")
+            '
+            gh release upload "$TAG" "$RECEIPT#native-receipt.json"
           fi
 
-      - name: Save Gradle cache
-        uses: actions/cache/save@v4
-        with:
-          path: |
-            ~/.gradle/caches
-            android/.gradle
-          key: ${{ runner.os }}-gradle-${{ hashFiles('android/gradle/wrapper/gradle-wrapper.properties') }}
-
-      # --- step 3: create GitHub Release (before OTA) ---------------------
-      - name: Create git tag and push
-        run: |
-          git config user.name "Attend CI"
-          git config user.email "ci@attend.local"
-          git tag ${{ steps.version.outputs.tag }}
-          git push origin ${{ steps.version.outputs.tag }}
-
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ steps.version.outputs.tag }}
-          name: Attend ${{ steps.version.outputs.version }}
-          body: |
-            Auto-released from main.
-
-            Version: ${{ steps.version.outputs.version }}
-            Build: ${{ steps.version.outputs.versionCode }}
-
-            Install the APK below on your Android device. Existing users also
-            receive this as an OTA update (same runtimeVersion) on next launch.
-          files: android/app/build/outputs/apk/release/app-release.apk
+      # The prepared folder contains the manifest ID and timestamp, so a retry
+      # must reuse the exact uploaded folder rather than publish a new one.
+      - name: Prepare or reuse the OTA artifact
+        id: ota
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # --- step 4: publish OTA update to R2 via wrangler ------------------
-      - name: Publish OTA update
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_R2_BUCKET: ${{ secrets.ATTEND_CF_BUCKET_NAME }}
+          VERSION: ${{ steps.release.outputs.version }}
+          COMMIT: ${{ steps.release.outputs.commit }}
+          RUNTIME: ${{ steps.release.outputs.runtime }}
+          TAG: ${{ steps.release.outputs.tag }}
         run: |
-          # Publish OTA bundle (bundles JS + assets for the release binary)
-          rm -rf ./ota-android && mkdir -p ./ota-android
-          bunx one updates publish --platform android --out ./ota-android
+          set -euo pipefail
+          OUT="$RUNNER_TEMP/ota-android"
+          ARCHIVE="$RUNNER_TEMP/ota-android.tar.gz"
+          if gh release download "$TAG" --pattern ota-android.tar.gz --dir "$RUNNER_TEMP" --clobber; then
+            mkdir -p "$OUT" && tar -xzf "$ARCHIVE" -C "$OUT"
+            echo "Reusing the OTA artifact attached to $TAG"
+          else
+            bunx one updates publish \
+              --platform android \
+              --out "$OUT" \
+              --metadata "releaseVersion=$VERSION" \
+              --metadata "gitSha=$COMMIT" \
+              --metadata "variant=production"
+            (cd "$OUT" && tar -czf "$ARCHIVE" manifest.json assets)
+            gh release upload "$TAG" "$ARCHIVE#ota-android.tar.gz"
+          fi
+          jq -e --arg version "$VERSION" --arg commit "$COMMIT" --arg runtime "$RUNTIME" \
+            '.metadata.releaseVersion == $version and .metadata.gitSha == $commit and .metadata.variant == "production" and .runtimeVersion == $runtime' \
+            "$OUT/manifest.json" >/dev/null
+          echo "directory=$OUT" >> "$GITHUB_OUTPUT"
 
-          # Authenticate wrangler with API token
-          echo "$CLOUDFLARE_API_TOKEN" | bunx wrangler auth login --api-token > /dev/null 2>&1 || true
+      # The exact manifest currently live for this runtime is the expected
+      # predecessor. Publication re-checks it before activating.
+      - name: Read the current OTA predecessor
+        id: predecessor
+        env:
+          RUNTIME: ${{ steps.release.outputs.runtime }}
+        run: |
+          set -euo pipefail
+          URL="$ONE_SERVER_URL/api/updates/production/android/$RUNTIME/manifest.json"
+          CODE=$(curl -sS -o "$RUNNER_TEMP/current-manifest.json" -w '%{http_code}' "$URL")
+          case "$CODE" in
+            200) echo "predecessor=$(jq -r '.id' "$RUNNER_TEMP/current-manifest.json")" >> "$GITHUB_OUTPUT" ;;
+            404) echo "predecessor=none" >> "$GITHUB_OUTPUT" ;;
+            *) echo "::error::Could not read the current OTA manifest (HTTP $CODE)"; exit 1 ;;
+          esac
 
-          # Upload manifest to R2 via wrangler (no awscli needed)
-          bunx wrangler r2 object put "${CLOUDFLARE_R2_BUCKET}/updates/android/${{ steps.version.outputs.version }}/manifest.json" \
-            --file "./ota-android/manifest.json"
-
-          # Upload each asset
-          for f in ./ota-android/assets/*; do
-            [ -f "$f" ] && bunx wrangler r2 object put "${CLOUDFLARE_R2_BUCKET}/updates/android/${{ steps.version.outputs.version }}/assets/$(basename "$f")" --file "$f"
-          done
-
-          echo "OTA update published for android runtimeVersion=${{ steps.version.outputs.version }}"
+      - name: Publish OTA assets, then activate the manifest
+        env:
+          VERSION: ${{ steps.release.outputs.version }}
+          COMMIT: ${{ steps.release.outputs.commit }}
+          RUNTIME: ${{ steps.release.outputs.runtime }}
+          NATIVE_CHANGE: ${{ steps.release.outputs.native_change }}
+          NATIVE_VERSION: ${{ steps.release.outputs.native_version }}
+          NATIVE_BUILD: ${{ steps.release.outputs.native_build }}
+          DIRECTORY: ${{ steps.ota.outputs.directory }}
+          PREDECESSOR: ${{ steps.predecessor.outputs.predecessor }}
+        run: |
+          set -euo pipefail
+          ARGS=(
+            --directory "$DIRECTORY"
+            --bucket "$OTA_BUCKET"
+            --version "$VERSION"
+            --commit "$COMMIT"
+            --variant production
+            --platform android
+            --runtime "$RUNTIME"
+            --predecessor "$PREDECESSOR"
+            --native-change "$NATIVE_CHANGE"
+            --native-version "$NATIVE_VERSION"
+            --native-build "$NATIVE_BUILD"
+          )
+          if [ "$NATIVE_CHANGE" = "yes" ]; then
+            ARGS+=(--native-receipt "$RUNNER_TEMP/native-receipt.json")
+          fi
+          bun scripts/release/publish.ts "${ARGS[@]}"

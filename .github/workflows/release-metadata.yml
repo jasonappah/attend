@@ -1,0 +1,55 @@
+name: Release metadata
+
+on:
+  pull_request_target:
+    branches: [main]
+    types: [opened, synchronize, reopened, edited, ready_for_review]
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: Pull request to validate with trusted main-branch code
+        required: true
+
+permissions:
+  contents: read
+  pull-requests: read
+  statuses: write
+
+jobs:
+  metadata:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      # Never check out or execute PR code in this credential-bearing job.
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - name: Read PR coordinates
+        id: pr
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          NUMBER=$(jq -r '.pull_request.number // .inputs.pr_number' "$GITHUB_EVENT_PATH")
+          [[ "$NUMBER" =~ ^[0-9]+$ ]] || exit 1
+          gh api "repos/$GITHUB_REPOSITORY/pulls/$NUMBER" > "$RUNNER_TEMP/pr.json"
+          echo "sha=$(jq -r '.head.sha' "$RUNNER_TEMP/pr.json")" >> "$GITHUB_OUTPUT"
+      - name: Mark validation pending
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HEAD_SHA: ${{ steps.pr.outputs.sha }}
+        run: gh api "repos/$GITHUB_REPOSITORY/statuses/$HEAD_SHA" -f state=pending -f context='Release metadata' -f description='Validating release trailers and native compatibility intent'
+      - name: Validate using trusted scripts
+        id: validate
+        run: bun scripts/release/check-pr.ts "$RUNNER_TEMP/pr.json"
+      - name: Report required status
+        if: always() && steps.pr.outputs.sha != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HEAD_SHA: ${{ steps.pr.outputs.sha }}
+          RESULT: ${{ steps.validate.outcome == 'success' && 'success' || 'failure' }}
+        run: gh api "repos/$GITHUB_REPOSITORY/statuses/$HEAD_SHA" -f "state=$RESULT" -f context='Release metadata' -f description='Release metadata validation completed'

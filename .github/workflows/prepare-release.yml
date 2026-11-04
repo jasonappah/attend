@@ -1,0 +1,77 @@
+name: Prepare release PR
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+  actions: write
+
+concurrency:
+  group: prepare-release
+  cancel-in-progress: false
+
+jobs:
+  prepare:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - name: Determine whether changes are unreleased
+        id: pending
+        run: |
+          bun -e 'import {git} from "./scripts/release/versioning"; import state from "./release.json"; const head=git(["rev-parse","HEAD"]); const boundary=state.candidate ? git(["log","-1","--format=%H",head,"--","release.json"]) : state.bootstrapCommit; console.log(`pending=${head !== boundary}`)' >> "$GITHUB_OUTPUT"
+      - name: Prepare committed release metadata
+        if: steps.pending.outputs.pending == 'true'
+        id: version
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: bun scripts/release/prepare.ts
+      - name: Maintain release PR
+        if: steps.pending.outputs.pending == 'true'
+        id: release
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.RELEASE_BOT_TOKEN || github.token }}
+          branch: release/next
+          base: main
+          delete-branch: true
+          add-paths: |
+            package.json
+            release.json
+            CHANGELOG.md
+          title: "chore(release): ${{ steps.version.outputs.version }}"
+          commit-message: |
+            chore(release): ${{ steps.version.outputs.version }}
+
+            Release-Type: ${{ steps.version.outputs.release_type }}
+            Native-Change: ${{ steps.version.outputs.native_change }}
+          body: |
+            Release prepared from ${{ steps.version.outputs.source_commit }}.
+
+            Merging publishes the committed software version. Native builds are
+            required only when Native-Change is yes. Web/backend deployment
+            continues independently on main. Do not manually edit version files.
+
+            Release-Type: ${{ steps.version.outputs.release_type }}
+            Native-Change: ${{ steps.version.outputs.native_change }}
+      # GITHUB_TOKEN-created PRs do not emit ordinary workflow triggers.
+      # Explicit dispatch is supported and runs the trusted metadata check.
+      - name: Dispatch metadata validation
+        if: steps.release.outputs.pull-request-number != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ steps.release.outputs.pull-request-number }}
+        run: |
+          gh workflow run release-metadata.yml --ref main -f "pr_number=$PR_NUMBER"
+          gh workflow run release.yml --ref release/next

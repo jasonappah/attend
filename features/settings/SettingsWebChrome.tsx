@@ -5,6 +5,7 @@ import { ScrollView, SizableText, Switch, styled, View, XStack, YStack } from 't
 import { APP_NAME_LOWERCASE, DOMAIN } from '~/constants'
 import { MainHeader } from '~/features/app/MainHeader'
 import { type SettingItem, useSettingsData } from '~/features/settings/useSettingsData'
+import { VersionInfo } from '~/features/settings/VersionInfo'
 import { Link } from '~/interface/app/Link'
 import { UnreadDot } from '~/interface/app/UnreadDot'
 import { PageMainContainer } from '~/interface/layout/PageContainer'
@@ -73,8 +74,9 @@ export const LogoAndVersion = memo(({ compact }: { compact?: boolean }) => {
     return (
       <YStack items="center" pt="8" pb={18}>
         <SizableText size="2" color="color-9">
-          {APP_NAME_LOWERCASE} v1.0.0
+          {APP_NAME_LOWERCASE}
         </SizableText>
+        <VersionInfo compact />
       </YStack>
     )
   }
@@ -85,9 +87,9 @@ export const LogoAndVersion = memo(({ compact }: { compact?: boolean }) => {
           {APP_NAME_LOWERCASE}
         </SizableText>
       </XStack>
-      <SizableText size="1" color="color-10" mt={7}>
-        v1.0.0
-      </SizableText>
+      <YStack mt={7}>
+        <VersionInfo />
+      </YStack>
     </YStack>
   )
 })

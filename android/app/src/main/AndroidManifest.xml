@@ -30,5 +30,7 @@
             <data android:scheme="attend" />
         </intent-filter>
       </activity>
+      <meta-data android:name="dev.onejs.updates.url" android:value="${oneUpdatesUrl}" />
+      <meta-data android:name="dev.onejs.updates.runtimeVersion" android:value="@string/one_updates_runtime_version" />
     </application>
 </manifest>

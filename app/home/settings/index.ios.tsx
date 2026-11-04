@@ -1,6 +1,8 @@
 import { One, useRouter } from 'one'
 import { Form, NavigationRow, Section, SubmitButton, ToggleField } from 'takeout-ui/forms/Form'
 import { APP_NAME_LOWERCASE, DOMAIN } from '~/constants'
+import { releaseInfoLines } from '~/features/app/releaseInfo'
+import { getReleaseInfo } from '~/features/app/releaseInfoRuntime'
 import { useSettingsData } from '~/features/settings/useSettingsData'
 
 // settings is a grouped Form under the stack's own navigation bar. every row
@@ -17,7 +19,11 @@ export default function SettingsPage() {
         <Section
           key={section.title}
           title={section.title}
-          footer={index === sections.length - 1 ? `${APP_NAME_LOWERCASE} v1.0.0` : undefined}
+          footer={
+            index === sections.length - 1
+              ? [APP_NAME_LOWERCASE, ...releaseInfoLines(getReleaseInfo())].join('\n')
+              : undefined
+          }
         >
           {section.items.map((item) => {
             const testID = `setting-${item.id}`
