@@ -1,0 +1,124 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "id": "fe118236-f727-4ac1-9bde-2d6fdfb25e9a",
+  "prevIds": [
+    "00000000-0000-0000-0000-000000000000"
+  ],
+  "ddl": [
+    {
+      "name": "backgroundTaskRun",
+      "entityType": "tables"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "backgroundTaskRun"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "task",
+      "entityType": "columns",
+      "table": "backgroundTaskRun"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "ranAt",
+      "entityType": "columns",
+      "table": "backgroundTaskRun"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "batteryLevel",
+      "entityType": "columns",
+      "table": "backgroundTaskRun"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "batteryState",
+      "entityType": "columns",
+      "table": "backgroundTaskRun"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "lowPowerMode",
+      "entityType": "columns",
+      "table": "backgroundTaskRun"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "deviceModel",
+      "entityType": "columns",
+      "table": "backgroundTaskRun"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "deviceSystemName",
+      "entityType": "columns",
+      "table": "backgroundTaskRun"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "deviceSystemVersion",
+      "entityType": "columns",
+      "table": "backgroundTaskRun"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "isSimulator",
+      "entityType": "columns",
+      "table": "backgroundTaskRun"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "backgroundTaskRun_pk",
+      "table": "backgroundTaskRun",
+      "entityType": "pks"
+    }
+  ],
+  "renames": []
+}
