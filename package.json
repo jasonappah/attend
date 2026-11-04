@@ -1,6 +1,6 @@
 {
   "name": "attend",
-  "version": "0.0.1",
+  "version": "1.1.371",
   "private": true,
   "license": "MIT",
   "engines": {
@@ -12,6 +12,7 @@
     "web"
   ],
   "scripts": {
+    "prepare": "lefthook install",
     "dev": "bun env.ts -- one dev",
     "android": "one run:android",
     "release:keystore:export": "node -e \"const {execSync} = require('child_process'); const fs = require('fs'); const fields = JSON.parse(execSync('bwbio get fields dff4a4c8-ea83-454d-be4d-b4f700fd7a61', {encoding: 'utf8'})); const b64 = fields.find(f => f.name === 'Keystore (base64)').value; fs.writeFileSync('/tmp/attend-release.keystore', Buffer.from(b64, 'base64')); console.log('Keystore exported to /tmp/attend-release.keystore')\"",
@@ -103,6 +104,7 @@
     "@types/pg": "^8.23.1",
     "@types/three": "0.184.0",
     "drizzle-kit": "1.0.0-beta.9-e89174b",
+    "lefthook": "^2.2.2",
     "pg": "^8.23.1",
     "typescript": "7.0.2",
     "vite": "^8.2.2",

@@ -20,6 +20,10 @@ dist/client/
 dist/worker/
 dist/orez-sync/
 
+.orez
+.wrangler/
+.tamagui/
+
 # Environment
 .env
 .env.development

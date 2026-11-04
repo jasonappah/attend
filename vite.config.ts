@@ -1,22 +1,23 @@
+import { execFileSync } from 'node:child_process'
 import { createRequire } from 'node:module'
 import { onZeroPlugin } from 'on-zero/vite'
 import { one } from 'one/vite'
 import { orezSyncCfHostWasm } from 'orez-lite/cloudflare/vite-wasm-loader'
 import { orez } from 'orez-lite/vite'
+import { nativeReleaseConfig } from './config/release'
 import { BACKGROUND_TASKS } from './features/background-tasks/tasks'
+import packageInfo from './package.json'
+import releaseState from './release.json'
 
 const { tamaguiPlugin } = createRequire(import.meta.url)('@tamagui/vite-plugin')
 const portOffset = Number(process.env.PORT_OFFSET || 0)
 const webPort = 4200 + portOffset
-const appVariant = process.env.APP_VARIANT || 'development'
-if (appVariant !== 'development' && appVariant !== 'preview' && appVariant !== 'production') {
-  throw new Error(`invalid APP_VARIANT: ${appVariant}`)
-}
-const appIdentity = {
-  development: { displayName: 'Attend (Dev)', bundleId: 'me.jasonaa.attend.dev' },
-  preview: { displayName: 'Attend (Preview)', bundleId: 'me.jasonaa.attend.preview' },
-  production: { displayName: 'Attend', bundleId: 'me.jasonaa.attend' },
-}[appVariant]
+const appIdentity = nativeReleaseConfig(releaseState, process.env)
+process.env.ONE_PUBLIC_RELEASE_VERSION = packageInfo.version
+process.env.ONE_PUBLIC_APP_VARIANT = appIdentity.variant
+process.env.ONE_PUBLIC_GIT_SHA =
+  process.env.ONE_PUBLIC_GIT_SHA ||
+  execFileSync('git', ['rev-parse', 'HEAD'], { cwd: import.meta.dirname, encoding: 'utf8' }).trim()
 
 export default {
   root: import.meta.dirname,
@@ -44,7 +45,7 @@ export default {
           name: 'attend',
           displayName: appIdentity.displayName,
           scheme: 'attend',
-          version: '1.0.0',
+          version: appIdentity.version,
           orientation: 'portrait',
           userInterfaceStyle: 'automatic',
           // the runtime version gates OTA updates: bump this whenever native
@@ -53,14 +54,13 @@ export default {
           // backend, which serves update files from R2 under the updates/ prefix.
           // updates are disabled in debug builds and until url is set.
           updates: {
-            runtimeVersion: '1.0.0',
-            url:
-              process.env.UPDATES_URL ||
-              `https://${process.env.VITE_WEB_HOSTNAME || 'localhost:4200'}/api/updates`,
+            runtimeVersion: appIdentity.runtimeVersion,
+            url: appIdentity.updatesUrl,
           },
           icon: { source: './assets/icon.png', backgroundColor: '#e6dac1' },
           splash: { source: './assets/logo.png', backgroundColor: '#e6dac1' },
           ios: {
+            buildNumber: String(appIdentity.build),
             bundleId: appIdentity.bundleId,
             tablet: false,
             deploymentTarget: '17.0',
@@ -73,6 +73,7 @@ export default {
             },
           },
           android: {
+            versionCode: appIdentity.build,
             applicationId: appIdentity.bundleId,
             adaptiveIcon: {
               foreground: './assets/adaptive-icon.png',

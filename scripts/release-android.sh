@@ -3,6 +3,10 @@
 # Requires: bwbio unlocked (run `bwbio unlock` first), and an Android SDK.
 set -euo pipefail
 
+# Releases never silently use the development application ID/feed.
+export APP_VARIANT=production
+bun scripts/release/native.ts >/dev/null
+
 ITEM_ID="dff4a4c8-ea83-454d-be4d-b4f700fd7a61"
 KEYSTORE_OUT="/tmp/attend-release.keystore"
 

@@ -1,6 +1,6 @@
 import type { Endpoint } from 'one'
 
-type R2Bucket = {
+export type R2Bucket = {
   get: (key: string) => Promise<{
     arrayBuffer: () => Promise<ArrayBuffer>
   } | null>
@@ -10,27 +10,20 @@ function cloudflareFilesBucket(): R2Bucket | undefined {
   return (globalThis as { __soot_cf_r2_bucket?: R2Bucket }).__soot_cf_r2_bucket
 }
 
-// One.Updates update server. the native client fetches:
-//   GET <updates.url>/<platform>/<runtimeVersion>/manifest.json
-//   GET <updates.url>/<platform>/<runtimeVersion>/assets/<hash>
-// files are stored in the FILES R2 bucket under the updates/ prefix,
-// content-addressed by hash, exactly as `one updates publish` writes them.
-export const GET: Endpoint = async (request) => {
-  const bucket = cloudflareFilesBucket()
+// Export the dependency boundary so tests never need a live Cloudflare bucket.
+export async function serveUpdate(request: Request, bucket?: R2Bucket) {
+  const pathname = new URL(request.url).pathname
+  const match =
+    /^\/api\/updates\/([A-Za-z0-9][A-Za-z0-9_-]{0,63})\/(android|ios)\/([A-Za-z0-9][A-Za-z0-9._-]{0,127})\/(manifest\.json|assets\/[A-Za-z0-9_-]{43})$/.exec(
+      pathname
+    )
+  if (!match) return new Response(null, { status: 400 })
   if (!bucket) {
     return new Response(null, { status: 500 })
   }
 
-  const url = new URL(request.url)
-  // pathname is /api/updates/<platform>/<runtimeVersion>/<rest>
-  const segments = url.pathname.slice('/api/updates/'.length).split('/')
-  const [platform, runtimeVersion, ...rest] = segments
-
-  if (!platform || !runtimeVersion || rest.length === 0) {
-    return new Response(null, { status: 400 })
-  }
-
-  const key = `updates/${platform}/${runtimeVersion}/${rest.join('/')}`
+  const [, variant, platform, runtimeVersion, file] = match
+  const key = `updates/${variant}/${platform}/${runtimeVersion}/${file}`
 
   try {
     const obj = await bucket.get(key)
@@ -57,3 +50,5 @@ export const GET: Endpoint = async (request) => {
     return new Response(null, { status: 500 })
   }
 }
+
+export const GET: Endpoint = (request) => serveUpdate(request, cloudflareFilesBucket())

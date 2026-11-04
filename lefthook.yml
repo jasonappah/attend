@@ -1,0 +1,4 @@
+commit-msg:
+  commands:
+    release-metadata:
+      run: bun scripts/check-commit-message.ts "{1}"

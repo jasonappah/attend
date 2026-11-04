@@ -2,6 +2,8 @@ import { One } from 'one'
 import { useCallback, useEffect, useState } from 'react'
 import { showToast } from 'takeout-ui/toast/Toast'
 import { isWeb, Paragraph, SizableText, XStack, YStack } from 'tamagui'
+import { releaseInfoLines } from '~/features/app/releaseInfo'
+import { getReleaseInfo } from '~/features/app/releaseInfoRuntime'
 import { listRuns } from '~/features/background-tasks/localDb'
 import { BACKGROUND_TASKS } from '~/features/background-tasks/tasks'
 import { SettingsWebChrome } from '~/features/settings/SettingsWebChrome'
@@ -61,6 +63,7 @@ function systemStatusLabel(row: TaskRun): string {
 }
 
 function DiagnosticsContent() {
+  const releaseInfo = getReleaseInfo()
   const [runs, setRuns] = useState<TaskRun[]>([])
   const [loading, setLoading] = useState(false)
 
@@ -138,6 +141,21 @@ function DiagnosticsContent() {
   return (
     <PageScrollView contentPaddingTop={16}>
       <YStack flex={1} flexBasis="auto" pb={60} gap="12">
+        <SepHeading>Software identity</SepHeading>
+        <YStack gap="2" px={18} testID="diagnostics-release-info">
+          {[
+            ...releaseInfoLines(releaseInfo),
+            `Launch: ${releaseInfo.launch}`,
+            `Runtime: ${releaseInfo.runtimeVersion}`,
+            `Update ID: ${releaseInfo.updateId}`,
+            `Variant: ${releaseInfo.variant}`,
+            `Git SHA: ${releaseInfo.gitSha}`,
+          ].map((line) => (
+            <Paragraph key={line} size="2" color="color-11" overflowWrap="anywhere" select="text">
+              {line}
+            </Paragraph>
+          ))}
+        </YStack>
         <SepHeading>Background tasks</SepHeading>
         <Paragraph size="3" color="color-11">
           Four background tasks are registered — every minute, every ten minutes, every hour, and
