@@ -1,8 +1,8 @@
+import { createHash } from 'bun:crypto'
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'bun:fs'
+import { tmpdir } from 'bun:os'
+import { join } from 'bun:path'
 import { describe, expect, test } from 'bun:test'
-import { createHash } from 'node:crypto'
-import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises'
-import { tmpdir } from 'node:os'
-import { join } from 'node:path'
 import { type Publication, preparePublication, publish, type Storage } from './publish'
 
 class FakeStorage implements Storage {
@@ -24,12 +24,12 @@ const feed = 'updates/production/android/runtime-2'
 const baseline = 'native/production/android/runtime-2/complete.json'
 
 async function fixture(run: (o: Publication, storage: FakeStorage) => Promise<void>) {
-  const directory = await mkdtemp(join(tmpdir(), 'attend-publication-test-'))
+  const directory = mkdtempSync(join(tmpdir(), 'attend-publication-test-'))
   try {
     const body = Buffer.from('hermes bytecode fixture')
     const hash = createHash('sha256').update(body).digest('base64url')
-    await mkdir(join(directory, 'assets'))
-    await writeFile(join(directory, 'assets', hash), body)
+    mkdirSync(join(directory, 'assets'))
+    writeFileSync(join(directory, 'assets', hash), body)
     const o: Publication = {
       directory,
       version: '1.1.372',
@@ -51,7 +51,7 @@ async function fixture(run: (o: Publication, storage: FakeStorage) => Promise<vo
       gitSha: o.commit,
       distributed: true,
     }
-    await writeFile(
+    writeFileSync(
       join(directory, 'manifest.json'),
       json({
         id: 'promotion-1',
@@ -64,7 +64,7 @@ async function fixture(run: (o: Publication, storage: FakeStorage) => Promise<vo
     )
     await run(o, new FakeStorage())
   } finally {
-    await rm(directory, { recursive: true, force: true })
+    rmSync(directory, { recursive: true, force: true })
   }
 }
 
@@ -181,7 +181,7 @@ describe('safe publication', () => {
   test('checksum mismatch fails before any remote mutation', () =>
     fixture(async (o, s) => {
       const p = await preparePublication(o)
-      await writeFile(join(o.directory, 'assets', p.manifest.launchAsset.hash), 'tampered')
+      writeFileSync(join(o.directory, 'assets', p.manifest.launchAsset.hash), 'tampered')
       await expect(publish(o, s)).rejects.toThrow('checksum')
       expect(s.writes).toEqual([])
     }))
@@ -196,7 +196,7 @@ describe('safe publication', () => {
         { ...p.manifest, launchAsset: { ...p.manifest.launchAsset, path: '../evil' } },
         { ...p.manifest, assets: [p.manifest.launchAsset] },
       ]) {
-        await writeFile(join(o.directory, 'manifest.json'), json(bad))
+        writeFileSync(join(o.directory, 'manifest.json'), json(bad))
         await expect(publish(o, s)).rejects.toThrow()
       }
       expect(s.writes).toEqual([])

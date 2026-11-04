@@ -1,4 +1,4 @@
-import { appendFileSync, writeFileSync } from 'node:fs'
+import { appendFileSync, writeFileSync } from 'bun:fs'
 import { verifyMainIntents } from './provenance'
 import { calculate, git, jsonAt } from './versioning'
 

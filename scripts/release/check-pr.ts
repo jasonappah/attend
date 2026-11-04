@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs'
+import { readFileSync } from 'bun:fs'
 import { readReleaseTrailers } from '../check-commit-message'
 import {
   aggregate,

@@ -1,5 +1,5 @@
+import { readFileSync } from 'bun:fs'
 import { describe, expect, test } from 'bun:test'
-import { readFileSync } from 'node:fs'
 import { nativeReleaseConfig, validateAndroidIntegration } from './native'
 
 const state = { native: { version: '1.1.371', build: 2, runtimeVersion: '1.0.1' } }

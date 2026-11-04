@@ -1,6 +1,6 @@
-import { execFileSync } from 'node:child_process'
-import { readdirSync, readFileSync, statSync } from 'node:fs'
-import { join } from 'node:path'
+import { execFileSync } from 'bun:child_process'
+import { readdirSync, readFileSync, statSync } from 'bun:fs'
+import { join } from 'bun:path'
 import { nativeReleaseConfig } from '../../config/release'
 
 // The published production APK is signed by this certificate. Rotating the

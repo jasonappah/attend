@@ -1,5 +1,5 @@
-import { execFileSync } from 'node:child_process'
-import { readFileSync } from 'node:fs'
+import { execFileSync } from 'bun:child_process'
+import { readFileSync } from 'bun:fs'
 import { nativeReleaseConfig } from '../../config/release'
 
 export { nativeReleaseConfig }

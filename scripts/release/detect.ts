@@ -1,4 +1,4 @@
-import { appendFileSync } from 'node:fs'
+import { appendFileSync } from 'bun:fs'
 import { git, jsonAt, type ReleaseState, validateState } from './versioning'
 
 // A release commit is the squash merge of the release PR. Subsequent ordinary

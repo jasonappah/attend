@@ -1,5 +1,5 @@
-import { spawnSync } from 'node:child_process'
-import { readFileSync } from 'node:fs'
+import { spawnSync } from 'bun:child_process'
+import { readFileSync } from 'bun:fs'
 
 const requirements = {
   'Release-Type': ['patch', 'minor', 'major'],
