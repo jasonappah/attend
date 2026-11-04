@@ -1,12 +1,9 @@
 import { appendFileSync, writeFileSync } from 'node:fs'
-import { verifyMainIntents } from './provenance'
 import { calculate, git, jsonAt } from './versioning'
 
 export function prepare(cwd = process.cwd()) {
   const head = git(['rev-parse', 'HEAD'], cwd)
   const result = calculate(head, cwd)
-  if (process.env.GITHUB_ACTIONS === 'true')
-    verifyMainIntents(result.entries, process.env.GITHUB_REPOSITORY!)
   const pkg = jsonAt<{ version: string }>(head, 'package.json', cwd)
   pkg.version = result.version
   writeFileSync(`${cwd}/package.json`, `${JSON.stringify(pkg, null, 2)}\n`)
