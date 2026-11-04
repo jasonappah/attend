@@ -32,15 +32,6 @@ export function releaseRules() {
           required_status_checks: [{ context: 'Release metadata' }, { context: 'Checks' }],
         },
       },
-      {
-        type: 'commit_message_pattern',
-        parameters: {
-          name: 'Release trailers',
-          negate: false,
-          operator: 'regex',
-          pattern: '(?m)^Release-Type: (patch|minor|major)\\r?\\nNative-Change: (yes|no)\\r?$',
-        },
-      },
     ],
   }
 }
