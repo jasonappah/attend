@@ -2,11 +2,11 @@
  * Local device-only Drizzle database — web / server no-op.
  *
  * on native this is shadowed by `database/localDb.native.ts`, which opens a
- * real SQLite database backed by @op-engineering/op-sqlite. on web/server,
- * op-sqlite isn't available and importing it would crash the Cloudflare build
- * (it reads `NativeModules.OPSQLite.getConstants()` at module load time, but
- * `NativeModules` is undefined outside a React Native host), so this file
- * imports nothing native and every operation is a no-op.
+ * real SQLite database through `One.Database.open` (OP SQLite, bundled inside
+ * `one`). on web/server, OP SQLite isn't available and importing it would
+ * crash the Cloudflare build (it reads `NativeModules.OPSQLite.getConstants()`
+ * at module load time, but `NativeModules` is undefined outside a React Native
+ * host), so this file imports nothing native and every operation is a no-op.
  *
  * `recordRun`/`listRuns` in `features/background-tasks/localDb.ts` return early
  * on web before reaching `transaction`, so this is never actually invoked

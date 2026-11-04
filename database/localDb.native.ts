@@ -1,32 +1,32 @@
 /**
- * Local device-only Drizzle database backed by @op-engineering/op-sqlite —
- * the same Hermes-compatible SQLite library Zero uses for its local device
- * cache on React Native (see on-zero/kv-store's native export). Lives in a
- * separate physical SQLite file (`.orez/local.sqlite`) that never syncs to
- * Zero and never leaves the device.
+ * Local device-only Drizzle database backed by OP SQLite through `one` — the
+ * same Hermes-compatible SQLite library Zero uses for its local device cache
+ * on React Native. OP SQLite ships inside `one`, so we reach it through
+ * `One.Database.open` instead of importing `@op-engineering/op-sqlite`
+ * directly. Lives in a separate physical SQLite file (`.orez/local.sqlite`)
+ * that never syncs to Zero and never leaves the device.
  *
- * node:sqlite / bun:sqlite can't run in the Hermes native bundle, so op-sqlite
- * is used instead. this file is native-only (`.native.ts`): on web/server the
- * no-op `localDb.ts` is used instead, so `op-sqlite` (which reads
+ * This file is native-only (`.native.ts`): on web/server the no-op
+ * `localDb.ts` is used instead, so OP SQLite (which reads
  * `NativeModules.OPSQLite.getConstants()` at import time) is never pulled into
- * the Cloudflare server build.
+ * the Cloudflare server build where `NativeModules` is undefined.
  *
  * Uses drizzle directly from drizzle-orm/sqlite-proxy rather than
  * createSQLiteDatabase from @o/database/sqlite, because the latter imports
  * node:async_hooks at the top level which Hermes cannot resolve.
  */
-import { open } from '@op-engineering/op-sqlite'
 import { drizzle } from 'drizzle-orm/sqlite-proxy'
+import { One } from 'one'
 import { relations } from './localRelations'
 import * as schema from './localSchema'
 
 type LocalDrizzle = ReturnType<typeof drizzle>
 
-let db: ReturnType<typeof open> | null = null
+let db: ReturnType<typeof One.Database.open> | null = null
 
 function getDb() {
   if (!db) {
-    db = open({ name: '.orez/local.sqlite' })
+    db = One.Database.open({ name: '.orez/local.sqlite' })
     db.executeSync(`
       CREATE TABLE IF NOT EXISTS "backgroundTaskRun" (
         "id" TEXT PRIMARY KEY,
@@ -42,7 +42,7 @@ function getDb() {
       )
     `)
   }
-  return db
+  return db!
 }
 
 export const localDb = {

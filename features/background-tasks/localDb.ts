@@ -3,11 +3,11 @@
  * this is a separate, non-synced database that lives alongside Zero's synced
  * database; rows written here never leave the device.
  *
- * on native, the database is backed by @op-engineering/op-sqlite — the same
+ * on native, the database is backed by OP SQLite through `one` — the same
  * Hermes-compatible SQLite library Zero uses for its local device cache on
  * React Native (see on-zero/kv-store's native export). queries go through
  * Drizzle, using a separate local schema and physical database file.
- * on web, op-sqlite isn't available, so every function is a no-op, matching
+ * on web, OP SQLite isn't available, so every function is a no-op, matching
  * the disabled diagnostics screen.
  */
 
