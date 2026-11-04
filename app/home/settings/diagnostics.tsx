@@ -2,7 +2,7 @@ import { One } from 'one'
 import { useCallback, useEffect, useState } from 'react'
 import { showToast } from 'takeout-ui/toast/Toast'
 import { isWeb, Paragraph, SizableText, XStack, YStack } from 'tamagui'
-import { listRuns, recordRun } from '~/features/background-tasks/localDb'
+import { listRuns } from '~/features/background-tasks/localDb'
 import { BACKGROUND_TASKS } from '~/features/background-tasks/tasks'
 import { SettingsWebChrome } from '~/features/settings/SettingsWebChrome'
 import { Button } from '~/interface/buttons/Button'
@@ -69,7 +69,7 @@ function DiagnosticsContent() {
     try {
       const rows = await listRuns(200)
       setRuns(rows)
-    } catch (error) {
+    } catch (_error) {
       showToast('Could not read background task runs', { type: 'error' })
     } finally {
       setLoading(false)
@@ -89,7 +89,7 @@ function DiagnosticsContent() {
       )
       showToast('Background tasks armed — each task re-submits itself when it runs')
       void refreshRuns()
-    } catch (error) {
+    } catch (_error) {
       showToast('Could not arm background tasks', { type: 'error' })
     }
   }, [refreshRuns])
@@ -130,7 +130,7 @@ function DiagnosticsContent() {
         })
       )
       await One.Share.share(exported)
-    } catch (error) {
+    } catch (_error) {
       showToast('Could not export the database', { type: 'error' })
     }
   }, [])
