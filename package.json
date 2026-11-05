@@ -23,7 +23,7 @@
     "generate": "bun run generate:migrations && bun run generate:local-migrations && bun run generate:types",
     "generate:types": "on-zero generate data",
     "generate:migrations": "drizzle-kit generate --config=database/drizzle.config.ts",
-    "generate:local-migrations": "drizzle-kit generate --config=database/localDrizzle.config.ts",
+    "generate:local-migrations": "drizzle-kit generate --config=database/localDrizzle.config.ts && bun scripts/generate-local-migrations.ts",
     "typecheck": "tsc --noEmit",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
