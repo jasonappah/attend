@@ -5,7 +5,7 @@ import { showToast } from 'takeout-ui/toast/Toast'
 import { authClient, nativeTokenStore } from '~/auth/client/authClient'
 import { APP_SCHEME, SERVER_URL } from '~/constants'
 import { uuidv7 } from '~/helpers/uuid'
-import { googleCallbackToken } from './googleCallback'
+import { googleCallbackToken, isGoogleCallback } from './googleCallback'
 
 // Android's Custom Tab fallback can send the deep link after the browser
 // promise has already resolved as cancelled. Keep one nonce-bound listener
@@ -29,10 +29,14 @@ export async function signInGoogle() {
 
   let settled = false
   const finish = async (url: string) => {
-    const token = googleCallbackToken(url, APP_SCHEME, nonce)
-    if (!token || settled) return
+    // Ignore links that belong to another app or another attempt, but never
+    // ignore our own callback: a callback we cannot read a session from used to
+    // leave the user on the sign-in screen with no explanation at all.
+    if (settled || !isGoogleCallback(url, APP_SCHEME, nonce)) return
     settled = true
     cleanup()
+    const token = googleCallbackToken(url, APP_SCHEME, nonce)
+    if (!token) throw new Error('Google sign-in returned no session. Please try again.')
     if (!(await nativeTokenStore.set(token, expected)))
       throw new Error('The sign-in was superseded by another account change.')
     try {
