@@ -192,7 +192,7 @@ jobs:
           sudo apt-get update -y && sudo apt-get install -y ccache
           SDK="${ANDROID_HOME:-/usr/local/lib/android/sdk}"
           yes | "$SDK/cmdline-tools/latest/bin/sdkmanager" --licenses >/dev/null 2>&1 || true
-          "$SDK/cmdline-tools/latest/bin/sdkmanager" "build-tools;37.0.0" "platforms;android-37" >/dev/null
+          "$SDK/cmdline-tools/latest/bin/sdkmanager" "build-tools;37.0.0" "platforms;android-37.0" >/dev/null
 
       - name: Restore Gradle cache
         if: steps.release.outputs.native_change == 'yes'
