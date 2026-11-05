@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.374
+
+- fix: install Android 37 SDK package (fc64335)
+
 ## 1.1.373
 
 - fix: prevent release runner disk exhaustion (1fb4805)
