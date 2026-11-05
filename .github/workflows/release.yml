@@ -254,7 +254,8 @@ jobs:
           RUNTIME: ${{ steps.release.outputs.runtime }}
         run: |
           set -euo pipefail
-          RECEIPT="$RUNNER_TEMP/native-receipt.json"
+          # bun -e reads this from the environment, so it must be exported.
+          export RECEIPT="$RUNNER_TEMP/native-receipt.json"
           if gh release download "$TAG" --pattern native-receipt.json --dir "$RUNNER_TEMP" --clobber; then
             echo "Reusing the native receipt attached to $TAG"
           else
@@ -303,6 +304,28 @@ jobs:
             '.metadata.releaseVersion == $version and .metadata.gitSha == $commit and .metadata.variant == "production" and .runtimeVersion == $runtime' \
             "$OUT/manifest.json" >/dev/null
           echo "directory=$OUT" >> "$GITHUB_OUTPUT"
+
+      # publish.ts requires an explicit account for its production credential
+      # guard. Derive it from the token this job already has instead of a second
+      # secret that can be missing or drift; the release must fail loudly rather
+      # than publish nothing when the account cannot be resolved.
+      - name: Resolve the Cloudflare account
+        run: |
+          set -euo pipefail
+          ACCOUNTS="$RUNNER_TEMP/cloudflare-accounts.json"
+          CODE=$(curl -sS -o "$ACCOUNTS" -w '%{http_code}' \
+            -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+            https://api.cloudflare.com/client/v4/accounts)
+          if [ "$CODE" != "200" ]; then
+            echo "::error::Cloudflare rejected the account lookup (HTTP $CODE)"
+            exit 1
+          fi
+          COUNT=$(jq '.result | length' "$ACCOUNTS")
+          if [ "$COUNT" != "1" ]; then
+            echo "::error::Expected exactly one Cloudflare account for the release token, found $COUNT"
+            exit 1
+          fi
+          echo "CLOUDFLARE_ACCOUNT_ID=$(jq -r '.result[0].id' "$ACCOUNTS")" >> "$GITHUB_ENV"
 
       # The exact manifest currently live for this runtime is the expected
       # predecessor. Publication re-checks it before activating.
