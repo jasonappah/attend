@@ -1,0 +1,132 @@
+diff --git a/op-sqlite/migrator.cjs b/op-sqlite/migrator.cjs
+index 1c11229c424060e3e17b23e55a7a3f03771dac86..1ef506b7a3f62e65158540a769283fe4b081100d 100644
+--- a/op-sqlite/migrator.cjs
++++ b/op-sqlite/migrator.cjs
+@@ -1,7 +1,10 @@
+ const require_rolldown_runtime = require('../_virtual/rolldown_runtime.cjs');
+-let __migrator_ts = require("../migrator.cjs");
+ let react = require("react");
+ 
++function formatToMillis(value) {
++	return Date.UTC(+value.slice(0, 4), +value.slice(4, 6) - 1, +value.slice(6, 8), +value.slice(8, 10), +value.slice(10, 12), +value.slice(12, 14));
++}
++
+ //#region src/op-sqlite/migrator.ts
+ async function readMigrationFiles({ migrations }) {
+ 	const migrationQueries = [];
+@@ -13,7 +16,7 @@ async function readMigrationFiles({ migrations }) {
+ 			const result = query.split("--> statement-breakpoint").map((it) => {
+ 				return it;
+ 			});
+-			const migrationDate = (0, __migrator_ts.formatToMillis)(key.slice(0, 14));
++			const migrationDate = formatToMillis(key.slice(0, 14));
+ 			migrationQueries.push({
+ 				sql: result,
+ 				bps: true,
+diff --git a/op-sqlite/migrator.js b/op-sqlite/migrator.js
+index 7e78092a3101452bf5f45897d7a4adfe8fcbef01..3f864cfc047759212740bf06fdf6363c53ca7be3 100644
+--- a/op-sqlite/migrator.js
++++ b/op-sqlite/migrator.js
+@@ -1,6 +1,9 @@
+-import { formatToMillis } from "../migrator.js";
+ import { useEffect, useReducer } from "react";
+ 
++function formatToMillis(value) {
++	return Date.UTC(+value.slice(0, 4), +value.slice(4, 6) - 1, +value.slice(6, 8), +value.slice(8, 10), +value.slice(10, 12), +value.slice(12, 14));
++}
++
+ //#region src/op-sqlite/migrator.ts
+ async function readMigrationFiles$1({ migrations }) {
+ 	const migrationQueries = [];
+diff --git a/op-sqlite/session.cjs b/op-sqlite/session.cjs
+index 949ffbbb6affc930c0393ff02533b49f32c16da3..afae4d6528a7d0ffdb1e6af9ca1b22dcb79b86e4 100644
+--- a/op-sqlite/session.cjs
++++ b/op-sqlite/session.cjs
+@@ -26,31 +26,31 @@ var OPSQLiteSession = class extends __sqlite_core_session_ts.SQLiteSession {
+ 	prepareRelationalQuery(query, fields, executeMethod, customResultMapper) {
+ 		return new OPSQLitePreparedQuery(this.client, query, this.logger, this.cache, void 0, void 0, fields, executeMethod, false, customResultMapper, true);
+ 	}
+-	transaction(transaction, config = {}) {
++	async transaction(transaction, config = {}) {
+ 		const tx = new OPSQLiteTransaction("async", this.dialect, this, this.relations, this.schema);
+-		this.run(__sql_sql_ts.sql.raw(`begin${config?.behavior ? " " + config.behavior : ""}`));
++		await this.run(__sql_sql_ts.sql.raw(`begin${config?.behavior ? " " + config.behavior : ""}`));
+ 		try {
+-			const result = transaction(tx);
+-			this.run(__sql_sql_ts.sql`commit`);
++			const result = await transaction(tx);
++			await this.run(__sql_sql_ts.sql`commit`);
+ 			return result;
+ 		} catch (err) {
+-			this.run(__sql_sql_ts.sql`rollback`);
++			await this.run(__sql_sql_ts.sql`rollback`);
+ 			throw err;
+ 		}
+ 	}
+ };
+ var OPSQLiteTransaction = class OPSQLiteTransaction extends __sqlite_core_index_ts.SQLiteTransaction {
+ 	static [__entity_ts.entityKind] = "OPSQLiteTransaction";
+-	transaction(transaction) {
++	async transaction(transaction) {
+ 		const savepointName = `sp${this.nestedIndex}`;
+ 		const tx = new OPSQLiteTransaction("async", this.dialect, this.session, this.relations, this.schema, this.nestedIndex + 1);
+-		this.session.run(__sql_sql_ts.sql.raw(`savepoint ${savepointName}`));
++		await this.session.run(__sql_sql_ts.sql.raw(`savepoint ${savepointName}`));
+ 		try {
+-			const result = transaction(tx);
+-			this.session.run(__sql_sql_ts.sql.raw(`release savepoint ${savepointName}`));
++			const result = await transaction(tx);
++			await this.session.run(__sql_sql_ts.sql.raw(`release savepoint ${savepointName}`));
+ 			return result;
+ 		} catch (err) {
+-			this.session.run(__sql_sql_ts.sql.raw(`rollback to savepoint ${savepointName}`));
++			await this.session.run(__sql_sql_ts.sql.raw(`rollback to savepoint ${savepointName}`));
+ 			throw err;
+ 		}
+ 	}
+diff --git a/op-sqlite/session.js b/op-sqlite/session.js
+index e39afe1383ecff6c0d285afa3c12a332c9441f1a..a390e79d479b9fdde12a2b225791dd73143e3095 100644
+--- a/op-sqlite/session.js
++++ b/op-sqlite/session.js
+@@ -25,31 +25,31 @@ var OPSQLiteSession = class extends SQLiteSession$1 {
+ 	prepareRelationalQuery(query, fields, executeMethod, customResultMapper) {
+ 		return new OPSQLitePreparedQuery(this.client, query, this.logger, this.cache, void 0, void 0, fields, executeMethod, false, customResultMapper, true);
+ 	}
+-	transaction(transaction, config = {}) {
++	async transaction(transaction, config = {}) {
+ 		const tx = new OPSQLiteTransaction("async", this.dialect, this, this.relations, this.schema);
+-		this.run(sql.raw(`begin${config?.behavior ? " " + config.behavior : ""}`));
++		await this.run(sql.raw(`begin${config?.behavior ? " " + config.behavior : ""}`));
+ 		try {
+-			const result = transaction(tx);
+-			this.run(sql`commit`);
++			const result = await transaction(tx);
++			await this.run(sql`commit`);
+ 			return result;
+ 		} catch (err) {
+-			this.run(sql`rollback`);
++			await this.run(sql`rollback`);
+ 			throw err;
+ 		}
+ 	}
+ };
+ var OPSQLiteTransaction = class OPSQLiteTransaction extends SQLiteTransaction {
+ 	static [entityKind] = "OPSQLiteTransaction";
+-	transaction(transaction) {
++	async transaction(transaction) {
+ 		const savepointName = `sp${this.nestedIndex}`;
+ 		const tx = new OPSQLiteTransaction("async", this.dialect, this.session, this.relations, this.schema, this.nestedIndex + 1);
+-		this.session.run(sql.raw(`savepoint ${savepointName}`));
++		await this.session.run(sql.raw(`savepoint ${savepointName}`));
+ 		try {
+-			const result = transaction(tx);
+-			this.session.run(sql.raw(`release savepoint ${savepointName}`));
++			const result = await transaction(tx);
++			await this.session.run(sql.raw(`release savepoint ${savepointName}`));
+ 			return result;
+ 		} catch (err) {
+-			this.session.run(sql.raw(`rollback to savepoint ${savepointName}`));
++			await this.session.run(sql.raw(`rollback to savepoint ${savepointName}`));
+ 			throw err;
+ 		}
+ 	}

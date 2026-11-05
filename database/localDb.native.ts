@@ -20,11 +20,15 @@
  * node:async_hooks at the top level which Hermes cannot resolve.
  */
 
+import { drizzle as drizzleOpSqlite } from 'drizzle-orm/op-sqlite'
+import { migrate } from 'drizzle-orm/op-sqlite/migrator'
 import { drizzle } from 'drizzle-orm/sqlite-proxy'
 import { One } from 'one'
+import { NativeModules, Platform } from 'react-native'
+import { drizzleMigrationClient } from './drizzleMigrationClient'
+import migrations from './localMigrations.generated.json'
 import { relations } from './localRelations'
 import * as schema from './localSchema'
-import { migrateLocal } from './migrateLocal'
 
 type LocalDrizzle = ReturnType<typeof drizzle>
 
@@ -32,9 +36,20 @@ let db: ReturnType<typeof One.Database.open> | null = null
 let initializing: Promise<void> | null = null
 
 async function initDb() {
+  const directories = One.FileSystem.getDirectories()
+  const root =
+    Platform.OS === 'android'
+      ? `file://${NativeModules.OPSQLite.getConstants().ANDROID_DATABASE_PATH}/`
+      : directories.documents
+  await One.FileSystem.makeDirectory(new URL('.orez/', root).href)
   const database = One.Database.open({ name: '.orez/local.sqlite' })
   try {
-    await migrateLocal(database)
+    await migrate(
+      drizzleOpSqlite(
+        drizzleMigrationClient(database) as unknown as Parameters<typeof drizzleOpSqlite>[0]
+      ),
+      migrations
+    )
   } catch (error) {
     try {
       database.close()

@@ -91,6 +91,7 @@
     "@swc/core",
   ],
   "patchedDependencies": {
+    "drizzle-orm@1.0.0-beta.9-e89174b": "patches/drizzle-orm@1.0.0-beta.9-e89174b.patch",
     "react-native-reanimated@4.7.1": "patches/react-native-reanimated@4.7.1.patch",
     "react-native-keyboard-controller@1.22.5": "patches/react-native-keyboard-controller@1.22.5.patch",
   },
