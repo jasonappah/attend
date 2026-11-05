@@ -17,7 +17,7 @@ export function prepare(cwd = process.cwd()) {
     .join('\n')
   writeFileSync(
     `${cwd}/CHANGELOG.md`,
-    `# Changelog\n\n## ${result.version}\n\n${changelog}\n\n${previous}`
+    `# Changelog\n\n## ${result.version}\n\n${changelog}${previous ? `\n\n${previous}` : ''}\n`
   )
   const intent = result.state.candidate!
   const outputs = {

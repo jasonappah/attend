@@ -118,11 +118,13 @@ jobs:
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
       OTA_BUCKET: ${{ secrets.ATTEND_CF_BUCKET_NAME }}
       ONE_SERVER_URL: ${{ secrets.ONE_SERVER_URL }}
+      BUN_INSTALL_CACHE_DIR: ${{ github.workspace }}/.bun-cache
+      GRADLE_USER_HOME: ${{ github.workspace }}/.gradle-home
     steps:
       - name: Maximize build space
         uses: easimon/maximize-build-space@master
         with:
-          root-reserve-mb: 512
+          root-reserve-mb: 4096
           swap-size-mb: 1024
           remove-dotnet: "true"
           remove-haskell: "true"
@@ -136,10 +138,6 @@ jobs:
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: ${{ env.BUN_VERSION }}
-      - uses: actions/cache@v4
-        with:
-          path: ~/.bun/install/cache
-          key: ${{ runner.os }}-bun-${{ hashFiles('bun.lock') }}
       - run: bun install --frozen-lockfile --ignore-scripts
 
       - name: Verify release provenance and committed identity
@@ -201,7 +199,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: |
-            ~/.gradle/caches
+            .gradle-home/caches
             android/.gradle
           key: ${{ runner.os }}-gradle-${{ hashFiles('android/gradle/wrapper/gradle-wrapper.properties') }}
           restore-keys: |
