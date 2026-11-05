@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.375
+
+- fix: reclaim runner space for Android releases (c9132f0)
+
 ## 1.1.374
 
 - fix: install Android 37 SDK package (fc64335)
