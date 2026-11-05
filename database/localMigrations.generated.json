@@ -1,0 +1,5 @@
+{
+  "migrations": {
+    "20261104012356_marvelous_betty_brant": "CREATE TABLE `backgroundTaskRun` (\n\t`id` text PRIMARY KEY,\n\t`task` text NOT NULL,\n\t`ranAt` integer NOT NULL,\n\t`batteryLevel` integer,\n\t`batteryState` text,\n\t`lowPowerMode` integer,\n\t`deviceModel` text,\n\t`deviceSystemName` text,\n\t`deviceSystemVersion` text,\n\t`isSimulator` integer\n);\n"
+  }
+}

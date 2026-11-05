@@ -23,7 +23,7 @@
     "generate": "bun run generate:migrations && bun run generate:local-migrations && bun run generate:types",
     "generate:types": "on-zero generate data",
     "generate:migrations": "drizzle-kit generate --config=database/drizzle.config.ts",
-    "generate:local-migrations": "drizzle-kit generate --config=database/localDrizzle.config.ts",
+    "generate:local-migrations": "drizzle-kit generate --config=database/localDrizzle.config.ts && bun scripts/generate-local-migrations.ts",
     "typecheck": "tsc --noEmit",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
@@ -116,6 +116,7 @@
   ],
   "patchedDependencies": {
     "react-native-reanimated@4.7.1": "patches/react-native-reanimated@4.7.1.patch",
-    "react-native-keyboard-controller@1.22.5": "patches/react-native-keyboard-controller@1.22.5.patch"
+    "react-native-keyboard-controller@1.22.5": "patches/react-native-keyboard-controller@1.22.5.patch",
+    "drizzle-orm@1.0.0-beta.9-e89174b": "patches/drizzle-orm@1.0.0-beta.9-e89174b.patch"
   }
 }
