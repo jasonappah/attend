@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.376
+
+- fix: retain freed root space for Android builds (16a8567)
+
 ## 1.1.375
 
 - fix: reclaim runner space for Android releases (c9132f0)
