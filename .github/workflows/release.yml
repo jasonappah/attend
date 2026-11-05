@@ -121,8 +121,18 @@ jobs:
       BUN_INSTALL_CACHE_DIR: ${{ github.workspace }}/.bun-cache
       GRADLE_USER_HOME: ${{ github.workspace }}/.gradle-home
     steps:
+      - name: Maximize build space
+        uses: easimon/maximize-build-space@master
+        with:
+          root-reserve-mb: 4096
+          swap-size-mb: 1024
+          remove-dotnet: "true"
+          remove-haskell: "true"
+          remove-codeql: "true"
+          remove-docker-images: "true"
       # These are preinstalled on GitHub's ephemeral Ubuntu image, but are not
       # used by the Android release. Keep Java, Node and the Android SDK/NDK.
+      # Remove them after volume allocation so the freed space stays on root.
       - name: Remove unused runner toolchains
         run: |
           df -h / "$GITHUB_WORKSPACE"
@@ -133,15 +143,6 @@ jobs:
             /usr/local/lib/android/sdk/ndk/30.0.16248370 \
             /opt/az /opt/microsoft /usr/local/share/powershell /home/linuxbrew
           df -h / "$GITHUB_WORKSPACE"
-      - name: Maximize build space
-        uses: easimon/maximize-build-space@master
-        with:
-          root-reserve-mb: 4096
-          swap-size-mb: 1024
-          remove-dotnet: "true"
-          remove-haskell: "true"
-          remove-codeql: "true"
-          remove-docker-images: "true"
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
