@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.377
+
+- fix: accept secure-prefixed session cookie on Google sign-in (#67) (8689ca0)
+
 ## 1.1.376
 
 - fix: retain freed root space for Android builds (16a8567)
