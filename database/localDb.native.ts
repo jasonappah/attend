@@ -37,6 +37,7 @@ let initializing: Promise<void> | null = null
 
 async function initDb() {
   const directories = One.FileSystem.getDirectories()
+  // OP SQLite defaults to Android's database directory and iOS Documents.
   const root =
     Platform.OS === 'android'
       ? `file://${NativeModules.OPSQLite.getConstants().ANDROID_DATABASE_PATH}/`
