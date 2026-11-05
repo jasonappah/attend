@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.373
+
+- fix: prevent release runner disk exhaustion (1fb4805)
+
 ## 1.1.372
 
 - fix(release): move bootstrap boundary to current main HEAD (3ee8b5b)
