@@ -101,7 +101,7 @@ jobs:
     name: Publish native and OTA release
     needs: [checks, detect-release]
     if: needs.detect-release.outputs.is_release == 'true'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 120
     permissions:
       contents: write
@@ -121,6 +121,18 @@ jobs:
       BUN_INSTALL_CACHE_DIR: ${{ github.workspace }}/.bun-cache
       GRADLE_USER_HOME: ${{ github.workspace }}/.gradle-home
     steps:
+      # These are preinstalled on GitHub's ephemeral Ubuntu image, but are not
+      # used by the Android release. Keep Java, Node and the Android SDK/NDK.
+      - name: Remove unused runner toolchains
+        run: |
+          df -h / "$GITHUB_WORKSPACE"
+          sudo rm -rf /usr/share/swift /usr/share/miniconda /usr/local/share/vcpkg \
+            /usr/local/lib/android/sdk/system-images /usr/local/lib/android/sdk/emulator \
+            /usr/local/lib/android/sdk/ndk/27.3.13750724 \
+            /usr/local/lib/android/sdk/ndk/29.0.14206865 \
+            /usr/local/lib/android/sdk/ndk/30.0.16248370 \
+            /opt/az /opt/microsoft /usr/local/share/powershell /home/linuxbrew
+          df -h / "$GITHUB_WORKSPACE"
       - name: Maximize build space
         uses: easimon/maximize-build-space@master
         with:
@@ -217,6 +229,7 @@ jobs:
           CCACHE_DIR: /tmp/ccache
         run: |
           set -euo pipefail
+          df -h / "$GITHUB_WORKSPACE"
           APK="$RUNNER_TEMP/app-release.apk"
           if gh release download "$TAG" --pattern app-release.apk --dir "$RUNNER_TEMP" --clobber; then
             echo "Reusing the APK already attached to $TAG"
