@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.378
+
+- refactor(attendance): drive attendance screens through QueryMap (#70) (313ba20)
+
 ## 1.1.377
 
 - fix: accept secure-prefixed session cookie on Google sign-in (#67) (8689ca0)
