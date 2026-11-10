@@ -1,0 +1,6 @@
+{
+  "denyList": {
+    "android": ["react-native-reanimated"],
+    "ios": ["react-native-keyboard-controller"]
+  }
+}

@@ -12,6 +12,10 @@ android/app/build/
 android/app/.cxx/
 android/keystore.properties
 
+# RNRepo (https://rnrepo.org) downloaded iOS xcframeworks
+.rnrepo-cache/
+**/.rnrepo-cache/
+
 # Node / Bun
 node_modules/
 .bun/
