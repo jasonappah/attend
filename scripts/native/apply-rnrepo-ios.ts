@@ -12,8 +12,8 @@ const root = join(import.meta.dirname, '../..')
 const iosDir = join(root, 'ios')
 const podfilePath = join(iosDir, 'Podfile')
 
-export const REQUIRE_MARKER = '# [attend] rnrepo cocoapods plugin'
-export const POST_INSTALL_MARKER = '# [attend] rnrepo_post_install'
+const REQUIRE_MARKER = '# [attend] rnrepo cocoapods plugin'
+const POST_INSTALL_MARKER = '# [attend] rnrepo_post_install'
 
 const REQUIRE_BLOCK = `${REQUIRE_MARKER}
 require Pod::Executable.execute_command('node', ['-p',
@@ -27,54 +27,40 @@ const POST_INSTALL_CALL = `    ${POST_INSTALL_MARKER}
     rnrepo_post_install(installer)
 `
 
-/** Idempotently inject the RNRepo CocoaPods require + post_install hook. */
-export function applyRnrepoToPodfile(podfile: string): { podfile: string; changed: boolean } {
-  let next = podfile
-  let changed = false
-
-  if (!next.includes(REQUIRE_MARKER)) {
-    next = `${REQUIRE_BLOCK}\n${next}`
-    changed = true
-  }
-
-  if (!next.includes(POST_INSTALL_MARKER)) {
-    const postInstall = /post_install\s+do\s+\|installer\|/
-    const match = next.match(postInstall)
-    if (!match || match.index === undefined) {
-      throw new Error('[rnrepo] ios/Podfile has no post_install block to hook')
-    }
-    const insertAt = match.index + match[0].length
-    next = `${next.slice(0, insertAt)}\n${POST_INSTALL_CALL}${next.slice(insertAt)}`
-    changed = true
-  }
-
-  return { podfile: next, changed }
+if (!existsSync(podfilePath)) {
+  console.log('[rnrepo] ios/Podfile missing; skip (run one prebuild first)')
+  process.exit(0)
 }
 
-async function main() {
-  if (!existsSync(podfilePath)) {
-    console.log('[rnrepo] ios/Podfile missing; skip (run one prebuild first)')
-    return
-  }
+let podfile = readFileSync(podfilePath, 'utf8')
+let changed = false
 
-  const current = readFileSync(podfilePath, 'utf8')
-  const { podfile, changed } = applyRnrepoToPodfile(current)
-
-  if (!changed) {
-    console.log('[rnrepo] ios/Podfile already configured')
-    return
-  }
-
-  writeFileSync(podfilePath, podfile)
-  console.log('[rnrepo] applied CocoaPods plugin to ios/Podfile')
-
-  if (process.platform === 'darwin') {
-    await $`pod install`.cwd(iosDir)
-  } else {
-    console.log('[rnrepo] skipped pod install (not macOS); run it after prebuild on a Mac')
-  }
+if (!podfile.includes(REQUIRE_MARKER)) {
+  podfile = `${REQUIRE_BLOCK}\n${podfile}`
+  changed = true
 }
 
-if (import.meta.main) {
-  await main()
+if (!podfile.includes(POST_INSTALL_MARKER)) {
+  const postInstall = /post_install\s+do\s+\|installer\|/
+  const match = podfile.match(postInstall)
+  if (!match || match.index === undefined) {
+    throw new Error('[rnrepo] ios/Podfile has no post_install block to hook')
+  }
+  const insertAt = match.index + match[0].length
+  podfile = `${podfile.slice(0, insertAt)}\n${POST_INSTALL_CALL}${podfile.slice(insertAt)}`
+  changed = true
+}
+
+if (!changed) {
+  console.log('[rnrepo] ios/Podfile already configured')
+  process.exit(0)
+}
+
+writeFileSync(podfilePath, podfile)
+console.log('[rnrepo] applied CocoaPods plugin to ios/Podfile')
+
+if (process.platform === 'darwin') {
+  await $`pod install`.cwd(iosDir)
+} else {
+  console.log('[rnrepo] skipped pod install (not macOS); run it after prebuild on a Mac')
 }
