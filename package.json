@@ -98,6 +98,7 @@
     "@react-native-community/template": "0.88.0",
     "@react-native/babel-preset": "^0.88.0",
     "@react-native/metro-config": "^0.88.0",
+    "@rnrepo/build-tools": "^0.2.2",
     "@tamagui/vite-plugin": "3.1.9",
     "@types/bun": "^1.4.0",
     "@types/node": "^25.5.0",

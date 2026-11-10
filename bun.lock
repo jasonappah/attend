@@ -72,6 +72,7 @@
         "@react-native-community/template": "0.88.0",
         "@react-native/babel-preset": "^0.88.0",
         "@react-native/metro-config": "^0.88.0",
+        "@rnrepo/build-tools": "^0.2.2",
         "@tamagui/vite-plugin": "3.1.9",
         "@types/bun": "^1.4.0",
         "@types/node": "^25.5.0",
@@ -1009,6 +1010,8 @@
     "@revenuecat/purchases-js-hybrid-mappings": ["@revenuecat/purchases-js-hybrid-mappings@18.21.0", "", { "dependencies": { "@revenuecat/purchases-js": "1.47.1" } }, "sha512-mj4JgMc1TodduDpGWPgwX8qj3Tf81pZwUznSCac9BTUTpFK5DIzYzmo6T5pyX2mweduZhW8nKjesUmYnhz9uGA=="],
 
     "@revenuecat/purchases-typescript-internal": ["@revenuecat/purchases-typescript-internal@18.21.0", "", {}, "sha512-cjU1Nw8IkX+ZiXSiJ89CXuy3XWEDspPWFqFSscfrqdDwmkfMdX1zIzrvoMYW5dTdP00jikTL3Vu1e4OKfO9bFA=="],
+
+    "@rnrepo/build-tools": ["@rnrepo/build-tools@0.2.2", "", {}, "sha512-bdFYCVO7y9cIVEWzabY0ozCYuTkgHZ3rVhFvRHCL1xIfv0ecBL2e66fdYVmrxMJhQtQWLdSSowGmtwcobFnqIg=="],
 
     "@rocicorp/lock": ["@rocicorp/lock@1.0.4", "", { "dependencies": { "@rocicorp/resolver": "^1.0.2" } }, "sha512-FavTiO8ETXFXDVfA87IThGduTTTR8iqzBnr/c60gUUmbk7knGEXPmf2B+yiNuluJD0ku0fL2V2r62UXnsLXl6w=="],
 

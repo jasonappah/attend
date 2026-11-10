@@ -1,0 +1,5 @@
+{
+  "denyList": {
+    "android": ["react-native-reanimated"]
+  }
+}
