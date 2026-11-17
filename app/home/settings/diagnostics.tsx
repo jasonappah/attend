@@ -4,6 +4,10 @@ import { showToast } from 'takeout-ui/toast/Toast'
 import { isWeb, Paragraph, SizableText, XStack, YStack } from 'tamagui'
 import { releaseInfoLines } from '~/features/app/releaseInfo'
 import { getReleaseInfo } from '~/features/app/releaseInfoRuntime'
+import {
+  armBackgroundTasks,
+  type TaskSubmissionFailure,
+} from '~/features/background-tasks/armTasks'
 import { listRuns } from '~/features/background-tasks/localDb'
 import { BACKGROUND_TASKS } from '~/features/background-tasks/tasks'
 import { SettingsWebChrome } from '~/features/settings/SettingsWebChrome'
@@ -66,6 +70,7 @@ function DiagnosticsContent() {
   const releaseInfo = getReleaseInfo()
   const [runs, setRuns] = useState<TaskRun[]>([])
   const [loading, setLoading] = useState(false)
+  const [submissionFailures, setSubmissionFailures] = useState<TaskSubmissionFailure[]>([])
 
   const refreshRuns = useCallback(async () => {
     setLoading(true)
@@ -84,17 +89,17 @@ function DiagnosticsContent() {
   }, [refreshRuns])
 
   const armTasks = useCallback(async () => {
-    try {
-      await Promise.all(
-        Object.entries(BACKGROUND_TASKS).map(([identifier]) =>
-          One.BackgroundTasks.submit(identifier, { earliestBeginDateMs: Date.now() })
-        )
-      )
+    setSubmissionFailures([])
+    const failures = await armBackgroundTasks(Object.keys(BACKGROUND_TASKS), (identifier) =>
+      One.BackgroundTasks.submit(identifier, { earliestBeginDateMs: Date.now() })
+    )
+    setSubmissionFailures(failures)
+    if (failures.length === 0) {
       showToast('Background tasks armed — each task re-submits itself when it runs')
-      void refreshRuns()
-    } catch (_error) {
-      showToast('Could not arm background tasks', { type: 'error' })
+    } else {
+      showToast('Some background tasks could not be armed; see details below', { type: 'error' })
     }
+    void refreshRuns()
   }, [refreshRuns])
 
   const exportDatabase = useCallback(async () => {
@@ -158,11 +163,11 @@ function DiagnosticsContent() {
         </YStack>
         <SepHeading>Background tasks</SepHeading>
         <Paragraph size="3" color="color-11">
-          Four background tasks are registered — every minute, every ten minutes, every hour, and
-          every thirty minutes. each task re-submits itself from its handler, so this log shows when
-          the operating system actually launched each run, not when we asked for it. arm the tasks,
-          leave the app in the background, then come back and compare the times against the
-          intervals.{' '}
+          Eight background tasks are registered — record and ping tasks for every minute, ten
+          minutes, thirty minutes, and hour. Each task re-submits itself from its handler, so this
+          log shows when the operating system actually launched each run, not when we asked for it.
+          arm the tasks, leave the app in the background, then come back and compare the times
+          against the intervals.{' '}
           {isWeb ? (
             <>
               on web, submission validates but the OS never launches anything — background tasks are
@@ -189,6 +194,25 @@ function DiagnosticsContent() {
             {isWeb ? 'Not available on web' : 'Arm'}
           </Button>
         </XStack>
+
+        {submissionFailures.length > 0 ? (
+          <YStack px={18} gap="2" testID="diagnostics-submission-failures">
+            <SizableText size="3" fontWeight="500">
+              Failed submissions
+            </SizableText>
+            {submissionFailures.map(({ identifier, message }) => (
+              <Paragraph
+                key={identifier}
+                size="2"
+                color="color-11"
+                overflowWrap="anywhere"
+                select="text"
+              >
+                {identifier}: {message}
+              </Paragraph>
+            ))}
+          </YStack>
+        ) : null}
 
         <SepHeading>Task runs</SepHeading>
         {runs.length === 0 ? (

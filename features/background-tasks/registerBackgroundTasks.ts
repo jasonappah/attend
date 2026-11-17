@@ -28,9 +28,14 @@ export function registerBackgroundTasks() {
         console.error('[background tasks] failed to run task', identifier, error)
       }
       if (!signal.aborted) {
-        await One.BackgroundTasks.submit(identifier, {
-          earliestBeginDateMs: Date.now() + intervalMs,
-        })
+        try {
+          await One.BackgroundTasks.submit(identifier, {
+            earliestBeginDateMs: Date.now() + intervalMs,
+          })
+        } catch (error) {
+          console.error('[background tasks] failed to resubmit task', identifier, error)
+          throw error
+        }
       }
     })
   }

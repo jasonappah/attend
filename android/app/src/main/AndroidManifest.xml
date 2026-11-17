@@ -32,5 +32,7 @@
       </activity>
       <meta-data android:name="dev.onejs.updates.url" android:value="${oneUpdatesUrl}" />
       <meta-data android:name="dev.onejs.updates.runtimeVersion" android:value="@string/one_updates_runtime_version" />
+      <!-- Keep in sync with BACKGROUND_TASKS; One reads this at runtime on Android. -->
+      <meta-data android:name="one.backgroundTasks.refresh" android:value="attend.background-task.every-minute,attend.background-task.every-ten-minutes,attend.background-task.every-hour,attend.background-task.every-thirty-minutes,attend.background-task.every-minute-ping,attend.background-task.every-ten-minutes-ping,attend.background-task.every-hour-ping,attend.background-task.every-thirty-minutes-ping" />
     </application>
 </manifest>
