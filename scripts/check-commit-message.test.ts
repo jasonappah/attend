@@ -58,6 +58,46 @@ describe('commit release metadata', () => {
     ).toEqual([])
   })
 
+  test('accepts release trailers displaced by GitHub co-author appendages', () => {
+    expect(
+      validateCommitMessage(
+        message(
+          'Release-Type: patch\nNative-Change: yes\n\n---------\n\nCo-authored-by: Cursor <cursoragent@cursor.com>'
+        )
+      )
+    ).toEqual([])
+    expect(
+      validateCommitMessage(
+        message(
+          'Release-Type: minor\nNative-Change: no\n\nCo-authored-by: A <a@example.com>\nCo-authored-by: B <b@example.com>'
+        )
+      )
+    ).toEqual([])
+    expect(
+      validateCommitMessage(
+        message('Release-Type: patch\nNative-Change: yes\n\nSigned-off-by: Dev <dev@example.com>')
+      )
+    ).toEqual([])
+  })
+
+  test('accepts release trailers displaced by Cursor PR HTML footers', () => {
+    expect(
+      validateCommitMessage(
+        message(
+          'Release-Type: patch\nNative-Change: no\n\n<!-- CURSOR_AGENT_PR_BODY_END -->\n\n<div><a href="https://cursor.com/agents/example">Open</a></div>'
+        )
+      )
+    ).toEqual([])
+  })
+
+  test('still rejects prose after the release trailers', () => {
+    expect(
+      validateCommitMessage(
+        message('Release-Type: patch\nNative-Change: no\n\n---------\n\nMore description follows.')
+      )
+    ).not.toEqual([])
+  })
+
   test('rejects folded values with extra text', () => {
     expect(
       validateCommitMessage(message('Release-Type: patch\n  or minor\nNative-Change: no'))
