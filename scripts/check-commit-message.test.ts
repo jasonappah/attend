@@ -80,6 +80,16 @@ describe('commit release metadata', () => {
     ).toEqual([])
   })
 
+  test('accepts release trailers displaced by Cursor PR HTML footers', () => {
+    expect(
+      validateCommitMessage(
+        message(
+          'Release-Type: patch\nNative-Change: no\n\n<!-- CURSOR_AGENT_PR_BODY_END -->\n\n<div><a href="https://cursor.com/agents/example">Open</a></div>'
+        )
+      )
+    ).toEqual([])
+  })
+
   test('still rejects prose after the release trailers', () => {
     expect(
       validateCommitMessage(

@@ -12,6 +12,10 @@ const ATTRIBUTION_TRAILER =
 
 const SEPARATOR_LINE = /^-{3,}\s*$/
 
+/** HTML comments / tags Cursor or other tools append after the PR body footer. */
+const HTML_COMMENT_LINE = /^<!--.*?-->$/
+const HTML_TAG_LINE = /^<\/?[a-zA-Z!]/
+
 function parseTrailersWithGit(message: string) {
   const result = spawnSync('git', ['interpret-trailers', '--parse'], {
     input: message,
@@ -33,10 +37,12 @@ function hasRequiredTrailers(parsed: string) {
 
 /**
  * Squash merges often keep PR-body trailers, then append a blank line, a
- * `---------` separator, and `Co-authored-by` lines. Git's trailer block is
- * only the final contiguous footer, so those appendages hide Release-Type /
- * Native-Change from `interpret-trailers --parse`. Strip that trailing
- * attribution so the intended release footer is visible again.
+ * `---------` separator, and `Co-authored-by` lines. Cursor's PR body helper
+ * can also append HTML comment markers and a link footer after the trailers.
+ * Git's trailer block is only the final contiguous footer, so those
+ * appendages hide Release-Type / Native-Change from `interpret-trailers
+ * --parse`. Strip trailing attribution and trailing HTML so the intended
+ * release footer is visible again.
  */
 export function stripTrailingAttribution(message: string): string {
   const lines = message.replaceAll('\r\n', '\n').split('\n')
@@ -59,6 +65,14 @@ export function stripTrailingAttribution(message: string): string {
       changed = true
     }
     if (removedAttribution && end > 0 && SEPARATOR_LINE.test(lines[end - 1]!.trim())) {
+      end -= 1
+      changed = true
+    }
+    while (
+      end > 0 &&
+      (HTML_COMMENT_LINE.test(lines[end - 1]!.trim()) ||
+        HTML_TAG_LINE.test(lines[end - 1]!.trim()))
+    ) {
       end -= 1
       changed = true
     }
