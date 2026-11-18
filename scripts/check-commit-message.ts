@@ -6,9 +6,13 @@ const requirements = {
   'Native-Change': ['yes', 'no'],
 }
 
-export function validateCommitMessage(message: string): string[] {
-  // Let Git recognize the footer, comments, and folded trailer values rather
-  // than accepting matching text anywhere in the subject or prose.
+/** Trailers GitHub/Cursor commonly append after the PR body's own footer. */
+const ATTRIBUTION_TRAILER =
+  /^(Co-authored-by|Signed-off-by|Acked-by|Reviewed-by|Helped-by|Reported-by|Tested-by|Suggested-by|Cc|Requested-by)\s*:/i
+
+const SEPARATOR_LINE = /^-{3,}\s*$/
+
+function parseTrailersWithGit(message: string) {
   const result = spawnSync('git', ['interpret-trailers', '--parse'], {
     input: message,
     encoding: 'utf8',
@@ -16,8 +20,65 @@ export function validateCommitMessage(message: string): string[] {
   if (result.error || result.status !== 0) {
     throw new Error('Could not parse commit trailers with git interpret-trailers.')
   }
+  return result.stdout
+}
 
-  const trailers = result.stdout.trim().split('\n')
+function hasRequiredTrailers(parsed: string) {
+  const lines = parsed.trim() ? parsed.trim().split('\n') : []
+  return Object.keys(requirements).every(
+    (key) =>
+      lines.filter((line) => line.toLowerCase().startsWith(`${key.toLowerCase()}:`)).length === 1
+  )
+}
+
+/**
+ * Squash merges often keep PR-body trailers, then append a blank line, a
+ * `---------` separator, and `Co-authored-by` lines. Git's trailer block is
+ * only the final contiguous footer, so those appendages hide Release-Type /
+ * Native-Change from `interpret-trailers --parse`. Strip that trailing
+ * attribution so the intended release footer is visible again.
+ */
+export function stripTrailingAttribution(message: string): string {
+  const lines = message.replaceAll('\r\n', '\n').split('\n')
+  let end = lines.length
+  let changed = true
+  while (changed) {
+    changed = false
+    while (end > 0 && lines[end - 1]!.trim() === '') {
+      end -= 1
+      changed = true
+    }
+    let removedAttribution = false
+    while (end > 0 && ATTRIBUTION_TRAILER.test(lines[end - 1]!.trim())) {
+      end -= 1
+      removedAttribution = true
+      changed = true
+    }
+    while (end > 0 && lines[end - 1]!.trim() === '') {
+      end -= 1
+      changed = true
+    }
+    if (removedAttribution && end > 0 && SEPARATOR_LINE.test(lines[end - 1]!.trim())) {
+      end -= 1
+      changed = true
+    }
+  }
+  return `${lines.slice(0, end).join('\n')}\n`
+}
+
+function trailersForValidation(message: string) {
+  const parsed = parseTrailersWithGit(message)
+  if (hasRequiredTrailers(parsed)) return parsed
+  const retry = parseTrailersWithGit(stripTrailingAttribution(message))
+  return hasRequiredTrailers(retry) ? retry : parsed
+}
+
+export function validateCommitMessage(message: string): string[] {
+  // Let Git recognize the footer, comments, and folded trailer values rather
+  // than accepting matching text anywhere in the subject or prose. When
+  // GitHub appends co-author trailers after the PR body, strip that
+  // attribution first so the release trailers remain the footer.
+  const trailers = trailersForValidation(message).trim().split('\n')
   const errors: string[] = []
   for (const [key, allowed] of Object.entries(requirements)) {
     const entries = trailers.filter((line) =>
@@ -39,10 +100,7 @@ export function validateCommitMessage(message: string): string[] {
 export function readReleaseTrailers(message: string) {
   const errors = validateCommitMessage(message)
   if (errors.length) throw new Error(errors.join('\n'))
-  const parsed = spawnSync('git', ['interpret-trailers', '--parse'], {
-    input: message,
-    encoding: 'utf8',
-  }).stdout
+  const parsed = trailersForValidation(message)
   return {
     releaseType: parsed.match(/^Release-Type: (patch|minor|major)$/m)![1] as
       | 'patch'
