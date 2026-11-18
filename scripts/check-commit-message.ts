@@ -70,8 +70,7 @@ export function stripTrailingAttribution(message: string): string {
     }
     while (
       end > 0 &&
-      (HTML_COMMENT_LINE.test(lines[end - 1]!.trim()) ||
-        HTML_TAG_LINE.test(lines[end - 1]!.trim()))
+      (HTML_COMMENT_LINE.test(lines[end - 1]!.trim()) || HTML_TAG_LINE.test(lines[end - 1]!.trim()))
     ) {
       end -= 1
       changed = true
