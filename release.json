@@ -2,14 +2,14 @@
   "schemaVersion": 1,
   "bootstrapCommit": "d8ef74c527dbcc55a2cdec5a7f6072d775056768",
   "native": {
-    "version": "1.1.377",
-    "build": 7,
-    "runtimeVersion": "7.0.0"
+    "version": "1.1.378",
+    "build": 8,
+    "runtimeVersion": "8.0.0"
   },
   "candidate": {
     "releaseType": "patch",
     "nativeChange": true,
-    "baseCommit": "00a9b97a43b62d491a76cd08fa2497157e2fb012",
-    "sourceCommit": "8689ca0b0a78e20eacf8658c4e0a508002042d39"
+    "baseCommit": "b756b44b0be18d6d9a7ec592953e94816fb0a834",
+    "sourceCommit": "e33e2eae473bdbb61daba26448c7c8ffd885b9d1"
   }
 }

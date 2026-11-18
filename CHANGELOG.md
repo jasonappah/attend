@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.1.378
+
+- refactor(attendance): drive attendance screens through QueryMap (#70) (313ba20)
+- chore: set up RNRepo for faster native builds (#72) (7449e46)
+- fix: configure Android background task scheduling (#73) (1c5887b)
+- fix: accept release trailers before co-author appendages (#74) (f881317)
+- fix(ci): publish the release receipt and resolve the Cloudflare account (#69) (e33e2ea)
+
 ## 1.1.377
 
 - fix: accept secure-prefixed session cookie on Google sign-in (#67) (8689ca0)
