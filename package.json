@@ -28,7 +28,9 @@
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
     "format": "biome format --write .",
-    "format:check": "biome format ."
+    "format:check": "biome format .",
+    "prod-do": "wrangler dev --remote --config scripts/prod-do/wrangler.jsonc --ip 127.0.0.1 --port 8791",
+    "prod-sql": "bun scripts/prod-sql.ts"
   },
   "dependencies": {
     "@better-auth/core": "1.6.30",

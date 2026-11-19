@@ -1,0 +1,19 @@
+// Temporary door into production ZeroSqlDO for manual SQL.
+// Use ONLY with: bun run prod-do
+// Never `wrangler deploy` this — it is not a permanent worker.
+{
+  "name": "attend-prod-do-ops",
+  "main": "worker.js",
+  "compatibility_date": "2026-04-28",
+  "workers_dev": false,
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "ZERO_SQL_DO",
+        "class_name": "ZeroSqlDO",
+        // Production app worker that owns the Durable Object class + data.
+        "script_name": "attend"
+      }
+    ]
+  }
+}
