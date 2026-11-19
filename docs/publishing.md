@@ -62,6 +62,29 @@ Set via `wrangler secret put`:
 
 The Google OAuth callback `https://attend.jasonaa.me/api/auth/callback/google` is registered in the Google Cloud Console project.
 
+## Production SQLite ops
+
+Manual production SQL must go through the data Durable Object's `/exec` path so
+CDC still feeds Lime Sync. Do not edit DO SQLite from the Cloudflare dashboard
+console.
+
+`scripts/prod-do` is a temporary ops worker: it binds production `ZeroSqlDO` on
+`attend` and is only alive while `wrangler dev --remote` runs. Never
+`wrangler deploy` it.
+
+```sh
+# terminal 1 — requires `wrangler login`
+bun run prod-do
+
+# terminal 2
+bun run prod-sql -- 'SELECT id, name FROM course LIMIT 5'
+bun run prod-sql -- 'SELECT * FROM course WHERE id = ?' -- '<course-id>'
+bun run prod-sql   # REPL
+```
+
+Optional: set the same `PROD_DO_OPS_TOKEN` in `scripts/prod-do/.dev.vars` and
+your shell so localhost `/exec` requires `x-prod-do-token`.
+
 ## Notes
 
 - `wrangler.jsonc` is merged into `dist/worker/wrangler.json` during the build; `scripts/deploy-cloudflare.ts` then adds the sync service binding, R2 bucket binding, and production vars.
