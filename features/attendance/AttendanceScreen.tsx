@@ -228,9 +228,6 @@ export function AttendanceScreen({ mode }: { mode: 'today' | 'history' | 'course
                       return session.startTime >= start && session.startTime < end
                     case 'history':
                       return session.startTime < end
-                    case 'courses':
-                      // unreachable: showSessions is false for courses
-                      return false
                     default:
                       return assertNever(mode)
                   }
