@@ -63,7 +63,7 @@ export function TimelineImport() {
       <H3>Google Maps Timeline</H3>
       <Paragraph>
         Your file stays on this device. Estimates can be inaccurate; review them before applying.
-        Existing attendance is never overwritten.
+        Applied estimates are tagged as Timeline imports. Existing attendance is never overwritten.
       </Paragraph>
       <input
         aria-label="Google Maps Timeline JSON"

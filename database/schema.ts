@@ -229,6 +229,11 @@ export const courseSession = sqliteTable(
     attendance: text('attendance', {
       enum: ['present', 'absent', 'cancelled'],
     }),
+    // null when unmarked; 'manual' from the attendance buttons; 'timeline' from
+    // Google Timeline import estimates. import never overwrites a marked row.
+    attendanceSource: text('attendanceSource', {
+      enum: ['manual', 'timeline'],
+    }),
     startTime: integer('startTime').notNull(),
     endTime: integer('endTime').notNull(),
     createdAt: integer('createdAt').notNull(),
