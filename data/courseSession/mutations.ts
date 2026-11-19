@@ -39,7 +39,11 @@ export const mutate = mutations(
         )
         if (!existing) throw new Error('Access denied')
       }
-      await ctx.tx.mutate.courseSession.update(args)
+      await ctx.tx.mutate.courseSession.update({
+        id: args.id,
+        attendance: args.attendance,
+        attendanceSource: args.attendance === null ? null : 'manual',
+      })
     },
     importAttendance: async (
       ctx,
@@ -68,13 +72,21 @@ export const mutate = mutations(
           const row = byId.get(item.id)
           if (!row) throw new Error('Access denied')
           if (row.attendance !== null) continue
-          await ctx.tx.mutate.courseSession.update(item)
+          await ctx.tx.mutate.courseSession.update({
+            id: item.id,
+            attendance: item.attendance,
+            attendanceSource: 'timeline',
+          })
         }
         return
       }
 
       for (const item of args.items) {
-        await ctx.tx.mutate.courseSession.update(item)
+        await ctx.tx.mutate.courseSession.update({
+          id: item.id,
+          attendance: item.attendance,
+          attendanceSource: 'timeline',
+        })
       }
     },
   },

@@ -87,6 +87,7 @@ export default {
           id: 'seed-attend-session-previous',
           courseId: 'seed-attend-course',
           attendance: 'present',
+          attendanceSource: 'manual',
           startTime: new Date(new Date(now - 7 * DAY).setHours(10, 0, 0, 0)).getTime(),
           endTime: new Date(new Date(now - 7 * DAY).setHours(11, 0, 0, 0)).getTime(),
           createdAt: now,

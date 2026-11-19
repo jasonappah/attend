@@ -73,7 +73,9 @@ export function inferAttendance(visits: Visit[], sessions: readonly Session[], n
       if (overlap <= 0) continue
       const meters = distance(visit, room)
       if (meters <= 300) nearEvidence = true
-      if (meters <= 150 && overlap >= duration * 0.5) near = true
+      // 50 m / 70% keeps Student-Union-distance campus hangouts from counting as
+      // present while still accepting a long stay at the room itself.
+      if (meters <= 50 && overlap >= duration * 0.7) near = true
       if (meters > 300 && overlap >= duration * 0.9) farCovers = true
     }
     if (near) results.push({ id: session.id, attendance: 'present' })

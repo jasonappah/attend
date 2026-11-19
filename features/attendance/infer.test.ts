@@ -29,6 +29,16 @@ describe('Timeline attendance inference', () => {
       )
     ).toEqual([{ id: '1', attendance: 'absent' }])
   })
+  test('does not mark campus hangouts ~70-130 m from the room as present', () => {
+    // ~111 m north of the room — inside the old 150 m radius, outside the 50 m one.
+    expect(
+      inferAttendance(
+        parseVisits({ semanticSegments: [visit('32.001°, -96°')] }),
+        [session],
+        end + 1
+      )
+    ).toEqual([])
+  })
   test('does not guess from incomplete visits, future classes, or marked sessions', () => {
     const visits = parseVisits({ semanticSegments: [visit('32°, -96°')] })
     expect(inferAttendance(visits, [session], start)).toEqual([])
@@ -37,6 +47,16 @@ describe('Timeline attendance inference', () => {
     expect(
       inferAttendance(
         parseVisits({ semanticSegments: [visit('32.1°, -96.1°', start, start + 1000)] }),
+        [session],
+        end + 1
+      )
+    ).toEqual([])
+    // Near the room but only for ~40% of class length — below the 70% present bar.
+    expect(
+      inferAttendance(
+        parseVisits({
+          semanticSegments: [visit('32°, -96°', start, start + Math.floor(0.4 * (end - start)))],
+        }),
         [session],
         end + 1
       )

@@ -263,7 +263,14 @@ export function AttendanceScreen({ mode }: { mode: 'today' | 'history' | 'course
                         ? ` · ${session.course.room.buildingCode} ${session.course.room.roomNumber}`
                         : ''}
                     </Paragraph>
-                    <Paragraph>Attendance: {session.attendance ?? 'Not marked'}</Paragraph>
+                    <Paragraph>
+                      Attendance: {session.attendance ?? 'Not marked'}
+                      {session.attendanceSource === 'timeline'
+                        ? ' · Estimated from Timeline'
+                        : session.attendanceSource === 'manual'
+                          ? ' · Marked manually'
+                          : ''}
+                    </Paragraph>
                     <XStack gap={8} flexWrap="wrap">
                       <Button
                         size="sm"
