@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.379
+
+- fix: gate history and courses lists by attendance screen mode (#75) (bd02abb)
+- fix: tighten timeline present heuristic and store attendance source (#77) (855bbae)
+- feat: add temporary production SQLite ops door (#78) (c9139dd)
+
 ## 1.1.378
 
 - refactor(attendance): drive attendance screens through QueryMap (#70) (313ba20)
