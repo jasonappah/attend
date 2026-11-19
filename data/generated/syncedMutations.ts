@@ -29,8 +29,10 @@ export const mutationValidators = {
       attendance: v.nullable(v.union([v.literal("absent"), v.literal("cancelled"), v.literal("present")])),
     }),
     importAttendance: v.object({
+      items: v.array(v.object({
       id: v.string(),
       attendance: v.union([v.literal("absent"), v.literal("present")]),
+    })),
     }),
   },
   notificationPreference: {

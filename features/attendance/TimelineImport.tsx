@@ -45,11 +45,10 @@ export function TimelineImport() {
       return
     }
     setBusy(true)
+    setMessage('Applying attendance estimates…')
     try {
-      for (const result of results) {
-        const response = await zero.mutate.courseSession.importAttendance(result).server
-        if (response.type === 'error') throw new Error('Could not save attendance')
-      }
+      const response = await zero.mutate.courseSession.importAttendance({ items: results }).server
+      if (response.type === 'error') throw new Error('Could not save attendance')
       setResults([])
       setMessage('Attendance imported. Existing attendance was not overwritten.')
     } catch {
@@ -100,7 +99,7 @@ export function TimelineImport() {
       })}
       {results.length ? (
         <Button disabled={busy} onPress={() => void apply()}>
-          Apply attendance estimates
+          {busy ? 'Applying…' : 'Apply attendance estimates'}
         </Button>
       ) : null}
     </YStack>
