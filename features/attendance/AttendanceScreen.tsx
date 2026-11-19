@@ -111,7 +111,11 @@ export function AttendanceScreen({ mode }: { mode: 'today' | 'history' | 'course
   // QueryMap handles the loading/error/empty lifecycle for each query. The
   // renderContent callback still does the per-item mapping and derived data —
   // that's exactly why it receives the full array rather than individual items.
-  const isCoursesMode = mode === 'courses'
+  // Gate the two lists by mode so History never mounts the course cards and
+  // Courses never mounts the session list — they used to share one tree and
+  // each route looked like it was rendering the other.
+  const showCourses = mode === 'courses'
+  const showSessions = mode === 'today' || mode === 'history'
 
   return (
     <>
@@ -124,163 +128,177 @@ export function AttendanceScreen({ mode }: { mode: 'today' | 'history' | 'course
           {mutation.error ? (
             <Paragraph color="red-900">Could not save attendance. Please try again.</Paragraph>
           ) : null}
-          <QueryMap
-            data={courseQuery[0]}
-            queryState={courseQuery[1]}
-            renderContent={(courseData) =>
-              courseData.map((course) => {
-                const courseSessions = sessionQuery[1].type === 'complete' ? sessionQuery[0] : []
-                const sessionsForCourse = courseSessions.filter(
-                  (item) => item.courseId === course.id
-                )
-                const completed = sessionsForCourse.filter((item) => item.endTime <= now.getTime())
-                const weekSessions = sessionsForCourse.filter(
-                  (item) => item.startTime >= week && item.startTime < nextWeek
-                )
-                return (
-                  <YStack
-                    key={course.id}
-                    gap={8}
-                    py={12}
-                    borderBottomWidth={1}
-                    borderColor="color-5"
-                  >
-                    <SizableText fontWeight="700">{course.courseName}</SizableText>
-                    <Paragraph color="color-10">
-                      {course.room
-                        ? `${course.room.buildingCode} ${course.room.roomNumber}`
-                        : 'No room'}
-                    </Paragraph>
-                    <XStack gap={16} flexWrap="wrap">
-                      <AttendanceGauge
-                        label={previousWeek ? 'Last week' : 'This week'}
-                        sessions={weekSessions.filter((item) => item.endTime <= now.getTime())}
-                      />
-                      <AttendanceGauge
-                        label="This month"
-                        sessions={completed.filter((item) => item.startTime >= month)}
-                      />
-                      <AttendanceGauge label="Overall" sessions={completed} />
-                    </XStack>
-                    <XStack gap={8}>
-                      <Button
-                        size="sm"
-                        subtle={previousWeek}
-                        onPress={() => setPreviousWeek(false)}
-                      >
-                        This week
-                      </Button>
-                      <Button
-                        size="sm"
-                        subtle={!previousWeek}
-                        onPress={() => setPreviousWeek(true)}
-                      >
-                        Last week
-                      </Button>
-                    </XStack>
-                    {weekSessions.length ? (
-                      weekSessions.map((item) => (
-                        <Paragraph key={item.id} color="color-10">
-                          {new Date(item.startTime).toLocaleString()} ·{' '}
-                          {item.attendance ??
-                            (item.endTime > now.getTime() ? 'Upcoming' : 'Not recorded')}
-                        </Paragraph>
-                      ))
-                    ) : (
-                      <Paragraph color="color-10">No sessions scheduled this week.</Paragraph>
-                    )}
-                    <AttendanceCalendar sessions={sessionsForCourse} now={now.getTime()} />
-                  </YStack>
-                )
-              })
-            }
-          />
-          {isCoursesMode && (
-            <EmptyState
-              icon={<AttendanceCalendar sessions={[]} now={now.getTime()} />}
-              title="No courses yet"
-              description="Add a calendar to get started."
-            />
-          )}
-          <QueryMap
-            data={sessionQuery[0]}
-            queryState={sessionQuery[1]}
-            emptyElement={
-              <EmptyState
-                icon={<AttendanceCalendar sessions={[]} now={now.getTime()} />}
-                title="No sessions yet"
-                description="Add sessions to view here."
-              />
-            }
-            renderContent={(sessionData) =>
-              sessionData.length ? (
-                sessionData
-                  .filter((session) => {
-                    if (mode === 'today') {
-                      return session.startTime >= start && session.startTime < end
-                    }
-                    if (mode === 'history') {
-                      return session.startTime < end
-                    }
-                    return true // mode === 'courses' — show all sessions
-                  })
-                  .map((session) => (
+          {showCourses ? (
+            <QueryMap
+              data={courseQuery[0]}
+              queryState={courseQuery[1]}
+              emptyElement={
+                <EmptyState
+                  icon={<AttendanceCalendar sessions={[]} now={now.getTime()} />}
+                  title="No courses yet"
+                  description="Add a calendar to get started."
+                />
+              }
+              renderContent={(courseData) =>
+                courseData.map((course) => {
+                  const courseSessions = sessionQuery[1].type === 'complete' ? sessionQuery[0] : []
+                  const sessionsForCourse = courseSessions.filter(
+                    (item) => item.courseId === course.id
+                  )
+                  const completed = sessionsForCourse.filter(
+                    (item) => item.endTime <= now.getTime()
+                  )
+                  const weekSessions = sessionsForCourse.filter(
+                    (item) => item.startTime >= week && item.startTime < nextWeek
+                  )
+                  return (
                     <YStack
-                      key={session.id}
+                      key={course.id}
                       gap={8}
                       py={12}
                       borderBottomWidth={1}
                       borderColor="color-5"
                     >
-                      <SizableText fontWeight="700">
-                        {session.course?.courseName ?? 'Course'}
-                      </SizableText>
+                      <SizableText fontWeight="700">{course.courseName}</SizableText>
                       <Paragraph color="color-10">
-                        {new Date(session.startTime).toLocaleString()} –{' '}
-                        {new Date(session.endTime).toLocaleTimeString()}
-                        {session.course?.room
-                          ? ` · ${session.course.room.buildingCode} ${session.course.room.roomNumber}`
-                          : ''}
+                        {course.room
+                          ? `${course.room.buildingCode} ${course.room.roomNumber}`
+                          : 'No room'}
                       </Paragraph>
-                      <Paragraph>Attendance: {session.attendance ?? 'Not marked'}</Paragraph>
-                      <XStack gap={8} flexWrap="wrap">
+                      <XStack gap={16} flexWrap="wrap">
+                        <AttendanceGauge
+                          label={previousWeek ? 'Last week' : 'This week'}
+                          sessions={weekSessions.filter((item) => item.endTime <= now.getTime())}
+                        />
+                        <AttendanceGauge
+                          label="This month"
+                          sessions={completed.filter((item) => item.startTime >= month)}
+                        />
+                        <AttendanceGauge label="Overall" sessions={completed} />
+                      </XStack>
+                      <XStack gap={8}>
                         <Button
                           size="sm"
-                          onPress={() => void mark({ id: session.id, attendance: 'present' })}
+                          subtle={previousWeek}
+                          onPress={() => setPreviousWeek(false)}
                         >
-                          Present
+                          This week
                         </Button>
                         <Button
                           size="sm"
-                          onPress={() => void mark({ id: session.id, attendance: 'absent' })}
+                          subtle={!previousWeek}
+                          onPress={() => setPreviousWeek(true)}
                         >
-                          Absent
-                        </Button>
-                        <Button
-                          size="sm"
-                          subtle
-                          onPress={() => void mark({ id: session.id, attendance: null })}
-                        >
-                          Clear
-                        </Button>
-                        <Button
-                          size="sm"
-                          onPress={() => void mark({ id: session.id, attendance: 'cancelled' })}
-                        >
-                          Cancelled
+                          Last week
                         </Button>
                       </XStack>
+                      {weekSessions.length ? (
+                        weekSessions.map((item) => (
+                          <Paragraph key={item.id} color="color-10">
+                            {new Date(item.startTime).toLocaleString()} ·{' '}
+                            {item.attendance ??
+                              (item.endTime > now.getTime() ? 'Upcoming' : 'Not recorded')}
+                          </Paragraph>
+                        ))
+                      ) : (
+                        <Paragraph color="color-10">No sessions scheduled this week.</Paragraph>
+                      )}
+                      <AttendanceCalendar sessions={sessionsForCourse} now={now.getTime()} />
                     </YStack>
-                  ))
-              ) : (
+                  )
+                })
+              }
+            />
+          ) : null}
+          {showSessions ? (
+            <QueryMap
+              data={sessionQuery[0]}
+              queryState={sessionQuery[1]}
+              emptyElement={
                 <EmptyState
                   icon={<AttendanceCalendar sessions={[]} now={now.getTime()} />}
                   title="No sessions yet"
                   description="Add sessions to view here."
                 />
-              )
-            }
-          />
+              }
+              renderContent={(sessionData) => {
+                const filtered = sessionData.filter((session) => {
+                  switch (mode) {
+                    case 'today':
+                      return session.startTime >= start && session.startTime < end
+                    case 'history':
+                      return session.startTime < end
+                    case 'courses':
+                      // unreachable: showSessions is false for courses
+                      return false
+                    default:
+                      return assertNever(mode)
+                  }
+                })
+                if (!filtered.length) {
+                  return (
+                    <EmptyState
+                      icon={<AttendanceCalendar sessions={[]} now={now.getTime()} />}
+                      title={mode === 'today' ? 'Nothing today' : 'No sessions yet'}
+                      description={
+                        mode === 'today'
+                          ? 'No sessions scheduled for today.'
+                          : 'Add sessions to view here.'
+                      }
+                    />
+                  )
+                }
+                return filtered.map((session) => (
+                  <YStack
+                    key={session.id}
+                    gap={8}
+                    py={12}
+                    borderBottomWidth={1}
+                    borderColor="color-5"
+                  >
+                    <SizableText fontWeight="700">
+                      {session.course?.courseName ?? 'Course'}
+                    </SizableText>
+                    <Paragraph color="color-10">
+                      {new Date(session.startTime).toLocaleString()} –{' '}
+                      {new Date(session.endTime).toLocaleTimeString()}
+                      {session.course?.room
+                        ? ` · ${session.course.room.buildingCode} ${session.course.room.roomNumber}`
+                        : ''}
+                    </Paragraph>
+                    <Paragraph>Attendance: {session.attendance ?? 'Not marked'}</Paragraph>
+                    <XStack gap={8} flexWrap="wrap">
+                      <Button
+                        size="sm"
+                        onPress={() => void mark({ id: session.id, attendance: 'present' })}
+                      >
+                        Present
+                      </Button>
+                      <Button
+                        size="sm"
+                        onPress={() => void mark({ id: session.id, attendance: 'absent' })}
+                      >
+                        Absent
+                      </Button>
+                      <Button
+                        size="sm"
+                        subtle
+                        onPress={() => void mark({ id: session.id, attendance: null })}
+                      >
+                        Clear
+                      </Button>
+                      <Button
+                        size="sm"
+                        onPress={() => void mark({ id: session.id, attendance: 'cancelled' })}
+                      >
+                        Cancelled
+                      </Button>
+                    </XStack>
+                  </YStack>
+                ))
+              }}
+            />
+          ) : null}
           {mode === 'history' ? <TimelineImport /> : null}
         </YStack>
       </PageScrollView>
